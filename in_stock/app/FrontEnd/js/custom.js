@@ -11,9 +11,9 @@
     $(function() {
       $('.hero-slides').vegas({
           slides: [
-              { src: 'images/slides/trabalhador-de-armazem-com-capacete-de-seguranca-conversando-ao-telefone-e-segurando-uma-lista-de-verificacao-na-instalacao-armazem-de-distribuicao.jpg' },
-              { src: 'images/slides/dispositivo-de-sustentacao-de-homem-de-tiro-medio.jpg' },
-              { src: 'images/slides/trabalhadora-negra-armazem-passando-pela-lista-de-remessas-enquanto-verifica-o-estoque-no-compartimento-de-armazenamento-industrial.jpg' }
+              { src: 'imagens/slides/trabalhador-de-armazem-com-capacete-de-seguranca-conversando-ao-telefone-e-segurando-uma-lista-de-verificacao-na-instalacao-armazem-de-distribuicao.jpg' },
+              { src: 'imagens/slides/dispositivo-de-sustentacao-de-homem-de-tiro-medio.jpg' },
+              { src: 'imagens/slides/trabalhadora-negra-armazem-passando-pela-lista-de-remessas-enquanto-verifica-o-estoque-no-compartimento-de-armazenamento-industrial.jpg' }
           ],
           timer: false,
           animation: 'kenburns',
