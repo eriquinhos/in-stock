@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Cadastrar Novo Produto</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'product-list-create' %}" novalidate>
+                {% csrf_token %}
+
+                <!-- Campo Nome -->
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Nome do Produto</label>
+                    {% render_field form.nome class="form-control" placeholder="Ex: Camisa Polo" %}
+                    {% if form.nome.errors %}
+                        <div class="text-danger small">{{ form.nome.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo Preço -->
+                <div class="mb-3">
+                    <label for="id_preco" class="form-label">Preço</label>
+                    {% render_field form.preco class="form-control" placeholder="Ex: 99.90" %}
+                    {% if form.preco.errors %}
+                        <div class="text-danger small">{{ form.preco.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo Estoque -->
+                <div class="mb-3">
+                    <label for="id_estoque" class="form-label">Quantidade em Estoque</label>
+                    {% render_field form.estoque class="form-control" placeholder="Ex: 10" %}
+                    {% if form.estoque.errors %}
+                        <div class="text-danger small">{{ form.estoque.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'produto_list' %}" class="btn btn-secondary">Voltar</a>
+                    <button type="submit" class="btn btn-success">
+                        {% if form.instance.pk %}Salvar Alterações{% else %}Cadastrar Produto{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

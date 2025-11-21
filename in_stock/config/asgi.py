@@ -1,10 +1,10 @@
 """
-ASGI config for InStock project.
+ASGI config for in_stock project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/dev/howto/deployment/asgi/
+https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 """
 
 import os

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Produtos</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+            font-size: 13px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .header {
+            width: 100%;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .info-empresa {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table thead {
+            background: #f0f0f0;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 11px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Relatório de Produtos</h1>
+        <p>Gerado em: {{ data_emissao }}</p>
+    </div>
+
+    <div class="info-empresa">
+        <strong>{{ empresa.nome }}</strong><br>
+        {{ empresa.endereco }}<br>
+        CNPJ: {{ empresa.cnpj }}
+    </div>
+
+    <h2>Lista de Produtos</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Produto</th>
+                <th>Código</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ p.nome }}</td>
+                <td>{{ p.codigo }}</td>
+                <td>{{ p.quantidade }}</td>
+                <td>R$ {{ p.preco|floatformat:2 }}</td>
+                <td>R$ {{ p.total|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align:center;">Nenhum produto encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="total">
+        Total geral: <strong>R$ {{ total_geral|floatformat:2 }}</strong>
+    </p>
+
+    <div class="footer">
+        Documento gerado automaticamente — não requer assinatura.
+    </div>
+
+</body>
+</html>

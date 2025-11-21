@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - InStock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="email"],
+        input[type="password"], input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Registrar</h2>
+
+        <!-- Exibe mensagens de erro, se existirem -->
+        {% if messages %}
+            {% for message in messages %}
+                <p class="error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulário de login -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Nome de usuário" required>
+            <input type="email" name="email" placeholder="E-mail" required> <select name="type" id=""><option value="admin">Administrador</option>
+            <option value="standard">Padrão</option></select>
+            <input type="tel" name="phone" placeholder="Telefone" required><input type="password" name="password1" placeholder="Senha" required>
+            <input type="password" name="password2" placeholder="Confirmar senha" required>
+            <button type="submit">Registrar</button>
+        </form>
+
+    </div>
+</body>
+</html>
