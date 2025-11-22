@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Sale(models.Model):
@@ -8,7 +9,7 @@ class Sale(models.Model):
         'users.CustomUser', on_delete=models.CASCADE, related_name='sale_user', null=False)
     supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE,
                                  related_name='sale_supplier', blank=True, null=True)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(default=timezone.now)
     TIPO = [
 
         ('entry', 'Entrada'),
