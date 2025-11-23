@@ -2,9 +2,9 @@ name: pipeline-instock
 
 on:
   push:
-    branches: [master]
+    branches: [main, develop]
   pull_request:
-    branches: [master]
+    branches: [main, develop]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,13 +32,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 black isort
 
-      - name: Run isort
-        run: isort --check-only in_stock/app/
-      - name: Run code formatter
-        run: black --check in_stock/app/
+      - name: Run Black (code formatter)
+        run: black --check app/
 
-      - name: Run linter
-        run: flake8 in_stock/app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Run isort (import sorter)
+        run: isort --check-only app/
+
+      - name: Run Flake8 (linter)
+        run: flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
   security:
     name: Security Check
@@ -58,10 +59,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install bandit safety
 
-      - name: Run security checker
-        run: bandit -r in_stock/app/ -f json -o bandit-report.json || true
+      - name: Run Bandit (security)
+        run: bandit -r app/ -f json -o bandit-report.json || true
 
-      - name: Run dependency checker
+      - name: Run Safety (dependency check)
         run: pip install -q -r requirements.txt && safety check --json || true
 
   test:
@@ -71,10 +72,6 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.12', '3.13']
-    env:
-      CI: true
-      DATABASE_URL: "sqlite:///:memory:"
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -95,10 +92,10 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest in_stock/app/{products,reports,sales,suppliers,users}/tests.py \
+          pytest app/{products,reports,sales,suppliers,users}/tests.py \
             -v \
             --tb=short \
-            --cov=in_stock.app \
+            --cov=app \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing
@@ -147,7 +144,7 @@ jobs:
     name: Deploy to Production
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -160,11 +157,12 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             cd /var/www/in-stock
-            git pull origin master
+            git pull origin main
             pip install --upgrade pip
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
+            sudo systemctl restart gunicorn
 
   notify-success:
     name: Notify Success
@@ -173,7 +171,7 @@ jobs:
     if: success()
     steps:
       - name: Send success notification
-        run: echo "Pipeline completed successfully!"
+        run: echo "✅ Pipeline completed successfully!"
 
   notify-failure:
     name: Notify Failure
@@ -181,4 +179,4 @@ jobs:
     if: failure()
     steps:
       - name: Send failure notification
-        run: echo "Pipeline failed. Check the logs for details."
+        run: echo "❌ Pipeline failed. Check the logs for details."
