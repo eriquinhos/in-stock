@@ -26,34 +26,27 @@ def dashboard_view(request):
     return render(request, 'pages/dashboard.html', context)
 
 
-class LoginCreateView(View, LoginForm):
+class LoginCreateView(View):
     template_name = 'auth/login.html'
 
     def get(self, request):
-        # Retornar a pagina de login
-        return render(request, "auth/login.html")
+        return render(request, self.template_name)
 
     def post(self, request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-
             email = request.POST.get('email')
             password = request.POST.get('password')
-
             user = authenticate(request, email=email, password=password)
 
             if user is not None:
-                # Usuário autenticado
-
                 login(request, user)
+                return redirect('dashboard')
 
-                return redirect('dashboard')  # redireciona após login
             else:
-                # Retorne um erro de autenticação
                 messages.error(request, 'E-mail ou senha incorretos.')
-
-        return render(request, "auth/login.html")
+        return render(request, self.template_name)
 
 
 class LogoutView(View):
