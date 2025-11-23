@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
 from django.views.generic import TemplateView
 
+from . import views
 
 urlpatterns = [
     # Lista todos os retiradas/entradas (GET) e cria um novo retirada/entrada (POST)

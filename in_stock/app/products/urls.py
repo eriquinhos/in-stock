@@ -1,8 +1,9 @@
-from django.urls import path
-from . import views
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from django.views.generic import TemplateView
+
+from . import views
 
 urlpatterns = [
     # Lista todos os produtos (GET) e cria um novo produto (POST)

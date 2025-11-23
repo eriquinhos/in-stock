@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from .services import ProductService, CategoryService
-from .forms import ProductForm, CategoryForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import redirect, render
+from django.views import View
+
+from .forms import CategoryForm, ProductForm
+from .services import CategoryService, ProductService
 
 
 class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):

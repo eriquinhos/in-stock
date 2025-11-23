@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from .models import CustomUser
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import CustomUserCreationForm
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect, render
+from django.views import View
+
+from .forms import CustomUserCreationForm
+from .models import CustomUser
 from .service import CustomUserService
 
 

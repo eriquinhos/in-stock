@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from django.test import TestCase
 
 from in_stock.app.suppliers.models import Supplier
+
 from .models import Category, Product, ProductSupplier
 
 

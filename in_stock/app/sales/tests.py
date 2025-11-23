@@ -1,9 +1,11 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from django.utils import timezone
 from datetime import date, timedelta
-from in_stock.app.sales.models import Sale
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.utils import timezone
+
 from in_stock.app.products.models import Category, Product
+from in_stock.app.sales.models import Sale
 from in_stock.app.suppliers.models import Supplier
 
 User = get_user_model()

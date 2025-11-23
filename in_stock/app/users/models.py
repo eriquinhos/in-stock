@@ -6,7 +6,6 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 
-
 # class CustomUser(AbstractBaseUser, PermissionsMixin):
 # email = models.EmailField(unique=True)
 # TYPE_CHOICES = [

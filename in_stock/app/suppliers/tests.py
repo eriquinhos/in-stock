@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from in_stock.app.suppliers.models import Supplier
 
 

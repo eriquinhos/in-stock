@@ -1,11 +1,12 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from django.http import HttpResponse
-from .models import Sale
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .services import SaleService
-from django.contrib import messages
+
 from .forms import SaleForm
+from .models import Sale
+from .services import SaleService
 
 
 class SaleListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):

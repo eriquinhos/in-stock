@@ -1,13 +1,16 @@
-from .models import Report
-from in_stock.app.sales.models import Sale
-from in_stock.app.products.models import Product
+import os
+import tempfile
+from datetime import date, datetime, timezone
+
+import pdfkit
 from django.contrib import messages
-from datetime import datetime, date, timezone
 from django.db.models import Prefetch
 from django.template.loader import render_to_string
-import tempfile
-import os
-import pdfkit
+
+from in_stock.app.products.models import Product
+from in_stock.app.sales.models import Sale
+
+from .models import Report
 
 
 class ReportService:

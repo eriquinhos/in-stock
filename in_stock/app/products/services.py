@@ -1,8 +1,9 @@
 from django.contrib import messages
-from .models import Product, Category
-from django.core.files.storage import FileSystemStorage
-from django.core.files.storage import default_storage
+from django.core.files.storage import FileSystemStorage, default_storage
+
 from in_stock.app.suppliers.models import Supplier
+
+from .models import Category, Product
 
 
 class ProductService:

@@ -1,6 +1,8 @@
-from .models import Sale
-from in_stock.app.products.models import Product
 from django.contrib import messages
+
+from in_stock.app.products.models import Product
+
+from .models import Sale
 
 
 class SaleService:

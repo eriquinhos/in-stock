@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.views import View
-from django.template.loader import get_template
-import in_stock.config.settings as settings
-from django.contrib.auth import authenticate, login, logout
-from in_stock.app.pages.forms import LoginForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
+from django.template.loader import get_template
+from django.views import View
+
+import in_stock.config.settings as settings
+from in_stock.app.pages.forms import LoginForm
 
 
 def home(request):
