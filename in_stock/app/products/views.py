@@ -5,7 +5,7 @@ from .forms import ProductForm, CategoryForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-
+#Test CI/CD
 class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
