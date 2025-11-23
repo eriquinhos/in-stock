@@ -15,20 +15,18 @@ class SaleModelTests(TestCase):
     def setUp(self):
         """Prepara dados para cada teste"""
         self.user = User.objects.create_user(
-            email='user@example.com',
-            password='testpass123'
+            email="user@example.com", password="testpass123"
         )
-        self.category = Category.objects.create(name='Eletrônicos')
+        self.category = Category.objects.create(name="Eletrônicos")
         self.supplier = Supplier.objects.create(
-            name='Tech Supplier',
-            cnpj='12345678000190'
+            name="Tech Supplier", cnpj="12345678000190"
         )
         self.product = Product.objects.create(
-            name='Notebook',
+            name="Notebook",
             category=self.category,
             quantity=10,
             price=2500.00,
-            expiration_date=date.today() + timedelta(days=365)
+            expiration_date=date.today() + timedelta(days=365),
         )
 
     def test_sale_entry_creation(self):
@@ -36,13 +34,13 @@ class SaleModelTests(TestCase):
         sale = Sale.objects.create(
             product=self.product,
             user=self.user,
-            type='entry',
+            type="entry",
             quantity=5,
-            description='Compra de notebooks'
+            description="Compra de notebooks",
         )
         self.assertEqual(sale.product, self.product)
         self.assertEqual(sale.user, self.user)
-        self.assertEqual(sale.type, 'entry')
+        self.assertEqual(sale.type, "entry")
         self.assertEqual(sale.quantity, 5)
 
     def test_sale_exit_creation(self):
@@ -50,20 +48,16 @@ class SaleModelTests(TestCase):
         sale = Sale.objects.create(
             product=self.product,
             user=self.user,
-            type='exits',
+            type="exits",
             quantity=2,
-            description='Venda de notebooks'
+            description="Venda de notebooks",
         )
-        self.assertEqual(sale.type, 'exits')
+        self.assertEqual(sale.type, "exits")
         self.assertEqual(sale.quantity, 2)
 
     def test_sale_default_quantity(self):
         """Testa se a quantidade padrão é 1"""
-        sale = Sale.objects.create(
-            product=self.product,
-            user=self.user,
-            type='entry'
-        )
+        sale = Sale.objects.create(product=self.product, user=self.user, type="entry")
         self.assertEqual(sale.quantity, 1)
 
     def test_sale_string_representation_with_description(self):
@@ -71,23 +65,20 @@ class SaleModelTests(TestCase):
         sale = Sale.objects.create(
             product=self.product,
             user=self.user,
-            type='entry',
+            type="entry",
             quantity=5,
-            description='Compra de notebooks'
+            description="Compra de notebooks",
         )
-        self.assertIn('Entrada', str(sale))
-        self.assertIn('Compra de notebooks', str(sale))
+        self.assertIn("Entrada", str(sale))
+        self.assertIn("Compra de notebooks", str(sale))
 
     def test_sale_string_representation_without_description(self):
         """Testa a representação em string sem descrição"""
         sale = Sale.objects.create(
-            product=self.product,
-            user=self.user,
-            type='entry',
-            quantity=5
+            product=self.product, user=self.user, type="entry", quantity=5
         )
-        self.assertIn('Entrada', str(sale))
-        self.assertIn('Notebook', str(sale))
+        self.assertIn("Entrada", str(sale))
+        self.assertIn("Notebook", str(sale))
 
     def test_sale_with_supplier(self):
         """Testa criação de venda com fornecedor"""
@@ -95,26 +86,18 @@ class SaleModelTests(TestCase):
             product=self.product,
             user=self.user,
             supplier=self.supplier,
-            type='entry',
-            quantity=10
+            type="entry",
+            quantity=10,
         )
         self.assertEqual(sale.supplier, self.supplier)
 
     def test_sale_timestamps(self):
         """Testa se os timestamps são registrados"""
-        sale = Sale.objects.create(
-            product=self.product,
-            user=self.user,
-            type='entry'
-        )
+        sale = Sale.objects.create(product=self.product, user=self.user, type="entry")
         self.assertIsNotNone(sale.created_at)
         self.assertIsNotNone(sale.updated_at)
 
     def test_sale_default_date(self):
         """Testa se a data padrão é a data atual"""
-        sale = Sale.objects.create(
-            product=self.product,
-            user=self.user,
-            type='entry'
-        )
+        sale = Sale.objects.create(product=self.product, user=self.user, type="entry")
         self.assertIsNotNone(sale.date)

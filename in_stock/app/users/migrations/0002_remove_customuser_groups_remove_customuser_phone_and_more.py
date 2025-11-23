@@ -6,34 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='groups',
+            model_name="customuser",
+            name="groups",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='phone',
+            model_name="customuser",
+            name="phone",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='type',
+            model_name="customuser",
+            name="type",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='user_permissions',
+            model_name="customuser",
+            name="user_permissions",
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='is_staff',
+            model_name="customuser",
+            name="is_staff",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='is_superuser',
+            model_name="customuser",
+            name="is_superuser",
             field=models.BooleanField(default=False),
         ),
     ]

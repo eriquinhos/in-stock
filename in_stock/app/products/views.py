@@ -5,21 +5,21 @@ from .forms import ProductForm, CategoryForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-#Test CI/CD
+
 class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
     def get_permission_required(self):
-        if self.request.method == 'POST':
-            return ['products.add_product']
-        return ['products.view_product']
+        if self.request.method == "POST":
+            return ["products.add_product"]
+        return ["products.view_product"]
 
     def get(self, request):
 
         # Lógica para listar todos os produtos
         products = ProductService.get_all()
 
-        return render(request, "products/index.html", {'products': products})
+        return render(request, "products/index.html", {"products": products})
 
     def post(self, request):
 
@@ -41,7 +41,7 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         else:
             messages.error("Verifique se os dados inseridos estão corretos!")
 
-        return render(request, 'products/create.html', {'form': form})
+        return render(request, "products/create.html", {"form": form})
 
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -49,8 +49,8 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
     # Permissão necessária para acessar qualquer método (get, put ou delete)
     def get_permission_required(self):
         method_request = self.request.method
-        if method_request == 'PUT' or method_request == 'GET':
-            return ['products.change_product']
+        if method_request == "PUT" or method_request == "GET":
+            return ["products.change_product"]
         return []
 
     def get(self, request, id_product):
@@ -61,7 +61,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if not product:
             return redirect("product-list-create")
 
-        return render(request, "products/edit.html", {'product': product})
+        return render(request, "products/edit.html", {"product": product})
 
     def put(self, request, id_product):
         # Lógica para atualizar um produto específico
@@ -78,18 +78,16 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         if form.is_valid():
             try:
-                update_product = ProductService.update_product(
-                    request, product)
+                update_product = ProductService.update_product(request, product)
                 messages.success("O produto foi modificado com sucesso!")
 
             except Exception as e:
-                messages.error(
-                    "Não foi possível fazer a atualização do produto!")
+                messages.error("Não foi possível fazer a atualização do produto!")
 
         else:
             messages.error("Os dados enviados não são válidos.")
 
-        return render(request, 'products/edit.html', {'form': form})
+        return render(request, "products/edit.html", {"form": form})
 
 
 class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -115,16 +113,18 @@ class CategoryListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
     def get_permission_required(self):
-        if self.request.method == 'POST':
-            return ['products.add_category']
-        return ['products.view_category']
+        if self.request.method == "POST":
+            return ["products.add_category"]
+        return ["products.view_category"]
 
     def get(self, request):
         # Lógica para listar todos os categorias
 
         categories = CategoryService.get_all()
 
-        return render(request, "products/categories/index.html", {'categories': categories})
+        return render(
+            request, "products/categories/index.html", {"categories": categories}
+        )
 
     def post(self, request):
         # Lógica para criar um nova categoria
@@ -135,16 +135,16 @@ class CategoryListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             messages.success("A categoria foi criada com sucesso!")
         else:
             messages.error("Verifique se os dados inseridos estão corretos!")
-        return render(request, 'products/categories/create.html', {'form': form})
+        return render(request, "products/categories/create.html", {"form": form})
 
 
 class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
-   # Permissão necessária para acessar qualquer método (get, put ou delete)
+    # Permissão necessária para acessar qualquer método (get, put ou delete)
     def get_permission_required(self):
         method_request = self.request.method
-        if method_request == 'PUT' or method_request == 'GET':
-            return ['products.change_category']
+        if method_request == "PUT" or method_request == "GET":
+            return ["products.change_category"]
         return []
 
     def get(self, request, id_category):
@@ -156,7 +156,7 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if not category:
             return redirect("category-list-create")
 
-        return render(request, "products/categories/edit.html", {'category': category})
+        return render(request, "products/categories/edit.html", {"category": category})
 
     def put(self, request, id_category):
 
@@ -174,11 +174,11 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             form.save()
             messages.success("A categoria foi atualizada com sucesso!")
 
-        return render(request, 'products/categories/edit.html', {'form': form})
+        return render(request, "products/categories/edit.html", {"form": form})
 
 
 class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = 'products.delete_category'
+    permission_required = "products.delete_category"
 
     def post(self, request, id_category):
 
@@ -187,6 +187,6 @@ class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if not category:
 
             # Renderiza um template de erro 404 customizado com status 404
-            return render(request, 'errors/404.html')
+            return render(request, "errors/404.html")
 
         return redirect("category-list-create")

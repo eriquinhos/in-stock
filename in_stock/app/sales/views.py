@@ -12,15 +12,15 @@ class SaleListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
     def get_permission_required(self):
-        if self.request.method == 'POST':
-            return ['sales.add_sale']
-        return ['sales.view_sale']
+        if self.request.method == "POST":
+            return ["sales.add_sale"]
+        return ["sales.view_sale"]
 
     def get(self, request):
 
         # Lógica para listar todos os movimentações
         sales = SaleService.get_all()
-        return render(request, "sales/index.html", {'sales': sales})
+        return render(request, "sales/index.html", {"sales": sales})
 
     def post(self, request):
 
@@ -31,19 +31,15 @@ class SaleListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             type_sale = request.POST.get("type")
 
             try:
-                create_sale = SaleService.create_sale_by_type(
-                    request, type_sale)
+                create_sale = SaleService.create_sale_by_type(request, type_sale)
             except Exception as e:
-                messages.error(
-                    request, "Ocorreu um erro ao salvar a movimentação.")
+                messages.error(request, "Ocorreu um erro ao salvar a movimentação.")
                 return render(request, "sales/create.html")
 
             if not create_sale:
-                messages.error(
-                    request, "Não foi possível salvar a movimentação!")
+                messages.error(request, "Não foi possível salvar a movimentação!")
             else:
-                messages.success(
-                    request, "A movimentação foi registrada com sucesso!")
+                messages.success(request, "A movimentação foi registrada com sucesso!")
 
         else:
             messages.error(request, "Os dados enviados não são válidos.")

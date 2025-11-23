@@ -7,18 +7,18 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0004_customuser_groups_customuser_user_permissions'),
+        ("users", "0004_customuser_groups_customuser_user_permissions"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='date_joined',
+            model_name="customuser",
+            name="date_joined",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='name',
-            field=models.CharField(default='User', max_length=150),
+            model_name="customuser",
+            name="name",
+            field=models.CharField(default="User", max_length=150),
         ),
     ]

@@ -9,7 +9,7 @@ from django.contrib import messages
 
 
 def home(request):
-    return render(request, 'pages/index.html')
+    return render(request, "pages/index.html")
 
 
 def dashboard_view(request):
@@ -18,16 +18,16 @@ def dashboard_view(request):
         return render(request, "errors/401.html")
 
     context = {
-        'total_products': 120,
-        'total_suppliers': 15,
-        'total_sales': 80,
-        'total_reports': 5,
+        "total_products": 120,
+        "total_suppliers": 15,
+        "total_sales": 80,
+        "total_reports": 5,
     }
-    return render(request, 'pages/dashboard.html', context)
+    return render(request, "pages/dashboard.html", context)
 
 
 class LoginCreateView(View):
-    template_name = 'auth/login.html'
+    template_name = "auth/login.html"
 
     def get(self, request):
         return render(request, self.template_name)
@@ -36,16 +36,16 @@ class LoginCreateView(View):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            email = request.POST.get('email')
-            password = request.POST.get('password')
+            email = request.POST.get("email")
+            password = request.POST.get("password")
             user = authenticate(request, email=email, password=password)
 
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')
+                return redirect("dashboard")
 
             else:
-                messages.error(request, 'E-mail ou senha incorretos.')
+                messages.error(request, "E-mail ou senha incorretos.")
         return render(request, self.template_name)
 
 
@@ -55,9 +55,9 @@ class LogoutView(View):
         if request.user.is_authenticated:
             logout(request)
 
-        return redirect('login')
+        return redirect("login")
 
 
 def error_403_view(request, exception=None):
     # Passamos status=403 para garantir que o navegador/servidor saiba que é um erro 403
-    return render(request, 'errors/403.html', status=403)
+    return render(request, "errors/403.html", status=403)

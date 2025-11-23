@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reports', '0002_initial'),
+        ("reports", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='type',
-            field=models.CharField(choices=[('expenses', 'Despesas'), ('revenue', 'Receitas'), ('full', 'Completo')], default='full', max_length=8),
+            model_name="report",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("expenses", "Despesas"),
+                    ("revenue", "Receitas"),
+                    ("full", "Completo"),
+                ],
+                default="full",
+                max_length=8,
+            ),
         ),
     ]

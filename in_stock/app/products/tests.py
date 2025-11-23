@@ -11,25 +11,24 @@ class CategoryModelTests(TestCase):
 
     def setUp(self):
         """Prepara dados para cada teste"""
-        self.category = Category.objects.create(name='Eletrônicos')
+        self.category = Category.objects.create(name="Eletrônicos")
 
     def test_category_creation(self):
         """Testa criação de uma categoria"""
-        self.assertEqual(self.category.name, 'Eletrônicos')
+        self.assertEqual(self.category.name, "Eletrônicos")
         self.assertIsNotNone(self.category.created_at)
         self.assertIsNotNone(self.category.updated_at)
 
     def test_category_string_representation(self):
         """Testa a representação em string da categoria"""
-        self.assertEqual(str(self.category), 'Eletrônicos')
+        self.assertEqual(str(self.category), "Eletrônicos")
 
     def test_category_ordering(self):
         """Testa se as categorias são ordenadas por nome"""
-        Category.objects.create(name='Alimentos')
-        Category.objects.create(name='Bebidas')
-        categories = list(
-            Category.objects.all().values_list('name', flat=True))
-        self.assertEqual(categories, ['Alimentos', 'Bebidas', 'Eletrônicos'])
+        Category.objects.create(name="Alimentos")
+        Category.objects.create(name="Bebidas")
+        categories = list(Category.objects.all().values_list("name", flat=True))
+        self.assertEqual(categories, ["Alimentos", "Bebidas", "Eletrônicos"])
 
 
 class ProductModelTests(TestCase):
@@ -37,37 +36,36 @@ class ProductModelTests(TestCase):
 
     def setUp(self):
         """Prepara dados para cada teste"""
-        self.category = Category.objects.create(name='Eletrônicos')
+        self.category = Category.objects.create(name="Eletrônicos")
         self.supplier = Supplier.objects.create(
-            name='Tech Supplier',
-            cnpj='12345678000190'
+            name="Tech Supplier", cnpj="12345678000190"
         )
         self.product = Product.objects.create(
-            name='Notebook',
+            name="Notebook",
             category=self.category,
             quantity=10,
             price=2500.00,
-            expiration_date=date.today() + timedelta(days=365)
+            expiration_date=date.today() + timedelta(days=365),
         )
 
     def test_product_creation(self):
         """Testa criação de um produto"""
-        self.assertEqual(self.product.name, 'Notebook')
+        self.assertEqual(self.product.name, "Notebook")
         self.assertEqual(self.product.category, self.category)
         self.assertEqual(self.product.quantity, 10)
         self.assertEqual(self.product.price, 2500.00)
 
     def test_product_string_representation(self):
         """Testa a representação em string do produto"""
-        self.assertEqual(str(self.product), 'Notebook')
+        self.assertEqual(str(self.product), "Notebook")
 
     def test_product_default_quantity(self):
         """Testa se a quantidade padrão é 1"""
         product = Product.objects.create(
-            name='Mouse',
+            name="Mouse",
             category=self.category,
             price=50.00,
-            expiration_date=date.today() + timedelta(days=30)
+            expiration_date=date.today() + timedelta(days=30),
         )
         self.assertEqual(product.quantity, 1)
 
@@ -75,24 +73,24 @@ class ProductModelTests(TestCase):
         """Testa se um produto com o mesmo nome não pode existir na mesma categoria"""
         with self.assertRaises(Exception):
             Product.objects.create(
-                name='Notebook',
+                name="Notebook",
                 category=self.category,
                 quantity=5,
                 price=2000.00,
-                expiration_date=date.today() + timedelta(days=365)
+                expiration_date=date.today() + timedelta(days=365),
             )
 
     def test_product_ordering(self):
         """Testa se os produtos são ordenados por nome"""
         Product.objects.create(
-            name='Mouse',
+            name="Mouse",
             category=self.category,
             quantity=20,
             price=50.00,
-            expiration_date=date.today() + timedelta(days=30)
+            expiration_date=date.today() + timedelta(days=30),
         )
-        products = list(Product.objects.all().values_list('name', flat=True))
-        self.assertEqual(products, ['Mouse', 'Notebook'])
+        products = list(Product.objects.all().values_list("name", flat=True))
+        self.assertEqual(products, ["Mouse", "Notebook"])
 
     def test_product_supplier_relationship(self):
         """Testa a relação entre produto e fornecedor"""
@@ -105,21 +103,19 @@ class ProductSupplierModelTests(TestCase):
 
     def setUp(self):
         """Prepara dados para cada teste"""
-        self.category = Category.objects.create(name='Eletrônicos')
+        self.category = Category.objects.create(name="Eletrônicos")
         self.supplier = Supplier.objects.create(
-            name='Tech Supplier',
-            cnpj='12345678000190'
+            name="Tech Supplier", cnpj="12345678000190"
         )
         self.product = Product.objects.create(
-            name='Notebook',
+            name="Notebook",
             category=self.category,
             quantity=10,
             price=2500.00,
-            expiration_date=date.today() + timedelta(days=365)
+            expiration_date=date.today() + timedelta(days=365),
         )
         self.product_supplier = ProductSupplier.objects.create(
-            product=self.product,
-            supplier=self.supplier
+            product=self.product, supplier=self.supplier
         )
 
     def test_product_supplier_creation(self):
@@ -135,7 +131,4 @@ class ProductSupplierModelTests(TestCase):
     def test_product_supplier_uniqueness(self):
         """Testa se um produto só pode ter uma relação com um fornecedor"""
         with self.assertRaises(Exception):
-            ProductSupplier.objects.create(
-                product=self.product,
-                supplier=self.supplier
-            )
+            ProductSupplier.objects.create(product=self.product, supplier=self.supplier)

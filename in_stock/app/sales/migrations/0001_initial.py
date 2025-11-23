@@ -9,27 +9,52 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('suppliers', '0001_initial'),
-        ('products', '0001_initial'),
+        ("suppliers", "0001_initial"),
+        ("products", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Sale',
+            name="Sale",
             fields=[
-                ('id', models.BigAutoField(auto_created=True,
-                 primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(auto_now=True)),
-                ('type', models.CharField(choices=[
-                 ('entry', 'Entrada'), ('exits', 'Saída')], max_length=5)),
-                ('quantity', models.IntegerField(default=1)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                 related_name='sale_product', to='products.product')),
-                ('supplier', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                 related_name='sale_supplier', to='suppliers.supplier')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[("entry", "Entrada"), ("exits", "Saída")], max_length=5
+                    ),
+                ),
+                ("quantity", models.IntegerField(default=1)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sale_product",
+                        to="products.product",
+                    ),
+                ),
+                (
+                    "supplier",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sale_supplier",
+                        to="suppliers.supplier",
+                    ),
+                ),
             ],
         ),
     ]

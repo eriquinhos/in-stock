@@ -1,7 +1,7 @@
 from .models import CustomUser
 
 
-class CustomUserService():
+class CustomUserService:
     def get_all(self):
         return CustomUser.objects.all()
 
@@ -17,16 +17,16 @@ class CustomUserService():
 
     def update_user(self, request, user: CustomUser):
 
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
 
         if password1 != password2:
             raise Exception("As senhas não coincidem!")
 
-        user.name = request.POST.get('name')
-        user.email = request.POST.get('email')
-        user.phone = request.POST.get('phone') or None
-        user.type = request.POST.get('type')
+        user.name = request.POST.get("name")
+        user.email = request.POST.get("email")
+        user.phone = request.POST.get("phone") or None
+        user.type = request.POST.get("type")
 
         # Criptografa a senha
         user.set_password(password1)

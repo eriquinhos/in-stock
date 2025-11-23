@@ -12,16 +12,16 @@ class ReportListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
     def get_permission_required(self):
-        if self.request.method == 'POST':
-            return ['reports.add_report']
-        return ['reports.view_report']
+        if self.request.method == "POST":
+            return ["reports.add_report"]
+        return ["reports.view_report"]
 
     def get(self, request):
 
         # Lógica para listar todos os relatorios gerados
         reports = ReportService.get_all()
 
-        return render(request, "reports/index.html", {'reports': reports})
+        return render(request, "reports/index.html", {"reports": reports})
 
     def post(self, request):
 
@@ -46,5 +46,5 @@ class ReportListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             open(pdf_path_created, "rb"),
             as_attachment=True,
             filename=filename,
-            content_type="application/pdf"
+            content_type="application/pdf",
         )

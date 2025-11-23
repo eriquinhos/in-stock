@@ -4,17 +4,26 @@ from django.utils import timezone
 
 class Sale(models.Model):
     product = models.ForeignKey(
-        'products.Product', on_delete=models.CASCADE, related_name='sale_product', null=False)
+        "products.Product",
+        on_delete=models.CASCADE,
+        related_name="sale_product",
+        null=False,
+    )
     user = models.ForeignKey(
-        'users.CustomUser', on_delete=models.CASCADE, related_name='sale_user', null=False)
-    supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE,
-                                 related_name='sale_supplier', blank=True, null=True)
+        "users.CustomUser",
+        on_delete=models.CASCADE,
+        related_name="sale_user",
+        null=False,
+    )
+    supplier = models.ForeignKey(
+        "suppliers.Supplier",
+        on_delete=models.CASCADE,
+        related_name="sale_supplier",
+        blank=True,
+        null=True,
+    )
     date = models.DateTimeField(default=timezone.now)
-    TIPO = [
-
-        ('entry', 'Entrada'),
-        ('exits', 'Saída')
-    ]
+    TIPO = [("entry", "Entrada"), ("exits", "Saída")]
     type = models.CharField(max_length=5, choices=TIPO)
     quantity = models.IntegerField(default=1)
     description = models.TextField(blank=True, null=True)

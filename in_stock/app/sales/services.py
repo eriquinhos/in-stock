@@ -3,10 +3,10 @@ from in_stock.app.products.models import Product
 from django.contrib import messages
 
 
-class SaleService():
+class SaleService:
 
     def get_all(self):
-        return Sale.objects.select_related('product', 'user').order_by("-created_at")
+        return Sale.objects.select_related("product", "user").order_by("-created_at")
 
     # Referente a movimentação ENTRADA ou SAÍDA feita na CRUD
     def create_sale_by_type(self, request, type_sale: str):
@@ -19,7 +19,7 @@ class SaleService():
         sale.supplier = request.POST.get("supplier")
         sale.type = type_sale
         sale.quantity = quantity
-        sale.description = request.POST.get('description') or None
+        sale.description = request.POST.get("description") or None
 
         sale.save()
 
@@ -36,21 +36,23 @@ class SaleService():
         sale = Sale(
             product=product.id,
             user=request.user.id,
-            supplier=product.supplier.values_list('id', flat=True).first(),
-            type='entry',
+            supplier=product.supplier.values_list("id", flat=True).first(),
+            type="entry",
             quantity=product.quantity,
-            description='Registro de ENTRADA padrão.'
+            description="Registro de ENTRADA padrão.",
         )
 
         sale.save()
         return sale
 
-    def update_product_quantity(self, request, id_product: int, type_sale: str, quantity: int):
+    def update_product_quantity(
+        self, request, id_product: int, type_sale: str, quantity: int
+    ):
 
         try:
             product = Product.objects.get(pk=id_product)
 
-            if type_sale == 'exist':
+            if type_sale == "exist":
                 product.quantity = max(product.quantity - quantity, 0)
             else:
                 product.quantity = product.quantity + quantity
@@ -59,4 +61,5 @@ class SaleService():
 
         except Product.DoesNotExist:
             messages.error(
-                request, f"O produto com ID {id_product} não foi encontrado.")
+                request, f"O produto com ID {id_product} não foi encontrado."
+            )

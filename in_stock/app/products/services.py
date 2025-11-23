@@ -14,22 +14,22 @@ class ProductService:
     def create_product(self, request):
         image_path = self.save_image(request)
 
-        name = request.POST.get('name')
-        category = request.POST.get('category')
-        quantity = request.POST.get('quantity')
-        expiration_date = request.POST.get('expiration_date')
+        name = request.POST.get("name")
+        category = request.POST.get("category")
+        quantity = request.POST.get("quantity")
+        expiration_date = request.POST.get("expiration_date")
 
         product = Product(
             name=name,
             category=category,
             image=image_path,
             quantity=quantity,
-            expiration_date=expiration_date
+            expiration_date=expiration_date,
         )
         product.save()
 
         # Criar relação com algum fornecedor já registrado
-        supplier_input = request.POST.get('supplier')
+        supplier_input = request.POST.get("supplier")
 
         # Relacionamento N-N (product-supplier)
         suppliers = Supplier.objects.filter(id__in=supplier_input)
@@ -53,11 +53,11 @@ class ProductService:
         ou None se ocorrer erro.
         """
         try:
-            image = request.FILES['image']
+            image = request.FILES["image"]
         except Exception:
             return None
 
-        if not hasattr(image, 'chunks'):
+        if not hasattr(image, "chunks"):
             messages.error(request, "Arquivo inválido.")
             return None
 
@@ -72,12 +72,12 @@ class ProductService:
 
     def update_product(self, request, product: Product):
 
-        product.name = request.POST.get('name')
-        product.category = request.POST.get('category')
+        product.name = request.POST.get("name")
+        product.category = request.POST.get("category")
         # product.quantity = request.POST.get('quantity')
-        product.expiration_date = request.POST.get('expiration_date')
+        product.expiration_date = request.POST.get("expiration_date")
 
-        if 'image' in request.FILES:
+        if "image" in request.FILES:
             product.image = self.save_image(request)
 
         product.save()
@@ -110,7 +110,7 @@ class CategoryService:
         return Category.objects.all()
 
     def create_category(self, request):
-        name = request.POST.get('name')
+        name = request.POST.get("name")
 
         category = Category(
             name=name,

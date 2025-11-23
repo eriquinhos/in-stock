@@ -10,15 +10,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('sales', '0001_initial'),
+        ("sales", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sale',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='sale_user', to=settings.AUTH_USER_MODEL),
+            model_name="sale",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sale_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

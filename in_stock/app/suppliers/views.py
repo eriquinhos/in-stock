@@ -12,15 +12,15 @@ class SupplierListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     # Permissão necessária para acessar qualquer método (get ou post)
     def get_permission_required(self):
-        if self.request.method == 'POST':
-            return ['suppliers.add_supplier']
-        return ['suppliers.view_supplier']
+        if self.request.method == "POST":
+            return ["suppliers.add_supplier"]
+        return ["suppliers.view_supplier"]
 
     def get(self, request):
 
         # Lógica para listar todos os fornecedores
         suppliers = SupplierService.get_all()
-        return render(request, "suppliers/index.html", {'suppliers': suppliers})
+        return render(request, "suppliers/index.html", {"suppliers": suppliers})
 
     def post(self, request):
 
@@ -32,12 +32,12 @@ class SupplierListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             try:
                 supplier_created = SupplierService.create_supplier(request)
 
-                messages.success(
-                    request, "O fornecedor foi criado com sucesso!")
+                messages.success(request, "O fornecedor foi criado com sucesso!")
 
             except Exception as e:
                 messages.error(
-                    request, f"Não foi possível criar o fornecedor devido a: {e}")
+                    request, f"Não foi possível criar o fornecedor devido a: {e}"
+                )
         else:
             messages.error(request, "Os dados enviados estão incorretos!")
 
@@ -49,8 +49,8 @@ class SupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
     # Permissão necessária para acessar qualquer método (get, put ou delete)
     def get_permission_required(self):
         method_request = self.request.method
-        if method_request == 'PUT' or method_request == 'GET':
-            return ['suppliers.change_supplier']
+        if method_request == "PUT" or method_request == "GET":
+            return ["suppliers.change_supplier"]
 
         return []
 
@@ -63,7 +63,7 @@ class SupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if not supplier:
             return redirect("supplier-list-create")
 
-        return render(request, "suppliers/edit.html", {'supplier': supplier})
+        return render(request, "suppliers/edit.html", {"supplier": supplier})
 
     def put(self, request, id_supplier):
 
@@ -78,22 +78,21 @@ class SupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if form.is_valid():
 
             try:
-                update_supplier = SupplierService.update_supplier(
-                    request, supplier)
-                messages.success(
-                    request, "O fornecedor foi atualizado com sucesso!")
+                update_supplier = SupplierService.update_supplier(request, supplier)
+                messages.success(request, "O fornecedor foi atualizado com sucesso!")
             except Exception as e:
                 messages.error(
-                    request, "Não foi possível fazer a atualização do fornecedor!")
+                    request, "Não foi possível fazer a atualização do fornecedor!"
+                )
 
         else:
             messages.error(request, "Os dados enviados estão incorretos!")
 
-        return render(request, "suppliers/edit.html", {'form': form})
+        return render(request, "suppliers/edit.html", {"form": form})
 
 
 class SupplierDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = 'suppliers.delete_supplier'
+    permission_required = "suppliers.delete_supplier"
 
     def post(self, request, id_supplier):
 

@@ -13,14 +13,14 @@ class UserListCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
         # Retorna True se o usuário for permitido ou se tem permissão
         user = self.request.user
-        if self.request.method == 'POST':
-            permission = ['users.add_customuser']
+        if self.request.method == "POST":
+            permission = ["users.add_customuser"]
         else:
-            permission = ['users.view_customuser']
+            permission = ["users.view_customuser"]
         return (
-            user.is_superuser or
-            getattr(user, 'type', None) == 'admin' or
-            user.has_perm(permission)
+            user.is_superuser
+            or getattr(user, "type", None) == "admin"
+            or user.has_perm(permission)
         )
 
     def get(self, request):
@@ -29,7 +29,7 @@ class UserListCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         users = CustomUserService.get_all()
 
-        return render(request, "users/index.html", {'users': users})
+        return render(request, "users/index.html", {"users": users})
 
     def post(self, request):
         # Lógica para criar um novo usuário
@@ -40,10 +40,9 @@ class UserListCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
             form.save()
             messages.success(request, "O usuário foi criado com sucesso!")
         else:
-            messages.error(
-                request, 'Verifique os dados informados estão corretos.')
+            messages.error(request, "Verifique os dados informados estão corretos.")
 
-        return render(request, "users/create.html", {'form': form})
+        return render(request, "users/create.html", {"form": form})
 
 
 class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -53,14 +52,14 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
         # Retorna True se o usuário for permitido ou se tem permissão
         user = self.request.user
 
-        if self.request.method == 'GET' or self.request.method == 'PUT':
-            permission = ['users.change_customuser']
+        if self.request.method == "GET" or self.request.method == "PUT":
+            permission = ["users.change_customuser"]
         else:
-            permission = ['users.delete_customuser']
+            permission = ["users.delete_customuser"]
         return (
-            user.is_superuser or
-            getattr(user, 'type', None) == 'admin' or
-            user.has_perm(permission)
+            user.is_superuser
+            or getattr(user, "type", None) == "admin"
+            or user.has_perm(permission)
         )
 
     # O Django irá redirecionar para a página 403 padrão (ou para 'permission_denied_url')
@@ -74,7 +73,7 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
         if not user:
             return render(request, "errors/404.html")
 
-        return render(request, "users/edit.html", {'user': user})
+        return render(request, "users/edit.html", {"user": user})
 
     def put(self, request, id_user):
         # Lógica para atualizar um usuário específico
@@ -93,11 +92,12 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
 
             except Exception as e:
                 messages.error(
-                    "Não foi possível fazer a atualização do usuário devido a: {e}!")
+                    "Não foi possível fazer a atualização do usuário devido a: {e}!"
+                )
         else:
             messages.error("Os dados enviados não são válidos.")
 
-        return (request, 'users/edit.html', {'form': form})
+        return (request, "users/edit.html", {"form": form})
 
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -105,14 +105,14 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
         # Retorna True se o usuário for permitido ou se tem permissão
         user = self.request.user
-        if self.request.method == 'POST':
-            permission = ['users.add_customuser']
+        if self.request.method == "POST":
+            permission = ["users.add_customuser"]
         else:
-            permission = ['users.view_customuser']
+            permission = ["users.view_customuser"]
         return (
-            user.is_superuser or
-            getattr(user, 'type', None) == 'admin' or
-            user.has_perm(permission)
+            user.is_superuser
+            or getattr(user, "type", None) == "admin"
+            or user.has_perm(permission)
         )
 
     def post(self, request, id_user):
@@ -137,15 +137,15 @@ class RegisterCreate(LoginRequiredMixin, UserPassesTestMixin, View):
         user = self.request.user
 
         return (
-            user.is_superuser or
-            getattr(user, 'type', None) == 'admin' or
-            user.has_perm("users.add_customuser")
+            user.is_superuser
+            or getattr(user, "type", None) == "admin"
+            or user.has_perm("users.add_customuser")
         )
 
     def get(self, request):
         # Retornar a pagina do formulário
         form = CustomUserCreationForm()
-        return render(request, "auth/register.html", {'form': form})
+        return render(request, "auth/register.html", {"form": form})
 
     def post(self, request):
         # Processa o formulário preenchido
@@ -157,10 +157,9 @@ class RegisterCreate(LoginRequiredMixin, UserPassesTestMixin, View):
 
             else:
                 form.save()
-                messages.success(request, 'Usuário criado com sucesso!')
+                messages.success(request, "Usuário criado com sucesso!")
 
         else:
-            messages.error(
-                request, 'Verifique os dados informados estão corretos.')
+            messages.error(request, "Verifique os dados informados estão corretos.")
 
-        return render(request, 'auth/register.html', {'form': form})
+        return render(request, "auth/register.html", {"form": form})
