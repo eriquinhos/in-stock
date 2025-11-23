@@ -33,13 +33,13 @@ jobs:
           pip install flake8 black isort
 
       - name: Run code formatter
-        run: black --check app/
+        run: black --check in_stock/app/
 
       - name: Run isort
-        run: isort --check-only app/
+        run: isort --check-only in_stock/app/
 
       - name: Run linter
-        run: flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: flake8 in_stock/app/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
   security:
     name: Security Check
@@ -60,7 +60,7 @@ jobs:
           pip install bandit safety
 
       - name: Run security checker
-        run: bandit -r app/ -f json -o bandit-report.json || true
+        run: bandit -r in_stock/app/ -f json -o bandit-report.json || true
 
       - name: Run dependency checker
         run: pip install -q -r requirements.txt && safety check --json || true
