@@ -32,13 +32,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 black isort
 
-      - name: Run Black (code formatter)
+      - name: Run code formatter
         run: black --check app/
 
-      - name: Run isort (import sorter)
+      - name: Run isort
         run: isort --check-only app/
 
-      - name: Run Flake8 (linter)
+      - name: Run linter
         run: flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
   security:
@@ -59,10 +59,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install bandit safety
 
-      - name: Run Bandit (security)
+      - name: Run security checker
         run: bandit -r app/ -f json -o bandit-report.json || true
 
-      - name: Run Safety (dependency check)
+      - name: Run dependency checker
         run: pip install -q -r requirements.txt && safety check --json || true
 
   test:
@@ -92,10 +92,10 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest app/{products,reports,sales,suppliers,users}/tests.py \
+          pytest in_stock/app/{products,reports,sales,suppliers,users}/tests.py \
             -v \
             --tb=short \
-            --cov=app \
+            --cov=in_stock.app \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing
@@ -162,7 +162,6 @@ jobs:
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
-            sudo systemctl restart gunicorn
 
   notify-success:
     name: Notify Success
