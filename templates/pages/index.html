@@ -1,514 +1,422 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="InStock - Sistema profissional de controle de estoque para empresas">
+    <meta name="author" content="InStock Company">
+    <title>InStock - Controle de Estoque Inteligente</title>
+        
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,700;1,200;1,700&display=swap" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/vegas.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/tooplate-instock.css' %}" rel="stylesheet">
+</head>
 
-        <meta name="description" content="">
-        <meta name="author" content="">
+<body>
+    <main>
+        <!-- Improved navbar with register button and responsive design -->
+        <nav class="navbar navbar-expand-lg">                
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                    <span style="font-size: 24px; margin-right: 8px;">📦</span>
+                    InStock
+                </a>
 
-        <title>Página Inicial</title>
-            
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,700;1,200;1,700&display=swap" rel="stylesheet">
-        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
-        <link href="{% static 'css/vegas.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/tooplate-instock.css' %}" rel="stylesheet">
-    </head>
-    
-    <body>
-                
-            <main>
-                <nav class="navbar navbar-expand-lg">                
-                    <div class="container">
-                        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                            <img src="{% static 'images/coffee-beans.png' %}" class="img-fluid" alt="graos de cafe">
-                            InStock
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_1">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_2">Sobre</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_3">Serviços</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_4">Feedbacks</a>
+                        </li>
+
+                        <!-- Fixed Contato nav link with proper styling and spacing -->
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_5">Contato</a>
+                        </li>
+                    </ul>
+
+                    <div class="ms-lg-3 d-flex gap-2 flex-column flex-lg-row mt-3 mt-lg-0">
+                        <a class="btn custom-btn custom-border-btn btn-sm" href="{% url 'login' %}">
+                            Login
+                            <i class="bi-arrow-up-right ms-2"></i>
                         </a>
-        
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-        
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav ms-lg-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link click-scroll" href="#section_1">Home</a>
-                                </li>
-        
-                                <li class="nav-item">
-                                    <a class="nav-link click-scroll" href="#section_2">Sobre</a>
-                                </li>
+                        <!-- Fixed register button URL from 'register' to 'user-register' -->
+                        <a class="btn custom-btn btn-sm" href="{% url 'user-register' %}">
+                            Registrar
+                            <i class="bi-arrow-up-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
-                                <li class="nav-item">
-                                    <a class="nav-link click-scroll" href="#section_3">Nossos Serviços</a>
-                                </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link click-scroll" href="#section_4">Feedbacks</a>
-                                </li>
+        <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+            <!-- Added hero carousel container for slider images -->
+            <div class="hero-carousel" id="heroCarousel">
+                <!-- Slides will be injected here by JavaScript -->
+            </div>
+            <!-- Added carousel navigation dots -->
+            <div class="carousel-dots" id="carouselDots"></div>
 
-                                <li class="nav-item">
-                                    <a class="nav-link click-scroll" href="#section_5">Contato</a>
-                                </li>
-                            </ul>
+            <div class="container">
+                <div class="row align-items-center">
 
-                            <div class="ms-lg-3">
-                                <a class="btn custom-btn custom-border-btn" href="{% url 'login' %}">
-                                    Cadastro
-                                    <i class="bi-arrow-up-right ms-2"></i>
-                                </a>
+                    <div class="col-lg-6 col-12 mx-auto">
+                        <em class="small-text">Bem vindo ao In Stock</em>
+                        
+                        <h1>In Stock</h1>
+
+                        <p class="text-white mb-4 pb-lg-2">
+                            Seu <em>controle de estoque</em> ideal.
+                        </p>
+
+                        <a class="btn custom-btn custom-border-btn smoothscroll me-3" href="#section_2">
+                            Nossa história
+                        </a>
+
+                        <a class="btn custom-btn smoothscroll me-2 mb-2" href="#section_3"><strong>Consultar Serviços</strong></a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="hero-slides"></div>
+        </section>
+
+        <!-- Added carousel initialization script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Array of slide image paths
+                const slides = [
+                    "{% static 'images/slides/slide-1.jpg' %}",
+                    "{% static 'images/slides/slide-2.jpg' %}",
+                    "{% static 'images/slides/slide-3.jpg' %}",
+                    "{% static 'images/slides/slide-4.jpg' %}",
+                    "{% static 'images/slides/slide-5.jpg' %}",
+                    "{% static 'images/slides/slide-6.jpg' %}",
+                    "{% static 'images/slides/slide-7.jpg' %}"
+                ];
+
+                const carousel = document.getElementById('heroCarousel');
+                const dotsContainer = document.getElementById('carouselDots');
+                let currentSlide = 0;
+
+                // Create slides
+                slides.forEach((src, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'hero-slide' + (index === 0 ? ' active' : '');
+                    slide.style.backgroundImage = `url('${src}')`;
+                    carousel.appendChild(slide);
+
+                    // Create dots
+                    const dot = document.createElement('div');
+                    dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                    dot.onclick = () => goToSlide(index);
+                    dotsContainer.appendChild(dot);
+                });
+
+                function showSlide(n) {
+                    const allSlides = carousel.querySelectorAll('.hero-slide');
+                    const allDots = dotsContainer.querySelectorAll('.carousel-dot');
+                    
+                    allSlides.forEach(slide => slide.classList.remove('active'));
+                    allDots.forEach(dot => dot.classList.remove('active'));
+                    
+                    allSlides[n].classList.add('active');
+                    allDots[n].classList.add('active');
+                }
+
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    showSlide(currentSlide);
+                }
+
+                function goToSlide(n) {
+                    currentSlide = n;
+                    showSlide(currentSlide);
+                }
+
+                // Auto-advance carousel every 5 seconds
+                setInterval(nextSlide, 5000);
+            });
+        </script>
+
+
+        <section class="about-section section-padding" id="section_2">
+            <div class="section-overlay"></div>
+            <div class="container">
+                <div class="row align-items-center">
+
+                    <div class="col-lg-6 col-12">
+                        <div class="ratio ratio-1x1">
+                            <video autoplay="" loop="" muted="" class="custom-video" poster="">
+                                <source src="{% static 'videos/video-armazem-logistica.mp4' %}" type="video/mp4">
+
+                                Your browser does not support the video tag.
+                            </video>
+
+                            <div class="about-video-info d-flex flex-column">
+                                <h4 class="mt-auto">Nós iniciamos em 2021.</h4>
+
+                                <h4>Melhor Serviço em Logística.</h4>
                             </div>
                         </div>
                     </div>
-                </nav>
 
+                    <div class="col-lg-5 col-12 mt-4 mt-lg-0 mx-auto">
+                        <em class="text-white">InStock</em>
 
-                <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+                        <h2 class="text-white mb-3">In Stock</h2>
 
-                    <div class="container">
-                        <div class="row align-items-center">
+                        <p class="text-white">InStock nasceu em 2025 com um propósito simples e poderoso: transformar o controle de estoque em algo fácil, inteligente e acessível para qualquer negócio. Criada por um grupo de entusiastas da tecnologia e da logística, a plataforma combina site e app para oferecer um monitoramento ágil, preciso e em tempo real.</p>
 
-                            <div class="col-lg-6 col-12 mx-auto">
-                                <em class="small-text">Bem vindo ao In Stock</em>
-                                
-                                <h1>In Stock</h1>
+                        <p class="text-white">Desde o início, nossa missão é ajudar empresas a reduzirem perdas, tomarem decisões mais rápidas e trabalharem com mais segurança — tudo isso com uma ferramenta moderna, intuitiva e feita para acompanhar o ritmo do seu crescimento.</p>
 
-                                <p class="text-white mb-4 pb-lg-2">
-                                    Seu <em>controle de estoque</em> ideal.
-                                </p>
-
-                                <a class="btn custom-btn custom-border-btn smoothscroll me-3" href="#section_2">
-                                    Nossa história
-                                </a>
-
-                                <a class="btn custom-btn smoothscroll me-2 mb-2" href="#section_3"><strong>Consultar Serviços</strong></a>
-                            </div>
-
-                        </div>
+                        <a href="#barista-team" class="smoothscroll btn custom-btn custom-border-btn mt-3 mb-4">Conheça o time</a>
                     </div>
 
-                    <div class="hero-slides"></div>
-                </section>
+                </div>
+            </div>
+        </section>
 
 
-                <section class="about-section section-padding" id="section_2">
-                    <div class="section-overlay"></div>
-                    <div class="container">
-                        <div class="row align-items-center">
+        <section class="barista-section section-padding section-bg" id="barista-team">
+    <div class="container">
+        <div class="text-center mb-4 pb-lg-2">
+            <em class="text-white">Contatos</em>
+            <h2 class="text-white">Nossa Equipe</h2>
+        </div>
+    </div>
 
-                            <div class="col-lg-6 col-12">
-                                <div class="ratio ratio-1x1">
-                                    <video autoplay="" loop="" muted="" class="custom-video" poster="">
-                                        <source src="{% static 'videos/video-armazem-logistica.mp4' %}" type="video/mp4">
+    <div class="team-grid">
+        <!-- Membro 1 -->
+        <div class="team-block-wrap">
+            <div class="team-block-image-wrap">
+                <img src="{% static 'images/team/Amanda.jpeg' %}" class="team-block-image" alt="Amanda">
+            </div>
+            <div class="team-block-info">
+                <h4>Amanda</h4>
+                <p class="role">Analista de Software</p>
+                <p class="desc">Desenvolvedora Front-End</p>
+            </div>
+        </div>
 
-                                        Your browser does not support the video tag.
-                                    </video>
+        <!-- Membro 2 -->
+        <div class="team-block-wrap">
+            <div class="team-block-image-wrap">
+                <img src="{% static 'images/team/Eric.jpeg' %}" class="team-block-image" alt="Eric">
+            </div>
+            <div class="team-block-info">
+                <h4>Eric</h4>
+                <p class="role">Tech Lead</p>
+                <p class="desc">Gerencia operações, documentação e corretude dos códigos</p>
+            </div>
+        </div>
 
-                                    <div class="about-video-info d-flex flex-column">
-                                        <h4 class="mt-auto">Nós iniciamos em 2021.</h4>
+        <!-- Membro 3 -->
+        <div class="team-block-wrap">
+            <div class="team-block-image-wrap">
+                <img src="{% static 'images/team/Gabi.jpeg' %}" class="team-block-image" alt="Gabriela">
+            </div>
+            <div class="team-block-info">
+                <h4>Gabriela</h4>
+                <p class="role">Engenheira de Dados</p>
+                <p class="desc">Responsável pela análise e interpretação de dados.</p>
+            </div>
+        </div>
 
-                                        <h4>Melhor Serviço em Logística.</h4>
+        <!-- Membro 4 -->
+        <div class="team-block-wrap">
+            <div class="team-block-image-wrap">
+                <img src="{% static 'images/team/Nicole.jpeg' %}" class="team-block-image" alt="Nicole">
+            </div>
+            <div class="team-block-info">
+                <h4>Nicole</h4>
+                <p class="role">Administradora de Banco de Dados</p>
+                <p class="desc">Responsável pela administração e manutenção dos bancos de dados.</p>
+            </div>
+        </div>
+
+        <!-- Membro 5 -->
+        <div class="team-block-wrap">
+            <div class="team-block-image-wrap">
+                <img src="{% static 'images/team/Tamires.jpeg' %}" class="team-block-image" alt="Tamires">
+            </div>
+            <div class="team-block-info">
+                <h4>Tamires</h4>
+                <p class="role">Analista de Software</p>
+                <p class="desc">Desenvolvedora Back-End</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .menu-section {
+        background-image: url("{% static 'images/background-services.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        position: relative;
+    }
+</style>
+
+<section class="menu-section section-padding" id="section_3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12 col-12 mb-4 pb-lg-2">
+                <div class="text-center">
+                    <em class="text-white">Nossas Soluções</em>
+                    <h2 class="text-white">Principais Serviços</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <h6><i class="bi bi-arrow-left-right"></i> Controle de Movimentações</h6>
+                <p>Registre entradas, saídas e transferências de forma rápida e organizada. Sistema integrado para rastrear cada movimento em tempo real.</p>
+                <span class="badge">Popular</span>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-calendar-check"></i> Gestão de Vencimentos</h6>
+                <p>Acompanhe datas de validade e receba alertas automáticos para evitar perdas. Otimize seu inventário com inteligência predictiva.</p>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-eye"></i> Inventário em Tempo Real</h6>
+                <p>Veja a quantidade exata de cada item a qualquer momento, via site ou app. Dashboard intuitivo com atualizações instantâneas.</p>
+                <span class="badge">Recomendado</span>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-box2"></i> Expedição Inteligente</h6>
+                <p>Planeje e monitore pedidos enviados, garantindo agilidade e precisão na entrega. Integração com transportadoras e gestão de rotas.</p>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-graph-up"></i> Relatórios de Desempenho</h6>
+                <p>Gere análises rápidas para entender consumo, rotatividade e tendências. Exportar em PDF com gráficos customizáveis.</p>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-bell"></i> Alertas de Baixo Estoque</h6>
+                <p>Notificações automáticas quando itens atingem limites mínimos. Configure thresholds personalizados por produto.</p>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-people"></i> Controle de Fornecedores</h6>
+                <p>Centralize contatos, pedidos e histórico de cada fornecedor. Gerencie prazos de entrega e negocie melhores preços.</p>
+            </div>
+
+            <div class="service-card">
+                <h6><i class="bi bi-lock"></i> Acesso Multinível</h6>
+                <p>Defina permissões diferentes para sua equipe e mantenha segurança e controle. Auditoria completa de acessos e modificações.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+        <section class="reviews-section section-padding section-bg" id="section_4">
+            <div class="container">
+                <div class="row justify-content-center">
+
+                    <div class="col-lg-12 col-12 text-center mb-4 pb-lg-2">
+                        <em class="text-white">Avaliações dos clientes</em>
+
+                        <h2 class="text-white">Feedbacks</h2>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-container timeline-container-left">
+                            <div class="timeline-content">
+                                <div class="reviews-block">
+                                    <div class="reviews-block-image-wrap d-flex align-items-center">
+                                        <img src="{% static 'images/reviews/profissionallogistica-senior-woman-black.jpg' %}" class="reviews-block-image img-fluid" alt="Juliana">
+
+                                        <div class="">
+                                            <h6 class="text-white mb-0">Juliana</h6>
+                                            <em class="text-white">Clientes</em>
+                                        </div>
+                                    </div>
+
+                                    <div class="reviews-block-content">
+                                        <p class="text-white">InStock simplificou completamente a gestão do nosso armazém. Agora sabemos exatamente o que temos em estoque a qualquer momento!</p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-lg-5 col-12 mt-4 mt-lg-0 mx-auto">
-                                <em class="text-white">InStock</em>
+                        <div class="timeline-container timeline-container-right">
+                            <div class="timeline-content">
+                                <div class="reviews-block">
+                                    <div class="reviews-block-image-wrap d-flex align-items-center">
+                                        <!-- Fixed Ricardo image path -->
+                                        <img src="{% static 'images/reviews/entrepreneur-and-his-business-partner.jpg' %}" class="reviews-block-image img-fluid" alt="Ricardo">
 
-                                <h2 class="text-white mb-3">In Stock</h2>
+                                        <div class="">
+                                            <h6 class="text-white mb-0">Ricardo</h6>
+                                            <em class="text-white">Clientes</em>
+                                        </div>
+                                    </div>
 
-                                <p class="text-white">InStock nasceu em 2025 com um propósito simples e poderoso: transformar o controle de estoque em algo fácil, inteligente e acessível para qualquer negócio. Criada por um grupo de entusiastas da tecnologia e da logística, a plataforma combina site e app para oferecer um monitoramento ágil, preciso e em tempo real.</p>
-
-                                <p class="text-white">Desde o início, nossa missão é ajudar empresas a reduzirem perdas, tomarem decisões mais rápidas e trabalharem com mais segurança — tudo isso com uma ferramenta moderna, intuitiva e feita para acompanhar o ritmo do seu crescimento.</p>
-
-                                <a href="#barista-team" class="smoothscroll btn custom-btn custom-border-btn mt-3 mb-4">Conheça o time</a>
+                                    <div class="reviews-block-content">
+                                        <p class="text-white">Reduzimos perdas em 40% depois de implementar o InStock. Vale cada centavo investido!</p>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
 
+                        <div class="timeline-container timeline-container-left">
+                            <div class="timeline-content">
+                                <div class="reviews-block">
+                                    <div class="reviews-block-image-wrap d-flex align-items-center">
+                                        <!-- Fixed Marina image path (changed from Mariana) -->
+                                        <img src="{% static 'images/reviews/portrait-business-women-holding-tablet.jpg' %}" class="reviews-block-image img-fluid" alt="Marina">
+
+                                        <div class="">
+                                            <h6 class="text-white mb-0">Marina</h6>
+                                            <em class="text-white">Clientes</em>
+                                        </div>
+                                    </div>
+
+                                    <div class="reviews-block-content">
+                                        <p class="text-white">A interface é muito intuitiva. Meu time aprendeu a usar em menos de uma semana!</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </div>
+        </section>
 
 
-                <section class="barista-section section-padding section-bg" id="barista-team">
-                    <div class="container">
-                        <div class="row justify-content-center">
-
-                            <div class="col-lg-12 col-12 text-center mb-4 pb-lg-2">
-                                <em class="text-white">Contatos</em>
-
-                                <h2 class="text-white">Nossa Equipe</h2>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-12 mb-4">
-                                <div class="team-block-wrap">
-                                    <div class="team-block-info d-flex flex-column">
-                                        <div class="d-flex mt-auto mb-3">
-                                            <h4 class="text-white mb-0">Steve</h4>
-
-                                            <p class="badge ms-4"><em>Boss</em></p>
-                                        </div>
-
-                                        <p class="text-white mb-0">Seu controle de estoque ideal.</p>
-                                    </div>
-
-                                    <div class="team-block-image-wrap">
-                                        <img src="{% static 'images/team/portrait-elegant-old-man-wearing-suit.jpg' %}" class="team-block-image img-fluid" alt="">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-12 mb-4">
-                                <div class="team-block-wrap">
-                                    <div class="team-block-info d-flex flex-column">
-                                        <div class="d-flex mt-auto mb-3">
-                                            <h4 class="text-white mb-0">Sandra</h4>
-
-                                            <p class="badge ms-4"><em>Manager</em></p>
-                                        </div>
-
-                                        <p class="text-white mb-0">Seu controle de estoque ideal.</p>
-                                    </div>
-
-                                    <div class="team-block-image-wrap">
-                                        <img src="{% static 'images/team/cute-korean-barista-girl-pouring-coffee-prepare-filter-batch-brew-pour-working-cafe.jpg' %}" class="team-block-image img-fluid" alt="">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-12 mb-4">
-                                <div class="team-block-wrap">
-                                    <div class="team-block-info d-flex flex-column">
-                                        <div class="d-flex mt-auto mb-3">
-                                            <h4 class="text-white mb-0">Jackson</h4>
-
-                                            <p class="badge ms-4"><em>Senior</em></p>
-                                        </div>
-
-                                        <p class="text-white mb-0">Seu controle de estoque ideal.</p>
-                                    </div>
-
-                                    <div class="team-block-image-wrap">
-                                        <img src="{% static 'images/team/small-business-owner-drinking-coffee.jpg' %}" class="team-block-image img-fluid" alt="">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-12">
-                                <div class="team-block-wrap">
-                                    <div class="team-block-info d-flex flex-column">
-                                        <div class="d-flex mt-auto mb-3">
-                                            <h4 class="text-white mb-0">Michelle</h4>
-
-                                            <p class="badge ms-4"><em>Barista</em></p>
-                                        </div>
-
-                                        <p class="text-white mb-0">your favourite coffee daily consectetur.</p>
-                                    </div>
-
-                                    <div class="team-block-image-wrap">
-                                        <img src="{% static 'images/team/smiley-business-woman-working-cashier.jpg' %}" class="team-block-image img-fluid" alt="">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-
-
-                <section class="menu-section section-padding" id="section_3">
-                    <div class="container">
-                        <div class="row">
-
-                            <div class="col-lg-6 col-12 mb-4 mb-lg-0">
-                                <div class="menu-block-wrap">
-                                    <div class="text-center mb-4 pb-lg-2">
-                                        <em class="text-white">Mais procurados</em>
-                                        <h4 class="text-white">Principais Serviços</h4>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Controle de Movimentações</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$12.50</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Registre entradas, saídas e transferências de forma rápida e organizada.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block my-4">
-                                        <div class="d-flex">
-                                            <h6>
-                                                Gestão de Vencimentos
-                                            </h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="text-white ms-auto"><del>$16.50</del></strong>
-
-                                            <strong class="ms-2">$12.00</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Acompanhe datas de validade e receba alertas automáticos para evitar perdas.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Inventário em Tempo Real
-                                                <span class="badge ms-3">Recommend</span>
-                                            </h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$15.0</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Veja a quantidade exata de cada item a qualquer momento, via site ou app.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block my-4">
-                                        <div class="d-flex">
-                                            <h6>Expedição Inteligente</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$12.50</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Planeje e monitore pedidos enviados, garantindo agilidade e precisão na entrega.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Relatórios de Desempenho</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$18.0</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Gere análises rápidas para entender consumo, rotatividade e tendências.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 col-12">
-                                <div class="menu-block-wrap">
-                                    <div class="text-center mb-4 pb-lg-2">
-                                        <em class="text-white">Opções adicionais</em>
-                                        <h4 class="text-white">Outros Serviços</h4>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Alertas de Baixo Estoque</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="text-white ms-auto"><del>$12.50</del></strong>
-
-                                            <strong class="ms-2">$7.50</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Seja avisado quando um item atingir o mínimo configurado.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block my-4">
-                                        <div class="d-flex">
-                                            <h6>
-                                                Cadastro de Produtos
-                                                <span class="badge ms-3">Recommend</span>
-                                            </h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$5.90</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Organize todos os itens com categorias, códigos, fotos e detalhes técnicos.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Gestão de Fornecedores</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$5.50</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Centralize contatos, pedidos e histórico de cada fornecedor.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block my-4">
-                                        <div class="d-flex">
-                                            <h6>Controle de Lotes</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$7.50</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Acompanhe lotes específicos para facilitar rastreabilidade e auditorias.</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-block">
-                                        <div class="d-flex">
-                                            <h6>Acesso Multinível</h6>
-                                        
-                                            <span class="underline"></span>
-
-                                            <strong class="ms-auto">$7.25</strong>
-                                        </div>
-
-                                        <div class="border-top mt-2 pt-2">
-                                            <small>Defina permissões diferentes para sua equipe e mantenha segurança e controle.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-
-
-                <section class="reviews-section section-padding section-bg" id="section_4">
-                    <div class="container">
-                        <div class="row justify-content-center">
-
-                            <div class="col-lg-12 col-12 text-center mb-4 pb-lg-2">
-                                <em class="text-white">Avaliações dos clientes</em>
-
-                                <h2 class="text-white">Feedbacks</h2>
-                            </div>
-
-                            <div class="timeline">
-                                <div class="timeline-container timeline-container-left">
-                                    <div class="timeline-content">
-                                        <div class="reviews-block">
-                                            <div class="reviews-block-image-wrap d-flex align-items-center">
-                                                <img src="{% static 'images/reviews/profissionallogistica-senior-woman-black.jpg' %}" class="reviews-block-image img-fluid" alt="">
-
-                                                <div class="">
-                                                    <h6 class="text-white mb-0">Juliana</h6>
-                                                    <em class="text-white"> Customers</em>
-                                                </div>
-                                            </div>
-
-                                            <div class="reviews-block-info">
-                                                <p>"A InStock simplificou completamente nosso controle de estoque. Hoje faço tudo pelo celular e sem dor de cabeça."</p>
-
-                                                <div class="d-flex border-top pt-3 mt-4">
-                                                    <strong class="text-white">4.5 <small class="ms-2">Rating</small></strong>
-
-                                                    <div class="reviews-group ms-auto">
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-container timeline-container-right">
-                                    <div class="timeline-content">
-                                        <div class="reviews-block">
-                                            <div class="reviews-block-image-wrap d-flex align-items-center">
-                                                <img src="{% static 'images/slides/trabalhador-de-armazem-com-capacete-de-seguranca-conversando-ao-telefone-e-segurando-uma-lista-de-verificacao-na-instalacao-armazem-de-distribuicao.jpg' %}" class="reviews-block-image img-fluid" alt="">
-
-                                                <div class="">
-                                                    <h6 class="text-white mb-0">Patrícia</h6>
-                                                    <em class="text-white"> Customers</em>
-                                                </div>
-                                            </div>
-
-                                            <div class="reviews-block-info">
-                                                <p>“Reduzimos perdas e ganhamos agilidade em poucos meses. A plataforma é prática e muito intuitiva.”</p>
-
-                                                <div class="d-flex border-top pt-3 mt-4">
-                                                    <strong class="text-white">4.5 <small class="ms-2">Rating</small></strong>
-
-                                                    <div class="reviews-group ms-auto">
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-container timeline-container-left">
-                                    <div class="timeline-content">
-                                        <div class="reviews-block">
-                                            <div class="reviews-block-image-wrap d-flex align-items-center">
-                                                <img src="{% static 'images/reviews/young-beautiful-woman-pink-warm-sweater-natural-look-smiling-portrait-isolated-long-hair.jpg' %}" class="reviews-block-image img-fluid" alt="">
-
-                                                <div class="">
-                                                    <h6 class="text-white mb-0">Olivia</h6>
-                                                    <em class="text-white"> Customers</em>
-                                                </div>
-                                            </div>
-
-                                            <div class="reviews-block-info">
-                                                <p>“O suporte é excelente e o sistema funciona perfeitamente. A InStock levou nosso estoque a outro nível!”</p>
-
-                                                <div class="d-flex border-top pt-3 mt-4">
-                                                    <strong class="text-white">4.5 <small class="ms-2">Rating</small></strong>
-
-                                                    <div class="reviews-group ms-auto">
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star-fill"></i>
-                                                        <i class="bi-star"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-
-
-                <section class="contact-section section-padding" id="section_5">
+         <section class="contact-section section-padding" id="section_5">
                     <div class="container">
                         <div class="row">   
 
