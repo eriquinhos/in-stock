@@ -103,7 +103,7 @@ jobs:
             --cov-report=html \
             --cov-report=term-missing
 
-      - name: Upload coverage to Codecov
+      - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
@@ -116,7 +116,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.python-version }}
-          path: coverage/
+          path: coverage.xml
+
 
   build:
     name: Build Check
