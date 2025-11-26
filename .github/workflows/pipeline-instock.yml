@@ -161,12 +161,16 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           passphrase: ${{ secrets.DO_SSH_PASSPHRASE }}
           script: |
-            cd in-stock
+            cd /opt/in-stock
             git pull origin master
+            source .venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
+            sudo supervisorctl restart instock
+            sudo systemctl restart nginx
+
 
   notify-success:
     name: Notify Success
@@ -175,7 +179,7 @@ jobs:
     if: success()
     steps:
       - name: Send success notification
-        run: echo "Pipeline completed successfully!"
+        run: echo "Pipeline completed successfully! InStock deployed to production."
 
   notify-failure:
     name: Notify Failure
@@ -184,3 +188,4 @@ jobs:
     steps:
       - name: Send failure notification
         run: echo "Pipeline failed. Check the logs for details."
+
