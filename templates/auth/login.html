@@ -1,81 +1,217 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tela de Login</title>
-        <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-    </head>
-    <body>
-        <div class="container">
-            <!-- Lado esquerdo -->
-            <div class="lado-esquerdo">
-                <img
-                    src="{% static 'images/Logo InStock.jpg' %}"
-                    alt="Logo InStock"
-                    class="imagem-topo"
-                />
-                <h1>InStock</h1>
-                <h4>Bem-vindo ao seu Controle de Estoque Corporativo</h4>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>InStock - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
 
-                <form class="form-login">
-                    <label for="email">Login</label>
-                    <input
-                        type="text"
-                        id="email"
-                        placeholder="seu@email"
-                        required
-                    />
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                /* --- PALETA "COFFEE & COPPER" --- */
+                --background: 28 35% 15%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
+        body {
+            /* min-h-screen permite rolar a tela em celulares pequenos */
+            @apply min-h-screen w-full flex items-center justify-center font-sans antialiased p-4;
+            background-color: hsl(var(--background));
+        }
 
-                    <label for="senha">Senha</label>
-                    <input
-                        type="password"
-                        id="senha"
-                        placeholder="....."
-                        required
-                    />
+        .login-card {
+            background-color: #FFFCF9; 
+        }
 
-                    <button type="submit">Entrar no Sistema</button>
-                </form>
-            </div>
+        .lado-direito-gradient {
+            background: linear-gradient(160deg, hsl(32 85% 55%) 0%, hsl(28 35% 15%) 100%);
+        }
 
-            <!-- Lado direito -->
-            <div class="lado-direito">
-                <h1>Controle Total do seu Estoque</h1>
-                <h2>
-                    Gerencie produtos, movimentações e relatórios com eficiência
-                    <br />
-                    e segurança.
-                </h2>
+        .custom-input {
+            background-color: hsl(var(--muted));
+            border: 1px solid hsl(var(--border));
+            transition: all 0.2s;
+            /* text-base impede zoom automático no iOS ao clicar no input */
+            font-size: 1rem; 
+        }
+        .custom-input:focus {
+            background-color: #fff;
+            border-color: hsl(var(--primary));
+            box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+        }
+    </style>
+</head>
+<body>
 
-                <div class="feature">
-                    <h4>
-                        <img
-                            src="{% static 'images/Sem nome (1920 x 1080 px) (3).png' %}"
-                            alt="Dashboard"
-                            class="imagem-lado-direito"
+    <div class="login-card shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden relative h-auto lg:h-[85vh]">
+        
+        <div class="w-full lg:w-1/2 p-6 md:p-12 flex flex-col justify-center relative py-10 lg:py-0">
+            
+            <div class="w-full max-w-md mx-auto space-y-6 md:space-y-8">
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-orange-400 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                            <span class="text-white font-bold text-xl md:text-2xl">📦</span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-foreground tracking-tight">InStock</h1>
+                            <p class="text-[10px] md:text-xs text-primary font-bold uppercase tracking-widest">Controle de Estoque</p>
+                        </div>
+                    </div>
+                    <p class="text-sm md:text-base text-muted-foreground leading-relaxed">
+                        Bem-vindo de volta. Entre com suas credenciais para acessar seu sistema de gerenciamento de estoque.
+                    </p>
+                </div>
+
+                <form class="space-y-4 md:space-y-5" action="#" method="POST">
+                    
+                    <div class="space-y-2">
+                        <label for="email" class="text-sm font-bold text-foreground/80 ml-1">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="seu@email.com"
+                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                            required
                         />
-                        Dashboard em Tempo Real
-                    </h4>
-                    <p>
-                        Visualize KPIs e gráficos atualizados instantaneamente
-                    </p>
-                </div>
+                    </div>
 
-                <div class="feature">
-                    <h4>Alertas Inteligentes</h4>
-                    <p>
-                        Receba notificações sobre estoque baixo e produtos
-                        vencendo
-                    </p>
-                </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between ml-1">
+                            <label for="password" class="text-sm font-bold text-foreground/80">
+                                Senha
+                            </label>
+                            <a href="#" class="text-xs text-primary hover:text-orange-700 font-bold transition-colors">
+                                Esqueceu?
+                            </a>
+                        </div>
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="••••••••"
+                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                            required
+                        />
+                    </div>
 
-                <div class="feature">
-                    <h4>Relatórios Detalhados</h4>
-                    <p>Gere PDFs com análises completas de movimentações</p>
+                    <button
+                        type="submit"
+                        class="w-full h-12 bg-primary hover:bg-orange-600 text-white font-bold rounded-full transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl hover:scale-[1.02] mt-6 active:scale-95"
+                    >
+                        Entrar no Sistema
+                    </button>
+                </form>
+
+                <div class="pt-6 border-t border-dashed border-gray-200 mt-6 text-center">
+                    <p class="text-sm text-muted-foreground">
+                        Primeira vez aqui? 
+                        <a href="#" class="text-primary hover:text-orange-700 font-bold transition-colors">
+                            Solicitar acesso
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
-    </body>
+
+        <div class="hidden lg:flex w-1/2 lado-direito-gradient p-12 flex-col justify-between text-white relative overflow-hidden">
+            
+            <div class="absolute top-0 right-0 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+            <div class="relative z-10 mt-6">
+                <h2 class="text-3xl font-bold mb-4 leading-tight">
+                    Controle Total do seu Estoque
+                </h2>
+                <p class="text-orange-50/80 text-lg">
+                    Gerencie produtos, movimentações e relatórios com eficiência e segurança.
+                </p>
+            </div>
+
+            <div class="space-y-4 relative z-10 mb-6">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        📊
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Dashboard em Tempo Real</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Visualize KPIs e gráficos atualizados instantaneamente.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        🔔
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Alertas Inteligentes</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Receba notificações sobre estoque baixo e produtos vencendo.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        📄
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Relatórios Detalhados</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Gere PDFs com análises completas de movimentações.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-xs text-orange-200/40 relative z-10">
+                © 2025 InStock System Inc.
+            </div>
+        </div>
+
+    </div>
+</body>
 </html>
