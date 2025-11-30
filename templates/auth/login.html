@@ -59,7 +59,6 @@
         }
         
         body {
-            /* min-h-screen permite rolar a tela em celulares pequenos */
             @apply min-h-screen w-full flex items-center justify-center font-sans antialiased p-4;
             background-color: hsl(var(--background));
         }
@@ -76,7 +75,6 @@
             background-color: hsl(var(--muted));
             border: 1px solid hsl(var(--border));
             transition: all 0.2s;
-            /* text-base impede zoom automático no iOS ao clicar no input */
             font-size: 1rem; 
         }
         .custom-input:focus {
@@ -129,17 +127,37 @@
                             <label for="password" class="text-sm font-bold text-foreground/80">
                                 Senha
                             </label>
-                            <a href="#" class="text-xs text-primary hover:text-orange-700 font-bold transition-colors">
-                                Esqueceu?
-                            </a>
+                           
                         </div>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                            required
-                        />
+                        
+                        <div class="relative">
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                class="custom-input w-full h-12 pl-4 pr-12 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                onclick="toggleSenha()"
+                                class="absolute right-0 top-0 h-full px-4 text-gray-400 hover:text-primary transition-colors flex items-center justify-center outline-none"
+                            >
+                                <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                </svg>
+                            </button>
+                             <div class="flex items-center justify-end ml-1">
+                                <a href="#" class="text-xs text-primary hover:text-orange-700 font-bold transition-colors">
+                                    Esqueceu a senha?
+                                </a>
+                            </div>
+                             
+                        </div>
                     </div>
 
                     <button
@@ -211,7 +229,26 @@
                 © 2025 InStock System Inc.
             </div>
         </div>
-
     </div>
+
+    <script>
+        function toggleSenha() {
+            const inputSenha = document.getElementById('password');
+            const eyeOpen = document.getElementById('eye-open');
+            const eyeClosed = document.getElementById('eye-closed');
+
+            if (inputSenha.type === "password") {
+                // Mostrar Senha
+                inputSenha.type = "text";
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            } else {
+                // Esconder Senha
+                inputSenha.type = "password";
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            }
+        }
+    </script>
 </body>
 </html>
