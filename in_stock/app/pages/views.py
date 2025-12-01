@@ -17,6 +17,8 @@ def dashboard_view(request):
     if not request.user.is_authenticated:
         return render(request, "errors/401.html")
 
+    print("mensagem")
+
     context = {
         "total_products": 120,
         "total_suppliers": 15,
