@@ -38,6 +38,7 @@ class UserListCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         form = CustomUserCreationForm(request.POST or None)
         if form.is_valid():
+            created = CustomUserService.create_user(request)
             form.save()
             messages.success(request, "O usuário foi criado com sucesso!")
         else:
