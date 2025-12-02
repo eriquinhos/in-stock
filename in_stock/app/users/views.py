@@ -38,9 +38,16 @@ class UserListCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         form = CustomUserCreationForm(request.POST or None)
         if form.is_valid():
-            created = CustomUserService.create_user(request)
-            form.save()
+    
+            user_instance = form.save()
+            try:
+               created = CustomUserService.create_user(request, user_instance)
+    
+            except Exception as e: 
+                messages.error(request, f"Não foi possível salvar o grupo de acesso do usuário, devido a: {e}")
+            
             messages.success(request, "O usuário foi criado com sucesso!")
+    
         else:
             messages.error(request, "Verifique os dados informados estão corretos.")
 
@@ -90,14 +97,14 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
         if form.is_valid():
             try:
                 user_updated = CustomUserService.update_user(request, user)
-                messages.success("O usuário foi atualizado com sucesso!")
+                messages.success(request, "O usuário foi atualizado com sucesso!")
 
             except Exception as e:
                 messages.error(
-                    "Não foi possível fazer a atualização do usuário devido a: {e}!"
+                   request, f"Não foi possível fazer a atualização do usuário devido a: {e}!"
                 )
         else:
-            messages.error("Os dados enviados não são válidos.")
+            messages.error(request, "Os dados enviados não são válidos.")
 
         return (request, "users/edit.html", {"form": form})
 
