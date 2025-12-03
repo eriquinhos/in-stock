@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>InStock - Criar Conta</title>
+    <title>InStock - Solicitar Acesso</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -81,36 +81,18 @@
             border-color: hsl(var(--primary));
             box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
         }
-        
-        .custom-select {
-            background-color: hsl(var(--muted));
-            border: 1px solid hsl(var(--border));
-            transition: all 0.2s;
-            font-size: 1rem;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-        .custom-select:focus {
-            background-color: #fff;
-            border-color: hsl(var(--primary));
-            box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
-        }
     </style>
 </head>
 <body>
 
-    <div class="login-card shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden relative h-auto lg:h-[90vh]">
+    <div class="login-card shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden relative h-auto lg:max-h-[95vh]">
         
-        <div class="w-full lg:w-1/2 p-6 md:p-12 flex flex-col justify-center relative py-10 lg:py-0 overflow-y-auto">
+        <div class="w-full lg:w-1/2 p-6 md:p-10 flex flex-col justify-center relative py-8 lg:py-0 overflow-y-auto max-h-[90vh] lg:max-h-none">
             
-            <div class="w-full max-w-md mx-auto space-y-5 md:space-y-6">
+            <div class="w-full max-w-md mx-auto space-y-4">
                 
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3 mb-4 md:mb-6">
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-orange-400 rounded-xl flex items-center justify-center shadow-lg shrink-0">
                             <span class="text-white font-bold text-xl md:text-2xl">📦</span>
                         </div>
@@ -119,53 +101,92 @@
                             <p class="text-[10px] md:text-xs text-primary font-bold uppercase tracking-widest">Controle de Estoque</p>
                         </div>
                     </div>
-                    <p class="text-sm md:text-base text-muted-foreground leading-relaxed">
-                        Crie sua conta para começar a gerenciar seu estoque de forma eficiente.
+                    <h2 class="text-xl font-bold text-foreground">Solicitar Acesso</h2>
+                    <p class="text-sm text-muted-foreground leading-relaxed">
+                        Preencha os dados da sua empresa para solicitar acesso ao sistema.
                     </p>
                 </div>
 
+                <!-- Mensagens -->
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="p-3 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} text-sm">
+                        <div class="p-3 rounded-lg text-sm {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-200{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700 border border-yellow-200{% else %}bg-green-100 text-green-700 border border-green-200{% endif %}">
                             {{ message }}
                         </div>
                     {% endfor %}
                 {% endif %}
 
-                <form class="space-y-4" action="{% url 'register' %}" method="POST">
+                <!-- Info box -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p class="text-blue-700 text-xs leading-relaxed">
+                        <strong>ℹ️ Como funciona?</strong><br>
+                        Após sua solicitação ser aprovada, você receberá no seu email pessoal as credenciais de acesso (email corporativo e senha temporária).
+                    </p>
+                </div>
+
+                <form class="space-y-3" action="{% url 'request_access' %}" method="POST">
                     {% csrf_token %}
                     
-                    <div class="space-y-2">
+                    <div class="space-y-1">
                         <label for="name" class="text-sm font-bold text-foreground/80 ml-1">
-                            Nome Completo
+                            Nome Completo <span class="text-red-500">*</span>
                         </label>
                         <input
                             id="name"
                             name="name"
                             type="text"
                             placeholder="Seu nome completo"
-                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                            value="{{ form.name.value|default:'' }}"
+                            class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
                             required
                         />
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="email" class="text-sm font-bold text-foreground/80 ml-1">
-                            Email
+                    <div class="space-y-1">
+                        <label for="personal_email" class="text-sm font-bold text-foreground/80 ml-1">
+                            Email Pessoal <span class="text-red-500">*</span>
                         </label>
                         <input
-                            id="email"
-                            name="email"
+                            id="personal_email"
+                            name="personal_email"
                             type="email"
                             placeholder="seu@email.com"
-                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                            value="{{ form.email.value|default:'' }}"
+                            class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
                             required
                         />
+                        <p class="text-xs text-muted-foreground ml-1">Você receberá as credenciais neste email</p>
                     </div>
 
-                    <div class="space-y-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label for="company_name" class="text-sm font-bold text-foreground/80 ml-1">
+                                Nome da Empresa <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                id="company_name"
+                                name="company_name"
+                                type="text"
+                                placeholder="Empresa LTDA"
+                                class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="space-y-1">
+                            <label for="cnpj" class="text-sm font-bold text-foreground/80 ml-1">
+                                CNPJ <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                id="cnpj"
+                                name="cnpj"
+                                type="text"
+                                placeholder="00.000.000/0000-00"
+                                class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
                         <label for="phone" class="text-sm font-bold text-foreground/80 ml-1">
                             Telefone
                         </label>
@@ -173,54 +194,33 @@
                             id="phone"
                             name="phone"
                             type="tel"
-                            placeholder="(11) 99999-9999"
-                            class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                            value="{{ form.phone.value|default:'' }}"
+                            placeholder="(00) 00000-0000"
+                            class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
                         />
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label for="password1" class="text-sm font-bold text-foreground/80 ml-1">
-                                Senha
-                            </label>
-                            <input
-                                id="password1"
-                                name="password1"
-                                type="password"
-                                placeholder="••••••••"
-                                class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                                required
-                            />
-                        </div>
-
-                        <div class="space-y-2">
-                            <label for="password2" class="text-sm font-bold text-foreground/80 ml-1">
-                                Confirmar Senha
-                            </label>
-                            <input
-                                id="password2"
-                                name="password2"
-                                type="password"
-                                placeholder="••••••••"
-                                class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                                required
-                            />
-                        </div>
+                    <div class="space-y-1">
+                        <label for="message" class="text-sm font-bold text-foreground/80 ml-1">
+                            Mensagem (opcional)
+                        </label>
+                        <textarea
+                            id="message"
+                            name="message"
+                            placeholder="Conte-nos um pouco sobre sua empresa..."
+                            rows="2"
+                            class="custom-input w-full px-4 py-3 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none resize-none"
+                        ></textarea>
                     </div>
-
-                    <!-- Campo oculto para tipo padrão -->
-                    <input type="hidden" name="type" value="standard" />
 
                     <button
                         type="submit"
-                        class="w-full h-12 bg-primary hover:bg-orange-600 text-white font-bold rounded-full transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl hover:scale-[1.02] mt-4 active:scale-95"
+                        class="w-full h-12 bg-primary hover:bg-orange-600 text-white font-bold rounded-full transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95"
                     >
-                        Criar Conta
+                        📨 Enviar Solicitação
                     </button>
                 </form>
 
-                <div class="pt-4 border-t border-dashed border-gray-200 mt-4 text-center">
+                <div class="pt-4 border-t border-dashed border-gray-200 text-center">
                     <p class="text-sm text-muted-foreground">
                         Já tem uma conta? 
                         <a href="{% url 'login' %}" class="text-primary hover:text-orange-700 font-bold transition-colors">
@@ -234,23 +234,23 @@
         <div class="hidden lg:flex w-full lg:w-1/2 lado-direito-gradient items-center justify-center p-12 relative overflow-hidden">
             <div class="relative z-10 text-center space-y-8">
                 <div class="text-8xl mb-4">
-                    📊
+                    🏢
                 </div>
                 <div class="space-y-3">
-                    <h2 class="text-4xl font-bold text-white">Comece Agora</h2>
+                    <h2 class="text-4xl font-bold text-white">Gerencie seu Estoque</h2>
                     <p class="text-white/80 text-lg max-w-xs mx-auto leading-relaxed">
-                        Gerencie seu estoque com facilidade e tenha controle total do seu negócio.
+                        Controle total do seu estoque com facilidade e segurança.
                     </p>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 pt-4">
                     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-                        <p class="text-3xl font-bold text-white">100%</p>
-                        <p class="text-white/70 text-sm">Gratuito</p>
+                        <p class="text-3xl font-bold text-white">✅</p>
+                        <p class="text-white/70 text-sm">Aprovação Rápida</p>
                     </div>
                     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-                        <p class="text-3xl font-bold text-white">24/7</p>
-                        <p class="text-white/70 text-sm">Disponível</p>
+                        <p class="text-3xl font-bold text-white">🔐</p>
+                        <p class="text-white/70 text-sm">Acesso Seguro</p>
                     </div>
                 </div>
             </div>
@@ -258,7 +258,6 @@
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-full"></div>
                 <div class="absolute bottom-20 right-20 w-24 h-24 border-4 border-white rounded-lg rotate-45"></div>
-                <div class="absolute top-1/2 right-10 w-16 h-16 border-4 border-white rounded-full"></div>
             </div>
         </div>
     </div>
