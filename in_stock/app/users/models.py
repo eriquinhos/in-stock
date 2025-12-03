@@ -1,3 +1,7 @@
+import secrets
+import string
+import uuid
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -496,9 +500,9 @@ class AccessRequest(models.Model):
        - Cria usuário como Gestor ou Operador
     """
     STATUS_CHOICES = [
-        ('pending', 'Pendente'),
-        ('approved', 'Aprovado'),
-        ('rejected', 'Rejeitado'),
+        ("pending", "Pendente"),
+        ("approved", "Aprovado"),
+        ("rejected", "Rejeitado"),
     ]
     
     TYPE_CHOICES = [
@@ -552,22 +556,22 @@ class AccessRequest(models.Model):
     generated_email = models.EmailField(blank=True, null=True, verbose_name="Email gerado")
     generated_password = models.CharField(max_length=100, blank=True, null=True)
     approved_by = models.ForeignKey(
-        CustomUser, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        related_name='approved_requests'
+        related_name="approved_requests",
     )
     rejection_reason = models.TextField(blank=True, null=True, verbose_name="Motivo da rejeição")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Solicitação de Acesso"
         verbose_name_plural = "Solicitações de Acesso"
-    
+
     def __str__(self):
         if self.request_type == 'new_company':
             return f"{self.name} - {self.company_name} (Nova Empresa - {self.get_status_display()})"
@@ -587,61 +591,65 @@ class AccessRequest(models.Model):
     def generate_password(length=10):
         """Gera uma senha aleatória segura"""
         alphabet = string.ascii_letters + string.digits
-        return ''.join(secrets.choice(alphabet) for _ in range(length))
-    
+        return "".join(secrets.choice(alphabet) for _ in range(length))
+
     @staticmethod
     def generate_company_email(name, company_name):
         """Gera um email corporativo para o admin"""
         import re
+
         # Pega o primeiro nome e limpa
         first_name = name.split()[0].lower()
-        first_name = re.sub(r'[^a-z]', '', first_name)
+        first_name = re.sub(r"[^a-z]", "", first_name)
         # Limpa o nome da empresa
         company_slug = company_name.lower()
-        company_slug = re.sub(r'[^a-z0-9]', '', company_slug)[:15]
+        company_slug = re.sub(r"[^a-z0-9]", "", company_slug)[:15]
         return f"{first_name}@{company_slug}.instock.app.br"
 
 
 class PasswordResetToken(models.Model):
     """Token para redefinição de senha"""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="password_reset_tokens"
+    )
     token = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     used = models.BooleanField(default=False)
-    
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Token de Redefinição de Senha"
         verbose_name_plural = "Tokens de Redefinição de Senha"
-    
+
     def __str__(self):
         return f"Token para {self.user.email} - {'Usado' if self.used else 'Válido'}"
-    
+
     @property
     def is_valid(self):
         """Verifica se o token ainda é válido"""
         return not self.used and timezone.now() < self.expires_at
-    
+
     @staticmethod
     def generate_token():
         """Gera um token único e seguro"""
         return secrets.token_urlsafe(32)
-    
+
     @classmethod
     def create_for_user(cls, user, expiration_hours=1):
         """Cria um novo token para o usuário"""
         from datetime import timedelta
-        
+
         # Invalida tokens anteriores do usuário
         cls.objects.filter(user=user, used=False).update(used=True)
-        
+
         # Cria novo token
         token = cls(
             user=user,
             token=cls.generate_token(),
-            expires_at=timezone.now() + timedelta(hours=expiration_hours)
+            expires_at=timezone.now() + timedelta(hours=expiration_hours),
         )
         token.save()
         return token
