@@ -3,6 +3,14 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
+    company = models.ForeignKey(
+        "users.Company",
+        on_delete=models.CASCADE,
+        related_name="categories",
+        null=True,
+        blank=True,
+        verbose_name="Empresa"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -22,6 +30,14 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="products_category",
         null=False,
+    )
+    company = models.ForeignKey(
+        "users.Company",
+        on_delete=models.CASCADE,
+        related_name="products",
+        null=True,
+        blank=True,
+        verbose_name="Empresa"
     )
     image = models.ImageField(upload_to="uploads/", blank=True, null=True)
     quantity = models.IntegerField(default=1)

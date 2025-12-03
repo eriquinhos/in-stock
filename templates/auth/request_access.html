@@ -81,6 +81,16 @@
             border-color: hsl(var(--primary));
             box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
         }
+        
+        .tab-btn {
+            @apply flex-1 py-3 px-4 text-sm font-bold rounded-lg transition-all;
+        }
+        .tab-btn.active {
+            @apply bg-primary text-white shadow-md;
+        }
+        .tab-btn:not(.active) {
+            @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+        }
     </style>
 </head>
 <body>
@@ -103,7 +113,7 @@
                     </div>
                     <h2 class="text-xl font-bold text-foreground">Solicitar Acesso</h2>
                     <p class="text-sm text-muted-foreground leading-relaxed">
-                        Preencha os dados da sua empresa para solicitar acesso ao sistema.
+                        Escolha como deseja acessar o sistema.
                     </p>
                 </div>
 
@@ -116,17 +126,21 @@
                     {% endfor %}
                 {% endif %}
 
-                <!-- Info box -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p class="text-blue-700 text-xs leading-relaxed">
-                        <strong>ℹ️ Como funciona?</strong><br>
-                        Após sua solicitação ser aprovada, você receberá no seu email pessoal as credenciais de acesso (email corporativo e senha temporária).
-                    </p>
+                <!-- Tabs para tipo de solicitação -->
+                <div class="flex gap-2 bg-gray-50 p-1.5 rounded-xl">
+                    <button type="button" id="tab-new-company" class="tab-btn active" onclick="switchTab('new_company')">
+                        🏢 Nova Empresa
+                    </button>
+                    <button type="button" id="tab-join-company" class="tab-btn" onclick="switchTab('join_company')">
+                        👤 Entrar em Empresa
+                    </button>
                 </div>
 
                 <form class="space-y-3" action="{% url 'request_access' %}" method="POST">
                     {% csrf_token %}
+                    <input type="hidden" name="request_type" id="request_type" value="new_company">
                     
+                    <!-- Campos comuns -->
                     <div class="space-y-1">
                         <label for="name" class="text-sm font-bold text-foreground/80 ml-1">
                             Nome Completo <span class="text-red-500">*</span>
@@ -156,33 +170,67 @@
                         <p class="text-xs text-muted-foreground ml-1">Você receberá as credenciais neste email</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label for="company_name" class="text-sm font-bold text-foreground/80 ml-1">
-                                Nome da Empresa <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="company_name"
-                                name="company_name"
-                                type="text"
-                                placeholder="Empresa LTDA"
-                                class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                                required
-                            />
+                    <!-- Campos para NOVA EMPRESA -->
+                    <div id="new-company-fields">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+                            <p class="text-blue-700 text-xs leading-relaxed">
+                                <strong>🏢 Cadastro de Nova Empresa</strong><br>
+                                Sua empresa ainda não usa o InStock? Solicite o cadastro e se torne o administrador da sua empresa.
+                            </p>
                         </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label for="company_name" class="text-sm font-bold text-foreground/80 ml-1">
+                                    Nome da Empresa <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    id="company_name"
+                                    name="company_name"
+                                    type="text"
+                                    placeholder="Empresa LTDA"
+                                    class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                                />
+                            </div>
 
+                            <div class="space-y-1">
+                                <label for="cnpj" class="text-sm font-bold text-foreground/80 ml-1">
+                                    CNPJ <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    id="cnpj"
+                                    name="cnpj"
+                                    type="text"
+                                    placeholder="00.000.000/0000-00"
+                                    class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos para ENTRAR EM EMPRESA -->
+                    <div id="join-company-fields" class="hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                            <p class="text-green-700 text-xs leading-relaxed">
+                                <strong>👤 Entrar em Empresa Existente</strong><br>
+                                Sua empresa já usa o InStock? Solicite acesso ao administrador da sua empresa. Ele definirá seu cargo após aprovar sua solicitação.
+                            </p>
+                        </div>
+                        
                         <div class="space-y-1">
-                            <label for="cnpj" class="text-sm font-bold text-foreground/80 ml-1">
-                                CNPJ <span class="text-red-500">*</span>
+                            <label for="company_id" class="text-sm font-bold text-foreground/80 ml-1">
+                                Selecione a Empresa <span class="text-red-500">*</span>
                             </label>
-                            <input
-                                id="cnpj"
-                                name="cnpj"
-                                type="text"
-                                placeholder="00.000.000/0000-00"
-                                class="custom-input w-full h-11 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
-                                required
-                            />
+                            <select
+                                id="company_id"
+                                name="company_id"
+                                class="custom-input w-full h-11 px-4 rounded-lg text-foreground outline-none"
+                            >
+                                <option value="">-- Escolha uma empresa --</option>
+                                {% for company in companies %}
+                                <option value="{{ company.id }}">{{ company.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
@@ -206,7 +254,7 @@
                         <textarea
                             id="message"
                             name="message"
-                            placeholder="Conte-nos um pouco sobre sua empresa..."
+                            placeholder="Conte-nos um pouco sobre você..."
                             rows="2"
                             class="custom-input w-full px-4 py-3 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none resize-none"
                         ></textarea>
@@ -231,36 +279,86 @@
             </div>
         </div>
 
-        <div class="hidden lg:flex w-full lg:w-1/2 lado-direito-gradient items-center justify-center p-12 relative overflow-hidden">
-            <div class="relative z-10 text-center space-y-8">
-                <div class="text-8xl mb-4">
-                    🏢
-                </div>
-                <div class="space-y-3">
-                    <h2 class="text-4xl font-bold text-white">Gerencie seu Estoque</h2>
-                    <p class="text-white/80 text-lg max-w-xs mx-auto leading-relaxed">
-                        Controle total do seu estoque com facilidade e segurança.
-                    </p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 pt-4">
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-                        <p class="text-3xl font-bold text-white">✅</p>
-                        <p class="text-white/70 text-sm">Aprovação Rápida</p>
+        <!-- Lado Direito - Informativo -->
+        <div class="hidden lg:flex w-full lg:w-1/2 lado-direito-gradient p-12 flex-col justify-between text-white relative overflow-hidden">
+            
+            <!-- Efeitos de fundo -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+            <!-- Título -->
+            <div class="relative z-10 mt-6">
+                <h2 class="text-3xl font-bold mb-4 leading-tight">
+                    Junte-se ao InStock
+                </h2>
+                <p class="text-orange-50/80 text-lg">
+                    Solicite seu acesso e comece a gerenciar seu estoque de forma inteligente.
+                </p>
+            </div>
+
+            <!-- Cards informativos -->
+            <div class="space-y-4 relative z-10 mb-6">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        🏢
                     </div>
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
-                        <p class="text-3xl font-bold text-white">🔐</p>
-                        <p class="text-white/70 text-sm">Acesso Seguro</p>
+                    <div>
+                        <h4 class="font-bold">Cadastre sua Empresa</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Crie o ambiente da sua empresa e seja o administrador.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        👥
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Entre em uma Empresa</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Junte-se a uma empresa existente e colabore com a equipe.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
+                        ✅
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Aprovação Rápida</h4>
+                        <p class="text-xs text-orange-100/70 mt-1">Receba suas credenciais por email após aprovação.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-full"></div>
-                <div class="absolute bottom-20 right-20 w-24 h-24 border-4 border-white rounded-lg rotate-45"></div>
+
+            <!-- Footer -->
+            <div class="text-xs text-orange-200/40 relative z-10">
+                © 2025 InStock System Inc.
             </div>
         </div>
     </div>
+
+    <script>
+        function switchTab(tabType) {
+            const newCompanyBtn = document.getElementById('tab-new-company');
+            const joinCompanyBtn = document.getElementById('tab-join-company');
+            const newCompanyFields = document.getElementById('new-company-fields');
+            const joinCompanyFields = document.getElementById('join-company-fields');
+            const requestType = document.getElementById('request_type');
+            
+            if (tabType === 'new_company') {
+                newCompanyBtn.classList.add('active');
+                joinCompanyBtn.classList.remove('active');
+                newCompanyFields.classList.remove('hidden');
+                joinCompanyFields.classList.add('hidden');
+                requestType.value = 'new_company';
+            } else {
+                joinCompanyBtn.classList.add('active');
+                newCompanyBtn.classList.remove('active');
+                joinCompanyFields.classList.remove('hidden');
+                newCompanyFields.classList.add('hidden');
+                requestType.value = 'join_company';
+            }
+        }
+    </script>
 
 </body>
 </html>

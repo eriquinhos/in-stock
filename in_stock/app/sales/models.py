@@ -22,6 +22,14 @@ class Sale(models.Model):
         blank=True,
         null=True,
     )
+    company = models.ForeignKey(
+        "users.Company",
+        on_delete=models.CASCADE,
+        related_name="sales",
+        null=True,
+        blank=True,
+        verbose_name="Empresa"
+    )
     date = models.DateTimeField(default=timezone.now)
     TIPO = [("entry", "Entrada"), ("exits", "Saída")]
     type = models.CharField(max_length=5, choices=TIPO)
