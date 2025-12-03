@@ -1,16 +1,17 @@
-from .models import CustomUser
 from django.contrib.auth.models import Group
+
+from .models import CustomUser
+
 
 class CustomUserService:
     def get_all(self):
         return CustomUser.objects.all()
 
     def create_user(self, request, user: CustomUser):
-         try:
-            type_group = request.POST.get('type')
+        try:
+            type_group = request.POST.get("type")
             group = Group.objects.get(name=type_group)
             user.groups.add(group)
-        
         except Group.DoesNotExist:
             raise
 

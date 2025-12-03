@@ -26,7 +26,14 @@ SECRET_KEY = "django-insecure-@jql#4n%uu%$fsu0*ylr3-(ek%=ka$mom!*c=@k5s(3i)168as
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'instock.app.br', 'www.instock.app.br', '162.243.49.28', '2604:a880:0:202a::c62f:3000']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "instock.app.br",
+    "www.instock.app.br",
+    "162.243.49.28",
+    "2604:a880:0:202a::c62f:3000",
+]
 
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -87,6 +94,14 @@ if os.environ.get("CI", "false") == "true":
             "NAME": ":memory:",
         }
     }
+elif os.environ.get("USE_SQLITE", "false") == "true":
+    # Usar SQLite para desenvolvimento local
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 else:
     DATABASES = {
         "default": {
@@ -142,7 +157,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "in_stock/app/static"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
