@@ -4,11 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import get_template
 from django.views import View
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, F, DecimalField
+from django.db.models.functions import Coalesce, TruncDate
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings as django_settings
 from datetime import timedelta
+from decimal import Decimal
 import secrets
 
 import in_stock.config.settings as settings
@@ -17,7 +19,7 @@ from in_stock.app.products.models import Product, Category
 from in_stock.app.suppliers.models import Supplier
 from in_stock.app.sales.models import Sale
 from in_stock.app.reports.models import Report
-from in_stock.app.users.models import CustomUser, AccessRequest
+from in_stock.app.users.models import CustomUser, AccessRequest, PasswordResetToken
 from in_stock.app.users.forms import CustomUserCreationForm
 
 
@@ -34,27 +36,74 @@ def dashboard_view(request):
     if request.user.must_change_password:
         return redirect("change_password")
 
-    # Dados reais do banco de dados
+    today = timezone.now()
+    
+    # === MÉTRICAS PRINCIPAIS ===
     total_products = Product.objects.count()
     total_suppliers = Supplier.objects.count()
     total_sales = Sale.objects.count()
     total_reports = Report.objects.count()
     total_categories = Category.objects.count()
     
-    # Calcular quantidade total de produtos em estoque
+    # Quantidade total de produtos em estoque
     total_stock = Product.objects.aggregate(total=Sum('quantity'))['total'] or 0
     
-    # Vendas do mês atual
-    today = timezone.now()
+    # Valor total do estoque (quantidade * preço)
+    stock_value = Product.objects.aggregate(
+        total=Sum(F('quantity') * F('price'), output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # === MOVIMENTAÇÕES ===
+    # Movimentações do mês atual
     first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     sales_this_month = Sale.objects.filter(date__gte=first_day_of_month).count()
     
-    # Entradas e saídas
+    # Movimentações do mês anterior (para comparação)
+    first_day_last_month = (first_day_of_month - timedelta(days=1)).replace(day=1)
+    sales_last_month = Sale.objects.filter(
+        date__gte=first_day_last_month,
+        date__lt=first_day_of_month
+    ).count()
+    
+    # Calcular variação percentual
+    if sales_last_month > 0:
+        sales_variation = ((sales_this_month - sales_last_month) / sales_last_month) * 100
+    else:
+        sales_variation = 100 if sales_this_month > 0 else 0
+    
+    # Entradas e saídas totais
     entries = Sale.objects.filter(type='entry').count()
     exits = Sale.objects.filter(type='exits').count()
     
+    # Entradas e saídas do mês
+    entries_this_month = Sale.objects.filter(type='entry', date__gte=first_day_of_month).count()
+    exits_this_month = Sale.objects.filter(type='exits', date__gte=first_day_of_month).count()
+    
+    # === GRÁFICO: Movimentações dos últimos 7 dias ===
+    seven_days_ago = today - timedelta(days=7)
+    daily_movements = []
+    
+    for i in range(7):
+        day = (today - timedelta(days=6-i)).date()
+        day_entries = Sale.objects.filter(
+            type='entry',
+            date__date=day
+        ).count()
+        day_exits = Sale.objects.filter(
+            type='exits',
+            date__date=day
+        ).count()
+        daily_movements.append({
+            'date': day.strftime('%d/%m'),
+            'day_name': day.strftime('%a'),
+            'entries': day_entries,
+            'exits': day_exits
+        })
+    
+    # === ALERTAS ===
     # Produtos com baixo estoque (menos de 10 unidades)
     low_stock_products = Product.objects.filter(quantity__lt=10).order_by('quantity')[:5]
+    low_stock_count = Product.objects.filter(quantity__lt=10).count()
     
     # Produtos próximos do vencimento (próximos 30 dias)
     thirty_days_from_now = today.date() + timedelta(days=30)
@@ -62,11 +111,32 @@ def dashboard_view(request):
         expiration_date__lte=thirty_days_from_now,
         expiration_date__gte=today.date()
     ).order_by('expiration_date')[:5]
+    expiring_count = Product.objects.filter(
+        expiration_date__lte=thirty_days_from_now,
+        expiration_date__gte=today.date()
+    ).count()
     
-    # Últimas vendas/movimentações
+    # Produtos já vencidos
+    expired_products = Product.objects.filter(
+        expiration_date__lt=today.date()
+    ).order_by('expiration_date')[:5]
+    expired_count = Product.objects.filter(expiration_date__lt=today.date()).count()
+    
+    # === TOP PRODUTOS ===
+    # Produtos mais movimentados (com mais saídas)
+    top_products = Product.objects.annotate(
+        movement_count=Count('sale_product')
+    ).order_by('-movement_count')[:5]
+    
+    # Categorias com mais produtos
+    top_categories = Category.objects.annotate(
+        product_count=Count('products_category')
+    ).order_by('-product_count')[:5]
+    
+    # === MOVIMENTAÇÕES RECENTES ===
     recent_sales = Sale.objects.select_related('product', 'user').order_by('-date')[:5]
     
-    # Solicitações pendentes (apenas para admins InStock)
+    # === SOLICITAÇÕES PENDENTES (Admin) ===
     pending_requests_count = 0
     pending_requests = []
     if request.user.is_instock_admin or request.user.is_superuser:
@@ -74,18 +144,43 @@ def dashboard_view(request):
         pending_requests_count = pending_requests.count()
 
     context = {
+        # Métricas principais
         "total_products": total_products,
         "total_suppliers": total_suppliers,
         "total_sales": total_sales,
         "total_reports": total_reports,
         "total_categories": total_categories,
         "total_stock": total_stock,
+        "stock_value": stock_value,
+        
+        # Movimentações
         "sales_this_month": sales_this_month,
+        "sales_last_month": sales_last_month,
+        "sales_variation": round(sales_variation, 1),
         "entries": entries,
         "exits": exits,
+        "entries_this_month": entries_this_month,
+        "exits_this_month": exits_this_month,
+        
+        # Gráfico de 7 dias
+        "daily_movements": daily_movements,
+        
+        # Alertas
         "low_stock_products": low_stock_products,
+        "low_stock_count": low_stock_count,
         "expiring_soon": expiring_soon,
+        "expiring_count": expiring_count,
+        "expired_products": expired_products,
+        "expired_count": expired_count,
+        
+        # Top produtos e categorias
+        "top_products": top_products,
+        "top_categories": top_categories,
+        
+        # Movimentações recentes
         "recent_sales": recent_sales,
+        
+        # Admin
         "pending_requests_count": pending_requests_count,
         "pending_requests": pending_requests,
     }
@@ -358,3 +453,148 @@ class PublicRegisterView(View):
     
     def post(self, request):
         return redirect("request_access")
+
+
+# ============================================
+# VIEWS DE REDEFINIÇÃO DE SENHA
+# ============================================
+
+class ForgotPasswordView(View):
+    """View para solicitar redefinição de senha"""
+    template_name = "auth/forgot_password.html"
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+        return render(request, self.template_name)
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+
+        email = request.POST.get("email", "").strip().lower()
+
+        if not email:
+            return render(request, self.template_name, {"error": "Por favor, informe seu email."})
+
+        # Busca o usuário pelo email
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            # Por segurança, não revelamos se o email existe ou não
+            return render(request, self.template_name, {
+                "success": True,
+                "message": "Se este email estiver cadastrado, você receberá um link de redefinição."
+            })
+
+        # Cria o token de redefinição
+        token = PasswordResetToken.create_for_user(user)
+
+        # Monta o link de redefinição
+        reset_link = request.build_absolute_uri(f'/reset-password/{token.token}/')
+
+        # Tenta enviar o email
+        try:
+            from django.template.loader import render_to_string
+            
+            html_message = render_to_string('emails/password_reset.html', {
+                'user_name': user.name,
+                'reset_link': reset_link,
+            })
+            
+            send_mail(
+                subject='Redefinição de Senha - InStock',
+                message=f'''
+Olá {user.name},
+
+Recebemos uma solicitação para redefinir sua senha.
+
+Clique no link abaixo para criar uma nova senha:
+{reset_link}
+
+Este link expira em 1 hora.
+
+Se você não solicitou isso, ignore este email.
+
+Atenciosamente,
+Equipe InStock
+                ''',
+                from_email=getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@instock.app.br'),
+                recipient_list=[user.email],
+                html_message=html_message,
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Erro ao enviar email de redefinição: {e}")
+
+        # Mostra mensagem de sucesso
+        return render(request, self.template_name, {
+            "success": True,
+            "message": "Se este email estiver cadastrado, você receberá um link de redefinição."
+        })
+
+
+class ResetPasswordView(View):
+    """View para redefinir a senha usando o token"""
+    template_name = "auth/reset_password.html"
+
+    def get(self, request, token):
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+
+        # Verifica se o token é válido
+        try:
+            reset_token = PasswordResetToken.objects.get(token=token)
+            if not reset_token.is_valid:
+                return render(request, self.template_name, {"invalid_token": True})
+        except PasswordResetToken.DoesNotExist:
+            return render(request, self.template_name, {"invalid_token": True})
+
+        return render(request, self.template_name, {"token": token})
+
+    def post(self, request, token):
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+
+        # Verifica se o token é válido
+        try:
+            reset_token = PasswordResetToken.objects.get(token=token)
+            if not reset_token.is_valid:
+                return render(request, self.template_name, {"invalid_token": True})
+        except PasswordResetToken.DoesNotExist:
+            return render(request, self.template_name, {"invalid_token": True})
+
+        password = request.POST.get("password", "")
+        password_confirm = request.POST.get("password_confirm", "")
+
+        # Validações
+        if not password or not password_confirm:
+            return render(request, self.template_name, {
+                "token": token,
+                "error": "Por favor, preencha todos os campos."
+            })
+
+        if password != password_confirm:
+            return render(request, self.template_name, {
+                "token": token,
+                "error": "As senhas não coincidem."
+            })
+
+        if len(password) < 8:
+            return render(request, self.template_name, {
+                "token": token,
+                "error": "A senha deve ter pelo menos 8 caracteres."
+            })
+
+        # Atualiza a senha do usuário
+        user = reset_token.user
+        user.set_password(password)
+        user.must_change_password = False  # Não precisa mais trocar
+        user.save()
+
+        # Marca o token como usado
+        reset_token.used = True
+        reset_token.save()
+
+        messages.success(request, "Senha redefinida com sucesso! Faça login com sua nova senha.")
+        return redirect("login")

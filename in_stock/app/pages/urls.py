@@ -19,4 +19,7 @@ urlpatterns = [
     path("access-requests/<uuid:request_id>/reject/", views.reject_request_view, name="reject_request"),
     # Redireciona registro antigo para solicitar acesso
     path("register/", views.PublicRegisterView.as_view(), name="register"),
+    # Redefinição de senha
+    path("forgot-password/", views.ForgotPasswordView.as_view(), name="forgot_password"),
+    path("reset-password/<str:token>/", views.ResetPasswordView.as_view(), name="reset_password"),
 ]

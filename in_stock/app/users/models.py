@@ -107,3 +107,48 @@ class AccessRequest(models.Model):
         company_slug = company_name.lower()
         company_slug = re.sub(r'[^a-z0-9]', '', company_slug)[:15]
         return f"{first_name}@{company_slug}.instock.app.br"
+
+
+class PasswordResetToken(models.Model):
+    """Token para redefinição de senha"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    token = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Token de Redefinição de Senha"
+        verbose_name_plural = "Tokens de Redefinição de Senha"
+    
+    def __str__(self):
+        return f"Token para {self.user.email} - {'Usado' if self.used else 'Válido'}"
+    
+    @property
+    def is_valid(self):
+        """Verifica se o token ainda é válido"""
+        return not self.used and timezone.now() < self.expires_at
+    
+    @staticmethod
+    def generate_token():
+        """Gera um token único e seguro"""
+        return secrets.token_urlsafe(32)
+    
+    @classmethod
+    def create_for_user(cls, user, expiration_hours=1):
+        """Cria um novo token para o usuário"""
+        from datetime import timedelta
+        
+        # Invalida tokens anteriores do usuário
+        cls.objects.filter(user=user, used=False).update(used=True)
+        
+        # Cria novo token
+        token = cls(
+            user=user,
+            token=cls.generate_token(),
+            expires_at=timezone.now() + timedelta(hours=expiration_hours)
+        )
+        token.save()
+        return token
