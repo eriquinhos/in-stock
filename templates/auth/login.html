@@ -107,7 +107,8 @@
                     </p>
                 </div>
 
-                <form class="space-y-4 md:space-y-5" action="#" method="POST">
+                <form class="space-y-4 md:space-y-5" action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
                     
                     <div class="space-y-2">
                         <label for="email" class="text-sm font-bold text-foreground/80 ml-1">
@@ -115,6 +116,7 @@
                         </label>
                         <input
                             id="email"
+                            name="email"
                             type="email"
                             placeholder="seu@email.com"
                             class="custom-input w-full h-12 px-4 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
@@ -133,6 +135,7 @@
                         <div class="relative">
                             <input
                                 id="password"
+                                name="password"
                                 type="password"
                                 placeholder="••••••••"
                                 class="custom-input w-full h-12 pl-4 pr-12 rounded-lg text-foreground placeholder:text-muted-foreground/70 outline-none"
@@ -152,7 +155,7 @@
                                 </svg>
                             </button>
                              <div class="flex items-center justify-end ml-1">
-                                <a href="#" class="text-xs text-primary hover:text-orange-700 font-bold transition-colors">
+                                <a href="{% url 'forgot_password' %}" class="text-xs text-primary hover:text-orange-700 font-bold transition-colors">
                                     Esqueceu a senha?
                                 </a>
                             </div>
@@ -171,7 +174,7 @@
                 <div class="pt-6 border-t border-dashed border-gray-200 mt-6 text-center">
                     <p class="text-sm text-muted-foreground">
                         Primeira vez aqui? 
-                        <a href="#" class="text-primary hover:text-orange-700 font-bold transition-colors">
+                        <a href="{% url 'request_access' %}" class="text-primary hover:text-orange-700 font-bold transition-colors">
                             Solicitar acesso
                         </a>
                     </p>

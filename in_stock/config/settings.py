@@ -87,6 +87,14 @@ if os.environ.get("CI", "false") == "true":
             "NAME": ":memory:",
         }
     }
+elif os.environ.get("USE_SQLITE", "false") == "true":
+    # Usar SQLite para desenvolvimento local
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 else:
     DATABASES = {
         "default": {
