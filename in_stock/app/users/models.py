@@ -1,3 +1,7 @@
+import secrets
+import string
+import uuid
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -5,9 +9,6 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.utils import timezone
-import uuid
-import secrets
-import string
 
 
 class CustomUserManager(BaseUserManager):
@@ -35,8 +36,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_instock_admin = models.BooleanField(default=False, verbose_name="Admin InStock")
-    must_change_password = models.BooleanField(default=False, verbose_name="Deve trocar senha")
-    company = models.CharField(max_length=150, blank=True, null=True, verbose_name="Empresa")
+    must_change_password = models.BooleanField(
+        default=False, verbose_name="Deve trocar senha"
+    )
+    company = models.CharField(
+        max_length=150, blank=True, null=True, verbose_name="Empresa"
+    )
     TYPE_CHOICES = [
         ("admin", "Administrador"),
         ("standard", "Padrão"),
@@ -56,99 +61,108 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class AccessRequest(models.Model):
     """Solicitações de acesso de admins de empresas"""
+
     STATUS_CHOICES = [
-        ('pending', 'Pendente'),
-        ('approved', 'Aprovado'),
-        ('rejected', 'Rejeitado'),
+        ("pending", "Pendente"),
+        ("approved", "Aprovado"),
+        ("rejected", "Rejeitado"),
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=150, verbose_name="Nome completo")
     personal_email = models.EmailField(verbose_name="Email pessoal")
     company_name = models.CharField(max_length=150, verbose_name="Nome da empresa")
     cnpj = models.CharField(max_length=18, verbose_name="CNPJ")
-    phone = models.CharField(max_length=20, verbose_name="Telefone", blank=True, null=True)
+    phone = models.CharField(
+        max_length=20, verbose_name="Telefone", blank=True, null=True
+    )
     message = models.TextField(verbose_name="Mensagem", blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    generated_email = models.EmailField(blank=True, null=True, verbose_name="Email gerado")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    generated_email = models.EmailField(
+        blank=True, null=True, verbose_name="Email gerado"
+    )
     generated_password = models.CharField(max_length=100, blank=True, null=True)
     approved_by = models.ForeignKey(
-        CustomUser, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        related_name='approved_requests'
+        related_name="approved_requests",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Solicitação de Acesso"
         verbose_name_plural = "Solicitações de Acesso"
-    
+
     def __str__(self):
         return f"{self.name} - {self.company_name} ({self.status})"
-    
+
     @staticmethod
     def generate_password(length=10):
         """Gera uma senha aleatória segura"""
         alphabet = string.ascii_letters + string.digits
-        return ''.join(secrets.choice(alphabet) for _ in range(length))
-    
+        return "".join(secrets.choice(alphabet) for _ in range(length))
+
     @staticmethod
     def generate_company_email(name, company_name):
         """Gera um email corporativo para o admin"""
         import re
+
         # Pega o primeiro nome e limpa
         first_name = name.split()[0].lower()
-        first_name = re.sub(r'[^a-z]', '', first_name)
+        first_name = re.sub(r"[^a-z]", "", first_name)
         # Limpa o nome da empresa
         company_slug = company_name.lower()
-        company_slug = re.sub(r'[^a-z0-9]', '', company_slug)[:15]
+        company_slug = re.sub(r"[^a-z0-9]", "", company_slug)[:15]
         return f"{first_name}@{company_slug}.instock.app.br"
 
 
 class PasswordResetToken(models.Model):
     """Token para redefinição de senha"""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="password_reset_tokens"
+    )
     token = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     used = models.BooleanField(default=False)
-    
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Token de Redefinição de Senha"
         verbose_name_plural = "Tokens de Redefinição de Senha"
-    
+
     def __str__(self):
         return f"Token para {self.user.email} - {'Usado' if self.used else 'Válido'}"
-    
+
     @property
     def is_valid(self):
         """Verifica se o token ainda é válido"""
         return not self.used and timezone.now() < self.expires_at
-    
+
     @staticmethod
     def generate_token():
         """Gera um token único e seguro"""
         return secrets.token_urlsafe(32)
-    
+
     @classmethod
     def create_for_user(cls, user, expiration_hours=1):
         """Cria um novo token para o usuário"""
         from datetime import timedelta
-        
+
         # Invalida tokens anteriores do usuário
         cls.objects.filter(user=user, used=False).update(used=True)
-        
+
         # Cria novo token
         token = cls(
             user=user,
             token=cls.generate_token(),
-            expires_at=timezone.now() + timedelta(hours=expiration_hours)
+            expires_at=timezone.now() + timedelta(hours=expiration_hours),
         )
         token.save()
         return token
