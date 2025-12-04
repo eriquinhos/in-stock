@@ -1,84 +1,266 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="MenuVertical.css">
-    <title>Dashboard - InStock</title>
-</head>
-<body>
-    <nav id="sidebar">
-        <div id="sidebar_content">
-            
-            <div id="user">
-              <div id="logo_box">
-                    <span>📦</span>
-             </div>
-                <p id="user_infos">
-                   <span class="item_description font-bold">
-                        InStock
-                    </span>
-                    <span class="item_description role">
-                        Controle de Estoque
-                    </span>
-                </p>
+{% load static %}
+<style>
+    .sidebar-gradient {
+        background: linear-gradient(180deg, hsl(32 85% 55%) 0%, hsl(28 35% 20%) 100%);
+    }
+
+    .sidebar-link {
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-left-color: white;
+    }
+
+    .sidebar-link.active {
+        background: rgba(255, 255, 255, 0.2);
+        border-left-color: white;
+    }
+
+    /* Estilos para sidebar recolhível */
+    .sidebar {
+        transition: width 0.3s ease;
+        width: 16rem; /* w-64 = 256px */
+        position: relative;
+    }
+
+    .sidebar.collapsed {
+        width: 5rem; /* 80px quando recolhido */
+    }
+
+    .sidebar.collapsed .sidebar-text,
+    .sidebar.collapsed .sidebar-title,
+    .sidebar.collapsed .sidebar-subtitle,
+    .sidebar.collapsed .user-info-text,
+    .sidebar.collapsed .admin-label {
+        display: none;
+    }
+
+    .sidebar.collapsed .logo-container {
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .user-info-container {
+        justify-content: center;
+        padding: 0.75rem;
+        margin: 0.5rem;
+    }
+
+    .sidebar.collapsed .sidebar-link {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sidebar.collapsed .sidebar-link i {
+        margin: 0;
+    }
+
+    .sidebar.collapsed .logout-link {
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .admin-section {
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Botão circular de toggle */
+    .toggle-btn-circular {
+        position: absolute;
+        top: 1.25rem;
+        right: -0.75rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: linear-gradient(135deg, hsl(32 85% 55%) 0%, hsl(35 70% 45%) 100%);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-btn-circular:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .toggle-btn-circular i {
+        color: white;
+        font-size: 0.65rem;
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.collapsed .toggle-btn-circular i {
+        transform: rotate(180deg);
+    }
+
+    /* Tooltip para modo recolhido */
+    .sidebar.collapsed .sidebar-link {
+        position: relative;
+    }
+
+    .sidebar.collapsed .sidebar-link:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: hsl(28 35% 20%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        white-space: nowrap;
+        margin-left: 0.5rem;
+        z-index: 100;
+        font-size: 0.875rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="sidebar sidebar-gradient flex-shrink-0 hidden lg:flex flex-col shadow-2xl">
+    <!-- Botão circular de toggle no canto superior direito -->
+    <button id="sidebar-toggle" class="toggle-btn-circular" title="Recolher menu">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <!-- Logo -->
+    <div class="p-6 border-b border-white/10">
+        <div class="logo-container flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                <span class="text-white text-2xl">📦</span>
             </div>
-
-            <ul id="side_item">
-                <li class="side-item active">
-                    <a href="#">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <span class="item_description">Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="side-item">
-                    <a href="GestaoProdutos.html">
-                        <i class="fa-solid fa-dolly"></i>
-                        <span class="item_description">Produtos</span>
-                    </a>
-                </li>
-
-                <li class="side-item">
-                    <a href="#">
-                        <i class="fa-solid fa-calculator"></i>
-                        <span class="item_description">Movimentação</span>
-                    </a>
-                </li>
-
-                <li class="side-item">
-                    <a href="#">
-                        <i class="fa-solid fa-users"></i>
-                        <span class="item_description">Usuários</span>
-                    </a>
-                </li>
-
-                <li class="side-item">
-                    <a href="#">
-                        <i class="fa-solid fa-gear"></i>
-                        <span class="item_description">Configuração</span>
-                    </a>
-                </li>
-            </ul>
-
-            <button id="open_sideBar">
-                <i id="open_sideBar_icon" class="fa-solid fa-chevron-right"></i>
-            </button>
+            <div class="sidebar-text">
+                <h1 class="sidebar-title text-xl font-bold text-white tracking-tight">InStock</h1>
+                <p class="sidebar-subtitle text-[10px] text-white/70 font-semibold uppercase tracking-widest">Controle de Estoque</p>
+            </div>
         </div>
+    </div>
 
-        <div id="logout">
-            <button id="logout_sidebar">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                <span class="item_description">Logout</span>
-            </button>
-        </div>       
+    <!-- User Info -->
+    <div class="user-info-container p-4 mx-4 mt-4 rounded-xl bg-white/10 border border-white/10 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-user text-white"></i>
+        </div>
+        <div class="user-info-text flex-1 min-w-0">
+            <p class="text-white font-semibold text-sm truncate">{{ user.name }}</p>
+            <p class="text-white/60 text-xs truncate">{{ user.email }}</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 p-4 space-y-1 mt-4 overflow-y-auto">
+        <!-- Dashboard -->
+        <a href="{% url 'dashboard' %}" data-tooltip="Dashboard" class="sidebar-link {% if active_page == 'dashboard' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-home w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Dashboard</span>
+        </a>
+        
+        <!-- Produtos -->
+        <a href="{% url 'product-list-create' %}" data-tooltip="Produtos" class="sidebar-link {% if active_page == 'products' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-box w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Produtos</span>
+        </a>
+        
+        <!-- Categorias -->
+        <a href="{% url 'category-list-create' %}" data-tooltip="Categorias" class="sidebar-link {% if active_page == 'categories' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-tags w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Categorias</span>
+        </a>
+        
+        <!-- Fornecedores -->
+        <a href="{% url 'supplier-list-create' %}" data-tooltip="Fornecedores" class="sidebar-link {% if active_page == 'suppliers' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-truck w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Fornecedores</span>
+        </a>
+        
+        <!-- Movimentações -->
+        <a href="{% url 'sale-list-create' %}" data-tooltip="Movimentações" class="sidebar-link {% if active_page == 'sales' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-exchange-alt w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Movimentações</span>
+        </a>
+        
+        <!-- Relatórios -->
+        <a href="{% url 'report-list-create' %}" data-tooltip="Relatórios" class="sidebar-link {% if active_page == 'reports' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <i class="fas fa-chart-bar w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Relatórios</span>
+        </a>
+        
+        <!-- Seção de Administração - Apenas para admins -->
+        {% if user.is_instock_admin or user.is_company_admin or user.can_manage_users %}
+        <div class="admin-section pt-4 mt-4 border-t border-white/10">
+            <p class="admin-label px-4 text-xs text-white/50 uppercase tracking-wider mb-2">Administração</p>
+            
+            <!-- Solicitações de Acesso - Admin InStock e Admin Empresa -->
+            {% if user.is_instock_admin or user.is_company_admin %}
+            <a href="{% url 'access_requests' %}" data-tooltip="Solicitações" class="sidebar-link {% if active_page == 'access_requests' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                <i class="fas fa-user-plus w-5 text-center flex-shrink-0"></i>
+                <span class="sidebar-text">Solicitações</span>
+            </a>
+            {% endif %}
+            
+            <!-- Empresas - Apenas Admin InStock -->
+            {% if user.is_instock_admin %}
+            <a href="{% url 'companies' %}" data-tooltip="Empresas" class="sidebar-link {% if active_page == 'companies' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                <i class="fas fa-building w-5 text-center flex-shrink-0"></i>
+                <span class="sidebar-text">Empresas</span>
+            </a>
+            {% endif %}
+            
+            <!-- Usuários - Quem pode gerenciar usuários -->
+            {% if user.can_manage_users %}
+            <a href="{% url 'users_management' %}" data-tooltip="Usuários" class="sidebar-link {% if active_page == 'users' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                <i class="fas fa-users w-5 text-center flex-shrink-0"></i>
+                <span class="sidebar-text">Usuários</span>
+            </a>
+            {% endif %}
+            
+            <!-- Auditoria - Admin InStock e Admin Empresa -->
+            {% if user.is_instock_admin or user.is_company_admin %}
+            <a href="{% url 'audit_logs' %}" data-tooltip="Auditoria" class="sidebar-link {% if active_page == 'audit' %}active{% endif %} flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                <i class="fas fa-clipboard-list w-5 text-center flex-shrink-0"></i>
+                <span class="sidebar-text">Auditoria</span>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
     </nav>
 
-    <main>
-        <h1>Bem-vindo ao Painel</h1>
-    </main>
+    <!-- Logout -->
+    <div class="p-4 border-t border-white/10">
+        <a href="{% url 'logout' %}" data-tooltip="Sair" class="logout-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all font-medium">
+            <i class="fas fa-sign-out-alt w-5 text-center flex-shrink-0"></i>
+            <span class="sidebar-text">Sair</span>
+        </a>
+    </div>
+</aside>
 
-    <script src="MenuVertical.js"></script>
-</body>
-</html>
+<!-- Script para controlar o toggle -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        
+        // Verificar preferência salva
+        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (isCollapsed) {
+            sidebar.classList.add('collapsed');
+        }
+        
+        // Toggle do sidebar
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            
+            // Salvar preferência
+            const collapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', collapsed);
+        });
+    });
+</script>
