@@ -1,26 +1,29 @@
+import secrets
+from datetime import timedelta
+from decimal import Decimal
+
+from django.conf import settings as django_settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404
-from django.template.loader import get_template
-from django.views import View
-from django.db.models import Sum, Count, F, DecimalField
-from django.db.models.functions import Coalesce, TruncDate
-from django.utils import timezone
 from django.core.mail import send_mail
-from django.conf import settings as django_settings
-from datetime import timedelta
-from decimal import Decimal
-import secrets
+from django.db.models import Count, DecimalField, F, Sum
+from django.db.models.functions import Coalesce, TruncDate
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import get_template
+from django.utils import timezone
+from django.views import View
 
 import in_stock.config.settings as settings
 from in_stock.app.pages.forms import LoginForm
-from in_stock.app.products.models import Product, Category
-from in_stock.app.suppliers.models import Supplier
-from in_stock.app.sales.models import Sale
+from in_stock.app.products.models import Category, Product
 from in_stock.app.reports.models import Report
-from in_stock.app.users.models import CustomUser, AccessRequest, PasswordResetToken
+from in_stock.app.sales.models import Sale
+from in_stock.app.suppliers.models import Supplier
 from in_stock.app.users.forms import CustomUserCreationForm
+from in_stock.app.users.models import (
+    AccessRequest, CustomUser, PasswordResetToken,
+)
 
 
 def home(request):
@@ -742,11 +745,11 @@ class ResetPasswordView(View):
         return redirect("login")
 
 
+from in_stock.app.users.audit_service import AuditService
 # ============================================
 # VIEWS DE GESTÃO DE USUÁRIOS E EMPRESAS
 # ============================================
-from in_stock.app.users.models import Company, AuditLog
-from in_stock.app.users.audit_service import AuditService
+from in_stock.app.users.models import AuditLog, Company
 
 
 @login_required

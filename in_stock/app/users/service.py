@@ -1,5 +1,7 @@
-from .models import CustomUser
 from django.contrib.auth.models import Group
+
+from .models import CustomUser
+
 
 class CustomUserService:
     def get_all(self):

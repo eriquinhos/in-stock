@@ -1,16 +1,15 @@
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
-from django.db import models
-from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-import uuid
+import json
 import secrets
 import string
-import json
+import uuid
+
+from django.contrib.auth.models import (
+    AbstractBaseUser, BaseUserManager, PermissionsMixin,
+)
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.utils import timezone
 
 
 # ============================================
@@ -593,6 +592,7 @@ class AccessRequest(models.Model):
     def generate_company_email(name, company_name):
         """Gera um email corporativo para o admin"""
         import re
+
         # Pega o primeiro nome e limpa
         first_name = name.split()[0].lower()
         first_name = re.sub(r'[^a-z]', '', first_name)
@@ -633,7 +633,7 @@ class PasswordResetToken(models.Model):
     def create_for_user(cls, user, expiration_hours=1):
         """Cria um novo token para o usuário"""
         from datetime import timedelta
-        
+
         # Invalida tokens anteriores do usuário
         cls.objects.filter(user=user, used=False).update(used=True)
         
