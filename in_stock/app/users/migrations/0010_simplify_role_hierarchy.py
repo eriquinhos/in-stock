@@ -7,51 +7,87 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0009_company_alter_customuser_company_role_and_more'),
+        ("users", "0009_company_alter_customuser_company_role_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='is_instock_admin',
+            model_name="customuser",
+            name="is_instock_admin",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='type',
+            model_name="customuser",
+            name="type",
         ),
         migrations.AddField(
-            model_name='accessrequest',
-            name='company',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='access_requests', to='users.company', verbose_name='Empresa'),
+            model_name="accessrequest",
+            name="company",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="access_requests",
+                to="users.company",
+                verbose_name="Empresa",
+            ),
         ),
         migrations.AddField(
-            model_name='accessrequest',
-            name='rejection_reason',
-            field=models.TextField(blank=True, null=True, verbose_name='Motivo da rejeição'),
+            model_name="accessrequest",
+            name="rejection_reason",
+            field=models.TextField(
+                blank=True, null=True, verbose_name="Motivo da rejeição"
+            ),
         ),
         migrations.AddField(
-            model_name='accessrequest',
-            name='request_type',
-            field=models.CharField(choices=[('new_company', 'Nova Empresa'), ('join_company', 'Entrar em Empresa')], default='new_company', max_length=20, verbose_name='Tipo de solicitação'),
+            model_name="accessrequest",
+            name="request_type",
+            field=models.CharField(
+                choices=[
+                    ("new_company", "Nova Empresa"),
+                    ("join_company", "Entrar em Empresa"),
+                ],
+                default="new_company",
+                max_length=20,
+                verbose_name="Tipo de solicitação",
+            ),
         ),
         migrations.AddField(
-            model_name='accessrequest',
-            name='requested_role',
-            field=models.CharField(choices=[('manager', 'Gestor'), ('operator', 'Operador')], default='operator', max_length=20, verbose_name='Papel solicitado'),
+            model_name="accessrequest",
+            name="requested_role",
+            field=models.CharField(
+                choices=[("manager", "Gestor"), ("operator", "Operador")],
+                default="operator",
+                max_length=20,
+                verbose_name="Papel solicitado",
+            ),
         ),
         migrations.AlterField(
-            model_name='accessrequest',
-            name='cnpj',
-            field=models.CharField(blank=True, max_length=18, null=True, verbose_name='CNPJ'),
+            model_name="accessrequest",
+            name="cnpj",
+            field=models.CharField(
+                blank=True, max_length=18, null=True, verbose_name="CNPJ"
+            ),
         ),
         migrations.AlterField(
-            model_name='accessrequest',
-            name='company_name',
-            field=models.CharField(blank=True, max_length=150, null=True, verbose_name='Nome da empresa'),
+            model_name="accessrequest",
+            name="company_name",
+            field=models.CharField(
+                blank=True, max_length=150, null=True, verbose_name="Nome da empresa"
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='role',
-            field=models.CharField(choices=[('instock_admin', 'Admin InStock'), ('company_admin', 'Admin da Empresa'), ('manager', 'Gestor'), ('operator', 'Operador')], default='operator', max_length=20, verbose_name='Papel'),
+            model_name="customuser",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("instock_admin", "Admin InStock"),
+                    ("company_admin", "Admin da Empresa"),
+                    ("manager", "Gestor"),
+                    ("operator", "Operador"),
+                ],
+                default="operator",
+                max_length=20,
+                verbose_name="Papel",
+            ),
         ),
     ]

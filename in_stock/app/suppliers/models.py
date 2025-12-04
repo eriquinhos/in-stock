@@ -13,7 +13,7 @@ class Supplier(models.Model):
         related_name="suppliers",
         null=True,
         blank=True,
-        verbose_name="Empresa"
+        verbose_name="Empresa",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

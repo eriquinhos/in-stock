@@ -13,8 +13,8 @@ class CustomUserCreationForm(forms.ModelForm):
         model = CustomUser
         fields = ("email", "phone", "name", "role", "company_obj")
         widgets = {
-            'role': forms.Select(attrs={'class': 'form-select'}),
-            'company_obj': forms.Select(attrs={'class': 'form-select'}),
+            "role": forms.Select(attrs={"class": "form-select"}),
+            "company_obj": forms.Select(attrs={"class": "form-select"}),
         }
 
         error_messages = {
@@ -23,23 +23,25 @@ class CustomUserCreationForm(forms.ModelForm):
                 "unique": '"Este email já está em uso!"',
             },
         }
-    
+
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-        
+
         # Se não for admin InStock, limita as opções de papel
         if self.user and not self.user.is_instock_admin:
             # Admin de empresa só pode criar gestores e operadores
-            self.fields['role'].choices = [
-                ('manager', 'Gestor'),
-                ('operator', 'Operador'),
+            self.fields["role"].choices = [
+                ("manager", "Gestor"),
+                ("operator", "Operador"),
             ]
             # E só pode criar na sua empresa
             if self.user.company_obj:
-                self.fields['company_obj'].queryset = Company.objects.filter(id=self.user.company_obj.id)
-                self.fields['company_obj'].initial = self.user.company_obj
-                self.fields['company_obj'].widget = forms.HiddenInput()
+                self.fields["company_obj"].queryset = Company.objects.filter(
+                    id=self.user.company_obj.id
+                )
+                self.fields["company_obj"].initial = self.user.company_obj
+                self.fields["company_obj"].widget = forms.HiddenInput()
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

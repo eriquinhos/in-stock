@@ -14,7 +14,7 @@ class Report(models.Model):
         related_name="reports",
         null=True,
         blank=True,
-        verbose_name="Empresa"
+        verbose_name="Empresa",
     )
     TYPE_CHOICES = [
         ("expenses", "Despesas"),
