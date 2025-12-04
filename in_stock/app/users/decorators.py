@@ -1,4 +1,5 @@
 from functools import wraps
+
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -12,6 +13,7 @@ def permission_required(permission_name, redirect_url="dashboard"):
     def my_view(request):
         ...
     """
+
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
@@ -26,11 +28,11 @@ def permission_required(permission_name, redirect_url="dashboard"):
             if request.user.has_perm(permission_name):
                 return view_func(request, *args, **kwargs)
 
-            messages.error(
-                request, "Você não tem permissão para realizar esta ação.")
+            messages.error(request, "Você não tem permissão para realizar esta ação.")
             return redirect(redirect_url)
 
         return wrapper
+
     return decorator
 
 
@@ -42,6 +44,7 @@ def role_required(allowed_roles, redirect_url="dashboard"):
     def my_view(request):
         ...
     """
+
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
@@ -56,11 +59,11 @@ def role_required(allowed_roles, redirect_url="dashboard"):
             if request.user.role in allowed_roles:
                 return view_func(request, *args, **kwargs)
 
-            messages.error(
-                request, "Você não tem permissão para acessar esta página.")
+            messages.error(request, "Você não tem permissão para acessar esta página.")
             return redirect(redirect_url)
 
         return wrapper
+
     return decorator
 
 
@@ -72,6 +75,7 @@ def company_required(redirect_url="dashboard"):
     def my_view(request):
         ...
     """
+
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
@@ -93,6 +97,7 @@ def company_required(redirect_url="dashboard"):
             return redirect(redirect_url)
 
         return wrapper
+
     return decorator
 
 
@@ -117,6 +122,7 @@ class PermissionRequiredMixin:
     class MyView(PermissionRequiredMixin, View):
         permission_required = 'can_create_products'
     """
+
     permission_required = None
     permission_denied_redirect = "dashboard"
 
@@ -128,13 +134,10 @@ class PermissionRequiredMixin:
             return super().dispatch(request, *args, **kwargs)
 
         # Usa has_perm() ao invés de has_permission()
-        if self.permission_required and request.user.has_perm(
-            self.permission_required
-        ):
+        if self.permission_required and request.user.has_perm(self.permission_required):
             return super().dispatch(request, *args, **kwargs)
 
-        messages.error(
-            request, "Você não tem permissão para realizar esta ação.")
+        messages.error(request, "Você não tem permissão para realizar esta ação.")
         return redirect(self.permission_denied_redirect)
 
 
@@ -145,6 +148,7 @@ class RoleRequiredMixin:
     class MyView(RoleRequiredMixin, View):
         required_roles = ['manager', 'operator']
     """
+
     required_roles = None
     permission_denied_redirect = "dashboard"
 
@@ -158,8 +162,7 @@ class RoleRequiredMixin:
         if self.required_roles and request.user.role in self.required_roles:
             return super().dispatch(request, *args, **kwargs)
 
-        messages.error(
-            request, "Você não tem permissão para acessar esta página.")
+        messages.error(request, "Você não tem permissão para acessar esta página.")
         return redirect(self.permission_denied_redirect)
 
 
