@@ -14,7 +14,7 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
     <link href="{% static 'css/vegas.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/tooplate-instock.css' %}" rel="stylesheet">
+    <link href="{% static 'css/tooplate-instock.css' %}?v=9" rel="stylesheet">
 </head>
 
 <body>
@@ -56,14 +56,14 @@
                     </ul>
 
                     <div class="ms-lg-3 d-flex gap-2 flex-column flex-lg-row mt-3 mt-lg-0">
-                        <a class="btn custom-btn custom-border-btn btn-sm" href="{% url 'login' %}">
-                            Login
-                            <i class="bi-arrow-up-right ms-2"></i>
+                        <a class="btn nav-btn-login" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Entrar
                         </a>
-                        <!-- Fixed register button URL from 'register' to 'user-register' -->
-                        <a class="btn custom-btn btn-sm" href="{% url 'user-register' %}">
-                            Registrar
-                            <i class="bi-arrow-up-right ms-2"></i>
+                        <!-- Botão de registrar agora vai para solicitar acesso -->
+                        <a class="btn nav-btn-register" href="{% url 'request_access' %}">
+                            Começar Agora
+                            <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
                 </div>
@@ -82,23 +82,61 @@
             <div class="container">
                 <div class="row align-items-center">
 
-                    <div class="col-lg-6 col-12 mx-auto">
-                        <em class="small-text">Bem vindo ao In Stock</em>
+                    <div class="col-lg-7 col-12 mx-auto hero-content">
+                        <span class="hero-badge animate-fade-in">
+                            <i class="bi bi-box-seam me-2"></i>
+                            Sistema de Gestão de Estoque
+                        </span>
                         
-                        <h1>In Stock</h1>
+                        <h1 class="hero-title animate-slide-up">In Stock</h1>
 
-                        <p class="text-white mb-4 pb-lg-2">
-                            Seu <em>controle de estoque</em> ideal.
+                        <p class="hero-subtitle animate-slide-up-delay">
+                            Seu controle de estoque <span class="text-highlight">inteligente</span> e <span class="text-highlight">ideal</span>.
                         </p>
 
-                        <a class="btn custom-btn custom-border-btn smoothscroll me-3" href="#section_2">
-                            Nossa história
-                        </a>
+                        <p class="hero-description animate-fade-in-delay">
+                            Simplifique a gestão do seu inventário com nossa plataforma moderna e intuitiva. 
+                            Controle total na palma da sua mão.
+                        </p>
 
-                        <a class="btn custom-btn smoothscroll me-2 mb-2" href="#section_3"><strong>Consultar Serviços</strong></a>
+                        <div class="hero-buttons animate-fade-in-delay-2">
+                            <a class="btn hero-btn-primary smoothscroll" href="#section_3">
+                                <i class="bi bi-rocket-takeoff me-2"></i>
+                                Conhecer Serviços
+                            </a>
+                            <a class="btn hero-btn-secondary smoothscroll" href="#section_2">
+                                <i class="bi bi-play-circle me-2"></i>
+                                Nossa História
+                            </a>
+                        </div>
+
+                        <div class="hero-stats animate-fade-in-delay-3">
+                            <div class="stat-item">
+                                <span class="stat-number">500+</span>
+                                <span class="stat-label">Empresas</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">99%</span>
+                                <span class="stat-label">Satisfação</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">Suporte</span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="scroll-indicator">
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
+                <span>Role para explorar</span>
             </div>
 
             <div class="hero-slides"></div>
@@ -177,7 +215,7 @@
                             </video>
 
                             <div class="about-video-info d-flex flex-column">
-                                <h4 class="mt-auto">Nós iniciamos em 2021.</h4>
+                                <h4 class="mt-auto">Nós iniciamos em 2025.</h4>
 
                                 <h4>Melhor Serviço em Logística.</h4>
                             </div>
@@ -341,71 +379,89 @@
 </section>
 
 
-        <section class="reviews-section section-padding section-bg" id="section_4">
+        <section class="reviews-section section-padding" id="section_4">
             <div class="container">
                 <div class="row justify-content-center">
 
-                    <div class="col-lg-12 col-12 text-center mb-4 pb-lg-2">
-                        <em class="text-white">Avaliações dos clientes</em>
-
-                        <h2 class="text-white">Feedbacks</h2>
+                    <div class="col-lg-12 col-12 text-center mb-5">
+                        <span class="section-badge">
+                            <i class="bi bi-chat-quote me-2"></i>
+                            Avaliações dos clientes
+                        </span>
+                        <h2 class="section-title text-white mt-3">O que nossos clientes dizem</h2>
+                        <p class="section-subtitle">Histórias reais de empresas que transformaram sua gestão de estoque</p>
                     </div>
 
-                    <div class="timeline">
-                        <div class="timeline-container timeline-container-left">
-                            <div class="timeline-content">
-                                <div class="reviews-block">
-                                    <div class="reviews-block-image-wrap d-flex align-items-center">
-                                        <img src="{% static 'images/reviews/profissionallogistica-senior-woman-black.jpg' %}" class="reviews-block-image img-fluid" alt="Juliana">
-
-                                        <div class="">
-                                            <h6 class="text-white mb-0">Juliana</h6>
-                                            <em class="text-white">Clientes</em>
-                                        </div>
-                                    </div>
-
-                                    <div class="reviews-block-content">
-                                        <p class="text-white">InStock simplificou completamente a gestão do nosso armazém. Agora sabemos exatamente o que temos em estoque a qualquer momento!</p>
+                    <div class="col-12">
+                        <div class="testimonials-grid">
+                            <!-- Testimonial 1 -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-quote">
+                                    <i class="bi bi-quote"></i>
+                                </div>
+                                <p class="testimonial-text">
+                                    InStock simplificou completamente a gestão do nosso armazém. Agora sabemos exatamente o que temos em estoque a qualquer momento!
+                                </p>
+                                <div class="testimonial-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="{% static 'images/reviews/profissionallogistica-senior-woman-black.jpg' %}" alt="Juliana" class="testimonial-avatar">
+                                    <div class="testimonial-info">
+                                        <h6>Juliana Santos</h6>
+                                        <span>Gerente de Logística</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="timeline-container timeline-container-right">
-                            <div class="timeline-content">
-                                <div class="reviews-block">
-                                    <div class="reviews-block-image-wrap d-flex align-items-center">
-                                        <!-- Fixed Ricardo image path -->
-                                        <img src="{% static 'images/reviews/entrepreneur-and-his-business-partner.jpg' %}" class="reviews-block-image img-fluid" alt="Ricardo">
-
-                                        <div class="">
-                                            <h6 class="text-white mb-0">Ricardo</h6>
-                                            <em class="text-white">Clientes</em>
-                                        </div>
-                                    </div>
-
-                                    <div class="reviews-block-content">
-                                        <p class="text-white">Reduzimos perdas em 40% depois de implementar o InStock. Vale cada centavo investido!</p>
+                            <!-- Testimonial 2 -->
+                            <div class="testimonial-card featured">
+                                <div class="testimonial-quote">
+                                    <i class="bi bi-quote"></i>
+                                </div>
+                                <p class="testimonial-text">
+                                    Reduzimos perdas em 40% depois de implementar o InStock. O sistema de alertas de validade salvou nosso negócio. Vale cada centavo investido!
+                                </p>
+                                <div class="testimonial-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="{% static 'images/reviews/entrepreneur-and-his-business-partner.jpg' %}" alt="Ricardo" class="testimonial-avatar">
+                                    <div class="testimonial-info">
+                                        <h6>Ricardo Oliveira</h6>
+                                        <span>Diretor de Operações</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="timeline-container timeline-container-left">
-                            <div class="timeline-content">
-                                <div class="reviews-block">
-                                    <div class="reviews-block-image-wrap d-flex align-items-center">
-                                        <!-- Fixed Marina image path (changed from Mariana) -->
-                                        <img src="{% static 'images/reviews/portrait-business-women-holding-tablet.jpg' %}" class="reviews-block-image img-fluid" alt="Marina">
-
-                                        <div class="">
-                                            <h6 class="text-white mb-0">Marina</h6>
-                                            <em class="text-white">Clientes</em>
-                                        </div>
-                                    </div>
-
-                                    <div class="reviews-block-content">
-                                        <p class="text-white">A interface é muito intuitiva. Meu time aprendeu a usar em menos de uma semana!</p>
+                            <!-- Testimonial 3 -->
+                            <div class="testimonial-card">
+                                <div class="testimonial-quote">
+                                    <i class="bi bi-quote"></i>
+                                </div>
+                                <p class="testimonial-text">
+                                    A interface é muito intuitiva. Meu time aprendeu a usar em menos de uma semana! O suporte também é excepcional.
+                                </p>
+                                <div class="testimonial-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="{% static 'images/reviews/portrait-business-women-holding-tablet.jpg' %}" alt="Marina" class="testimonial-avatar">
+                                    <div class="testimonial-info">
+                                        <h6>Marina Costa</h6>
+                                        <span>Supervisora de Estoque</span>
                                     </div>
                                 </div>
                             </div>
@@ -416,140 +472,152 @@
         </section>
 
 
-         <section class="contact-section section-padding" id="section_5">
-                    <div class="container">
-                        <div class="row">   
+        <!-- Contact Section - Redesigned -->
+        <section class="contact-section-new section-padding" id="section_5">
+            <div class="container">
+                <!-- Section Header -->
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-8 text-center">
+                        <span class="section-badge">
+                            <i class="bi bi-envelope me-2"></i>
+                            Entre em contato
+                        </span>
+                        <h2 class="section-title text-white mt-3">Fale Conosco</h2>
+                        <p class="section-subtitle">Estamos prontos para ajudar você a transformar sua gestão de estoque</p>
+                    </div>
+                </div>
 
-                            <div class="col-lg-12 col-12">
-                                <em class="text-white">Quer mais informações?</em>
-                                <h2 class="text-white mb-4 pb-lg-2">Contato</h2>
-                            </div>
-
-                            <div class="col-lg-6 col-12">
-                                <form action="#" method="post" class="custom-form contact-form" role="form">
-
-                                <div class="row">
-                                    
-                                    <div class="col-lg-6 col-12">
-                                        <label for="name" class="form-label">Nome <sup class="text-danger">*</sup></label>
-
-                                        <input type="text" name="name" id="name" class="form-control" placeholder="Jackson" required="">
-                                    </div>
-
-                                    <div class="col-lg-6 col-12">
-                                        <label for="email" class="form-label">Email</label>
-
-                                        <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Jack@gmail.com" required="">
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="message" class="form-label">Como podemos te ajudar?</label>
-
-                                        <textarea name="message" rows="4" class="form-control" id="message" placeholder="Message" required=""></textarea>
-                                        
-                                    </div>
+                <div class="row g-4">
+                    <!-- Contact Info Cards -->
+                    <div class="col-lg-4">
+                        <div class="contact-info-wrapper">
+                            <!-- Email Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon">
+                                    <i class="bi bi-envelope"></i>
                                 </div>
-
-                                <div class="col-lg-5 col-12 mx-auto mt-3">
-                                    <button type="submit" class="form-control">Enviar Mensagem</button>
+                                <div class="contact-details">
+                                    <h6>Email</h6>
+                                    <a href="mailto:admin@instock.app.br">admin@instock.app.br</a>
                                 </div>
-                            </form>
                             </div>
 
-                            <div class="col-lg-6 col-12 mx-auto mt-5 mt-lg-0 ps-lg-5">
-                                <iframe class="google-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5039.668141741662!2d72.81814769288509!3d19.043340656729775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c994f34a7355%3A0x2680d63a6f7e33c2!2sLover%20Point!5e1!3m2!1sen!2sth!4v1692722771770!5m2!1sen!2sth" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
+                            <!-- Location Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h6>Localização</h6>
+                                    <p>Unifesp - Instituto de Ciência e Tecnologia<br>São José dos Campos, SP</p>
+                                </div>
                             </div>
 
+                            <!-- Hours Card -->
+                            <div class="contact-info-card">
+                                <div class="contact-icon">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h6>Horário</h6>
+                                    <p>Seg - Sex: 8h às 18h<br>Sáb: 9h às 13h</p>
+                                </div>
+                            </div>
+
+                            <!-- Social Links -->
+                            <div class="social-links-wrapper">
+                                <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-github"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+                            </div>
                         </div>
                     </div>
-                </section>
 
-
-                <footer class="site-footer">
-                    <div class="container">
-                        <div class="row">
-
-                            <div class="col-lg-4 col-12 me-auto">
-                                <em class="text-white d-block mb-4">Where to find us?</em>
-
-                                <strong class="text-white">
-                                    <i class="bi-geo-alt me-2"></i>
-                                    Bandra West, Mumbai, Maharashtra 400050, India
-                                </strong>
-
-                                <ul class="social-icon mt-4">
-                                    <li class="social-icon-item">
-                                        <a href="#" class="social-icon-link bi-facebook">
-                                        </a>
-                                    </li>
-        
-                                    <li class="social-icon-item">
-                                        <a href="https://x.com/minthu" target="_new" class="social-icon-link bi-twitter">
-                                        </a>
-                                    </li>
-
-                                    <li class="social-icon-item">
-                                        <a href="#" class="social-icon-link bi-whatsapp">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col-lg-3 col-12 mt-4 mb-3 mt-lg-0 mb-lg-0">
-                                <em class="text-white d-block mb-4">Contact</em>
-
-                                <p class="d-flex mb-1">
-                                    <strong class="me-2">Phone:</strong>
-                                    <a href="tel: 305-240-9671" class="site-footer-link">
-                                        (65) 
-                                        305 2409 671
-                                    </a>
-                                </p>
-
-                                <p class="d-flex">
-                                    <strong class="me-2">Email:</strong>
-
-                                    <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                        hello@barista.co
-                                    </a>
-                                </p>
-                            </div>
-
-
-                            <div class="col-lg-5 col-12">
-                                <em class="text-white d-block mb-4">Opening Hours.</em>
-
-                                <ul class="opening-hours-list">
-                                    <li class="d-flex">
-                                        Monday - Friday
-                                        <span class="underline"></span>
-
-                                        <strong>9:00 - 18:00</strong>
-                                    </li>
-
-                                    <li class="d-flex">
-                                        Saturday
-                                        <span class="underline"></span>
-
-                                        <strong>11:00 - 16:30</strong>
-                                    </li>
-
-                                    <li class="d-flex">
-                                        Sunday
-                                        <span class="underline"></span>
-
-                                        <strong>Closed</strong>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col-lg-8 col-12 mt-4">
-                                <p class="copyright-text mb-0">Copyright © inStock 2048 
-                                    - Design: <a rel="sponsored" href="https://www.tooplate.com" target="_blank">Tooplate</a></p>
-                            </div>
+                    <!-- Contact Form -->
+                    <div class="col-lg-8">
+                        <div class="contact-form-wrapper">
+                            <h4>Envie sua mensagem</h4>
+                            <p class="form-subtitle">Responderemos o mais breve possível</p>
+                            
+                            <form action="#" method="post" class="contact-form-new" role="form">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="contactName" name="name" placeholder="Seu nome" required>
+                                            <label for="contactName">Nome completo</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="contactEmail" name="email" placeholder="seu@email.com" required>
+                                            <label for="contactEmail">Email</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="contactSubject" name="subject" placeholder="Assunto">
+                                            <label for="contactSubject">Assunto</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="contactMessage" name="message" placeholder="Sua mensagem" style="height: 150px" required></textarea>
+                                            <label for="contactMessage">Como podemos ajudar?</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <button type="submit" class="btn-submit">
+                                            <span>Enviar Mensagem</span>
+                                            <i class="bi bi-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </footer>
-            </main>
+                </div>
+
+                <!-- Map -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="map-wrapper">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.0476511840584!2d-45.95876492393!3d-23.178890979054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cc4a3b3b3b3b3b%3A0x3b3b3b3b3b3b3b3b!2sUniversidade%20Federal%20de%20S%C3%A3o%20Paulo%20-%20Campus%20S%C3%A3o%20Jos%C3%A9%20dos%20Campos!5e0!3m2!1spt-BR!2sbr!4v1701700000000!5m2!1spt-BR!2sbr" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer - Redesigned -->
+        <footer class="footer-new">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <span class="footer-logo">📦 InStock</span>
+                        <p>Sistema inteligente de gestão de estoque desenvolvido na Unifesp ICT.</p>
+                    </div>
+                    
+                    <div class="footer-links">
+                        <a href="#section_1">Home</a>
+                        <a href="#section_2">Sobre</a>
+                        <a href="#section_3">Serviços</a>
+                        <a href="#section_4">Feedbacks</a>
+                        <a href="#section_5">Contato</a>
+                    </div>
+                    
+                    <div class="footer-bottom">
+                        <p>© 2025 InStock - Unifesp ICT São José dos Campos</p>
+                        <p class="credits">Design: <a href="https://www.tooplate.com" target="_blank">Tooplate</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
 
         <!-- JAVASCRIPT FILES -->
         <script src="{% static 'js/jquery.min.js' %}"></script>
