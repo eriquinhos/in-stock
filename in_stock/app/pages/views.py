@@ -23,7 +23,11 @@ from in_stock.app.suppliers.models import Supplier
 from in_stock.app.users.audit_service import AuditService
 from in_stock.app.users.forms import CustomUserCreationForm
 from in_stock.app.users.models import (
-    AccessRequest, AuditLog, Company, CustomUser, PasswordResetToken,
+    AccessRequest,
+    AuditLog,
+    Company,
+    CustomUser,
+    PasswordResetToken,
 )
 
 

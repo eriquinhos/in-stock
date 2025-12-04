@@ -3,7 +3,8 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.mixins import (
-    LoginRequiredMixin, PermissionRequiredMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
 )
 from django.http import FileResponse
 from django.shortcuts import redirect, render

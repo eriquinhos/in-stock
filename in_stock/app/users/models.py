@@ -4,7 +4,9 @@ import string
 import uuid
 
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin,
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
 )
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
