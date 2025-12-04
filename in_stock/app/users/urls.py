@@ -4,7 +4,6 @@ from django.views.generic import TemplateView
 
 from . import views
 
-
 urlpatterns = [
     # Lista todos os usuários (GET) e cria um novo usuário (POST)
     path("", views.UserListCreateView.as_view(), name="user-list-create"),
