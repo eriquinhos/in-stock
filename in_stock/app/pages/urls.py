@@ -42,25 +42,25 @@ urlpatterns = [
     # GESTÃO DE USUÁRIOS E EMPRESAS
     # ============================================
     # Gerenciamento de usuários
-    path("admin/users/", views.users_management_view, name="users_management"),
-    path("admin/users/create/", views.create_user_view, name="create_user"),
+    path("gestao/usuarios/", views.users_management_view, name="users_management"),
+    path("gestao/usuarios/criar/", views.create_user_view, name="create_user"),
     path(
-        "admin/users/<int:user_id>/role/",
+        "gestao/usuarios/<int:user_id>/role/",
         views.update_user_role_view,
         name="update_user_role",
     ),
     path(
-        "admin/users/<int:user_id>/toggle/",
+        "gestao/usuarios/<int:user_id>/toggle/",
         views.toggle_user_status_view,
         name="toggle_user_status",
     ),
     # Logs de auditoria
-    path("admin/audit-logs/", views.audit_logs_view, name="audit_logs"),
+    path("gestao/auditoria/", views.audit_logs_view, name="audit_logs"),
     # Gerenciamento de empresas (apenas InStock admin)
-    path("admin/companies/", views.companies_view, name="companies"),
-    path("admin/companies/create/", views.create_company_view, name="create_company"),
+    path("gestao/empresas/", views.companies_view, name="companies"),
+    path("gestao/empresas/criar/", views.create_company_view, name="create_company"),
     path(
-        "admin/companies/<uuid:company_id>/",
+        "gestao/empresas/<uuid:company_id>/",
         views.company_detail_view,
         name="company_detail",
     ),
