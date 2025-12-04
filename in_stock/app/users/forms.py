@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CustomUser, Company
+from .models import Company, CustomUser
 
 # Formulário para criação de usuário
 

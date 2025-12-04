@@ -766,11 +766,12 @@ class ResetPasswordView(View):
         return redirect("login")
 
 
+from in_stock.app.users.audit_service import AuditService
+
 # ============================================
 # VIEWS DE GESTÃO DE USUÁRIOS E EMPRESAS
 # ============================================
-from in_stock.app.users.models import Company, AuditLog
-from in_stock.app.users.audit_service import AuditService
+from in_stock.app.users.models import AuditLog, Company
 
 
 @login_required

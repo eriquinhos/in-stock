@@ -1,9 +1,9 @@
 """
 Serviço de Auditoria - Registra todas as ações do sistema
 """
-from django.db.models.signals import post_save, post_delete, pre_save
-from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_delete, post_save, pre_save
+from django.dispatch import receiver
 
 from in_stock.app.users.models import AuditLog
 

@@ -1,3 +1,4 @@
+import json
 import secrets
 import string
 import uuid
@@ -7,14 +8,10 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-import uuid
-import secrets
-import string
-import json
 
 
 # ============================================
