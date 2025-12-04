@@ -1,8 +1,8 @@
 from django import forms
 
-from .models import CustomUser
+from .models import CustomUser, Company
 
-# Precisa terminar este forms
+# Formulário para criação de usuário
 
 
 class CustomUserCreationForm(forms.ModelForm):
@@ -11,15 +11,35 @@ class CustomUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ("email", "phone", "name", "type")
+        fields = ("email", "phone", "name", "role", "company_obj")
+        widgets = {
+            'role': forms.Select(attrs={'class': 'form-select'}),
+            'company_obj': forms.Select(attrs={'class': 'form-select'}),
+        }
 
-        # Repar esse Erro  segundo o CHATGPT: error_messages não deve ser colocado dentro do Meta
         error_messages = {
             "email": {
                 "required": "O email não pode ficar em branco.",
                 "unique": '"Este email já está em uso!"',
             },
         }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        # Se não for admin InStock, limita as opções de papel
+        if self.user and not self.user.is_instock_admin:
+            # Admin de empresa só pode criar gestores e operadores
+            self.fields['role'].choices = [
+                ('manager', 'Gestor'),
+                ('operator', 'Operador'),
+            ]
+            # E só pode criar na sua empresa
+            if self.user.company_obj:
+                self.fields['company_obj'].queryset = Company.objects.filter(id=self.user.company_obj.id)
+                self.fields['company_obj'].initial = self.user.company_obj
+                self.fields['company_obj'].widget = forms.HiddenInput()
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

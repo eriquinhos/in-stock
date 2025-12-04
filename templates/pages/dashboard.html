@@ -231,9 +231,11 @@
                     <span>Relatórios</span>
                 </a>
                 
-                {% if user.is_instock_admin %}
+                {% if user.is_instock_admin or user.can_manage_users %}
                 <div class="pt-4 mt-4 border-t border-white/10">
                     <p class="px-4 text-xs text-white/50 uppercase tracking-wider mb-2">Administração</p>
+                    
+                    {% if user.is_instock_admin or user.is_company_admin %}
                     <a href="{% url 'access_requests' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium relative">
                         <i class="fas fa-user-plus w-5 text-center"></i>
                         <span>Solicitações</span>
@@ -243,6 +245,26 @@
                         </span>
                         {% endif %}
                     </a>
+                    {% endif %}
+                    
+                    {% if user.is_instock_admin %}
+                    <a href="{% url 'companies' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-building w-5 text-center"></i>
+                        <span>Empresas</span>
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'users_management' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-users-cog w-5 text-center"></i>
+                        <span>Usuários</span>
+                    </a>
+                    
+                    {% if user.can_view_audit_logs %}
+                    <a href="{% url 'audit_logs' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-history w-5 text-center"></i>
+                        <span>Auditoria</span>
+                    </a>
+                    {% endif %}
                 </div>
                 {% endif %}
             </nav>

@@ -8,6 +8,14 @@ class Report(models.Model):
         related_name="report_user",
         null=False,
     )
+    company = models.ForeignKey(
+        "users.Company",
+        on_delete=models.CASCADE,
+        related_name="reports",
+        null=True,
+        blank=True,
+        verbose_name="Empresa"
+    )
     TYPE_CHOICES = [
         ("expenses", "Despesas"),
         ("revenue", "Receitas"),
