@@ -55,22 +55,25 @@ class CustomUserModelTests(TestCase):
         self.assertEqual(self.user.name, "Test User")
         self.assertEqual(self.user.email, "user@example.com")
         self.assertEqual(self.user.phone, "11999999999")
-        self.assertEqual(self.user.type, "standard")
+        # Correção: type -> role, standard -> operator
+        self.assertEqual(self.user.role, "operator")
 
     def test_user_string_representation(self):
         """Testa a representação em string do usuário"""
         self.assertEqual(str(self.user), "user@example.com")
 
     def test_default_user_type(self):
-        """Testa se o tipo padrão de usuário é 'standard'"""
-        self.assertEqual(self.user.type, "standard")
+        """Testa se o tipo padrão de usuário é 'operator'"""
+        # Correção: type -> role, standard -> operator
+        self.assertEqual(self.user.role, "operator")
 
     def test_user_can_be_admin_type(self):
-        """Testa se um usuário pode ser do tipo 'admin'"""
+        """Testa se um usuário pode ser do tipo 'company_admin'"""
+        # Correção: type -> role, admin -> company_admin
         admin = User.objects.create_user(
-            email="admin@example.com", password="adminpass123", type="admin"
+            email="admin@example.com", password="adminpass123", role="company_admin"
         )
-        self.assertEqual(admin.type, "admin")
+        self.assertEqual(admin.role, "company_admin")
 
     def test_email_uniqueness(self):
         """Testa se o email deve ser único"""
