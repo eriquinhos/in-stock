@@ -222,6 +222,14 @@ class LoginCreateView(View):
             user = authenticate(request, email=email, password=password)
 
             if user is not None:
+                # Verifica se o usuário está ativo (is_staff)
+                if not user.is_staff and not user.is_superuser:
+                    messages.error(
+                        request,
+                        "Sua conta está desativada. Entre em contato com o administrador.",
+                    )
+                    return render(request, self.template_name)
+
                 login(request, user)
                 # Verifica se precisa trocar a senha
                 if user.must_change_password:
