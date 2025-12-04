@@ -17,17 +17,17 @@ urlpatterns = [
         name="user-create",
     ),
     path("register/", views.RegisterCreate.as_view(), name="user-register"),
-    # Rota de Login
+    # Rota de Login (legado - usar /login/ ao invés de /users/login/)
     path(
         "login/",
         auth_views.LoginView.as_view(template_name="login.html"),
-        name="login",
+        name="users_login",
     ),
-    # Rota de Logout
+    # Rota de Logout (legado - usar /logout/ ao invés de /users/logout/)
     path(
         "logout/",
         auth_views.LogoutView.as_view(),
-        name="logout",
+        name="users_logout",
     ),
     # Rota do MENU VERTICAL
     path(
