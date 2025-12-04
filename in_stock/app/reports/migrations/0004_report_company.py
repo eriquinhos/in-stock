@@ -7,14 +7,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0009_company_alter_customuser_company_role_and_more'),
-        ('reports', '0003_report_type'),
+        ("users", "0009_company_alter_customuser_company_role_and_more"),
+        ("reports", "0003_report_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='company',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reports', to='users.company', verbose_name='Empresa'),
+            model_name="report",
+            name="company",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reports",
+                to="users.company",
+                verbose_name="Empresa",
+            ),
         ),
     ]

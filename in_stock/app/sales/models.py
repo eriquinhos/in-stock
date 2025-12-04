@@ -28,7 +28,7 @@ class Sale(models.Model):
         related_name="sales",
         null=True,
         blank=True,
-        verbose_name="Empresa"
+        verbose_name="Empresa",
     )
     date = models.DateTimeField(default=timezone.now)
     TIPO = [("entry", "Entrada"), ("exits", "Saída")]

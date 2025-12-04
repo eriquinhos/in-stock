@@ -143,14 +143,16 @@ def dashboard_view(request):
     pending_requests = []
     if request.user.is_instock_admin:
         # InStock Admin vê solicitações de novas empresas
-        pending_requests = AccessRequest.objects.filter(status='pending', request_type='new_company')
+        pending_requests = AccessRequest.objects.filter(
+            status="pending", request_type="new_company"
+        )
         pending_requests_count = pending_requests.count()
     elif request.user.is_company_admin and request.user.company_obj:
         # Company Admin vê solicitações para sua empresa
         pending_requests = AccessRequest.objects.filter(
-            status='pending', 
-            request_type='join_company', 
-            company=request.user.company_obj
+            status="pending",
+            request_type="join_company",
+            company=request.user.company_obj,
         )
         pending_requests_count = pending_requests.count()
 
@@ -245,23 +247,28 @@ def error_403_view(request, exception=None):
 class RequestAccessView(View):
     """
     View pública para solicitar acesso ao sistema.
-    
+
     Dois tipos de solicitação:
     1. new_company: Nova empresa querendo usar o sistema
     2. join_company: Usuário querendo entrar em empresa existente
     """
+
     template_name = "auth/request_access.html"
 
     def get(self, request):
         if request.user.is_authenticated:
             return redirect("dashboard")
-        
+
         # Lista empresas ativas para o formulário de join_company
-        companies = Company.objects.filter(is_active=True).order_by('name')
-        
-        return render(request, self.template_name, {
-            'companies': companies,
-        })
+        companies = Company.objects.filter(is_active=True).order_by("name")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "companies": companies,
+            },
+        )
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -272,7 +279,7 @@ class RequestAccessView(View):
         personal_email = request.POST.get("personal_email", "").strip().lower()
         phone = request.POST.get("phone", "").strip()
         message = request.POST.get("message", "").strip()
-        
+
         # Campos específicos por tipo
         company_name = request.POST.get("company_name", "").strip()
         cnpj = request.POST.get("cnpj", "").strip()
@@ -284,68 +291,76 @@ class RequestAccessView(View):
             return self.get(request)
 
         # Verifica se já existe solicitação pendente
-        if AccessRequest.objects.filter(personal_email=personal_email, status='pending').exists():
-            messages.warning(request, "Já existe uma solicitação pendente com este email.")
+        if AccessRequest.objects.filter(
+            personal_email=personal_email, status="pending"
+        ).exists():
+            messages.warning(
+                request, "Já existe uma solicitação pendente com este email."
+            )
             return self.get(request)
 
         # Verifica se já existe usuário com este email
         if CustomUser.objects.filter(email=personal_email).exists():
-            messages.warning(request, "Este email já possui uma conta. Tente fazer login.")
+            messages.warning(
+                request, "Este email já possui uma conta. Tente fazer login."
+            )
             return redirect("login")
 
-        if request_type == 'new_company':
+        if request_type == "new_company":
             # Validações específicas para nova empresa
             if not all([company_name, cnpj]):
                 messages.error(request, "Para nova empresa, informe o nome e CNPJ.")
                 return self.get(request)
-            
+
             # Verifica se já existe empresa com este CNPJ
             if Company.objects.filter(cnpj=cnpj).exists():
-                messages.warning(request, "Já existe uma empresa cadastrada com este CNPJ.")
+                messages.warning(
+                    request, "Já existe uma empresa cadastrada com este CNPJ."
+                )
                 return self.get(request)
-            
+
             # Cria a solicitação de nova empresa
             AccessRequest.objects.create(
-                request_type='new_company',
+                request_type="new_company",
                 name=name,
                 personal_email=personal_email,
                 company_name=company_name,
                 cnpj=cnpj,
                 phone=phone,
-                message=message
+                message=message,
             )
-            
+
             messages.success(
                 request,
-                "Sua solicitação de cadastro de empresa foi enviada! Você receberá um email quando for aprovada."
+                "Sua solicitação de cadastro de empresa foi enviada! Você receberá um email quando for aprovada.",
             )
         else:
             # Validações específicas para entrar em empresa
             if not company_id:
                 messages.error(request, "Por favor, selecione uma empresa.")
                 return self.get(request)
-            
+
             try:
                 company = Company.objects.get(id=company_id, is_active=True)
             except Company.DoesNotExist:
                 messages.error(request, "Empresa não encontrada.")
                 return self.get(request)
-            
+
             # Cria a solicitação de entrar na empresa (sem cargo - admin define depois)
             AccessRequest.objects.create(
-                request_type='join_company',
+                request_type="join_company",
                 name=name,
                 personal_email=personal_email,
                 company=company,
                 phone=phone,
-                message=message
+                message=message,
             )
-            
+
             messages.success(
                 request,
-                f"Sua solicitação para entrar em {company.name} foi enviada! Você receberá um email quando for aprovada."
+                f"Sua solicitação para entrar em {company.name} foi enviada! Você receberá um email quando for aprovada.",
             )
-        
+
         return redirect("login")
 
 
@@ -400,21 +415,39 @@ def access_requests_view(request):
 
     if request.user.is_instock_admin:
         # InStock Admin vê solicitações de novas empresas
-        pending = AccessRequest.objects.filter(status='pending', request_type='new_company')
-        approved = AccessRequest.objects.filter(status='approved', request_type='new_company').order_by('-updated_at')[:20]
-        rejected = AccessRequest.objects.filter(status='rejected', request_type='new_company').order_by('-updated_at')[:20]
+        pending = AccessRequest.objects.filter(
+            status="pending", request_type="new_company"
+        )
+        approved = AccessRequest.objects.filter(
+            status="approved", request_type="new_company"
+        ).order_by("-updated_at")[:20]
+        rejected = AccessRequest.objects.filter(
+            status="rejected", request_type="new_company"
+        ).order_by("-updated_at")[:20]
     else:
         # Company Admin vê solicitações para sua empresa
-        pending = AccessRequest.objects.filter(status='pending', request_type='join_company', company=request.user.company_obj)
-        approved = AccessRequest.objects.filter(status='approved', request_type='join_company', company=request.user.company_obj).order_by('-updated_at')[:20]
-        rejected = AccessRequest.objects.filter(status='rejected', request_type='join_company', company=request.user.company_obj).order_by('-updated_at')[:20]
+        pending = AccessRequest.objects.filter(
+            status="pending",
+            request_type="join_company",
+            company=request.user.company_obj,
+        )
+        approved = AccessRequest.objects.filter(
+            status="approved",
+            request_type="join_company",
+            company=request.user.company_obj,
+        ).order_by("-updated_at")[:20]
+        rejected = AccessRequest.objects.filter(
+            status="rejected",
+            request_type="join_company",
+            company=request.user.company_obj,
+        ).order_by("-updated_at")[:20]
 
     context = {
-        'pending': pending,
-        'approved': approved,
-        'rejected': rejected,
-        'pending_requests_count': pending.count(),
-        'is_instock_admin': request.user.is_instock_admin,
+        "pending": pending,
+        "approved": approved,
+        "rejected": rejected,
+        "pending_requests_count": pending.count(),
+        "is_instock_admin": request.user.is_instock_admin,
     }
     return render(request, "pages/access_requests.html", context)
 
@@ -427,36 +460,43 @@ def approve_request_view(request, request_id):
     - join_company: Cria usuário na empresa existente
     """
     access_request = get_object_or_404(AccessRequest, id=request_id)
-    
+
     # Verifica permissão
-    if access_request.request_type == 'new_company':
+    if access_request.request_type == "new_company":
         if not request.user.is_instock_admin:
-            messages.error(request, "Você não tem permissão para aprovar solicitações de novas empresas.")
+            messages.error(
+                request,
+                "Você não tem permissão para aprovar solicitações de novas empresas.",
+            )
             return redirect("dashboard")
     else:  # join_company
-        if not request.user.is_company_admin or access_request.company != request.user.company_obj:
-            messages.error(request, "Você não tem permissão para aprovar esta solicitação.")
+        if (
+            not request.user.is_company_admin
+            or access_request.company != request.user.company_obj
+        ):
+            messages.error(
+                request, "Você não tem permissão para aprovar esta solicitação."
+            )
             return redirect("dashboard")
 
     if access_request.status != "pending":
         messages.warning(request, "Esta solicitação já foi processada.")
         return redirect("access_requests")
 
-    if access_request.request_type == 'new_company':
+    if access_request.request_type == "new_company":
         # === NOVA EMPRESA ===
         # Cria a empresa
         company, created = Company.objects.get_or_create(
             cnpj=access_request.cnpj,
             defaults={
-                'name': access_request.company_name,
-                'phone': access_request.phone,
-            }
+                "name": access_request.company_name,
+                "phone": access_request.phone,
+            },
         )
-        
+
         # Gera email e senha
         generated_email = AccessRequest.generate_company_email(
-            access_request.name, 
-            access_request.company_name
+            access_request.name, access_request.company_name
         )
         generated_password = AccessRequest.generate_password()
 
@@ -464,7 +504,7 @@ def approve_request_view(request, request_id):
         base_email = generated_email
         counter = 1
         while CustomUser.objects.filter(email=generated_email).exists():
-            parts = base_email.split('@')
+            parts = base_email.split("@")
             generated_email = f"{parts[0]}{counter}@{parts[1]}"
             counter += 1
 
@@ -475,29 +515,33 @@ def approve_request_view(request, request_id):
             name=access_request.name,
             company=access_request.company_name,
             company_obj=company,
-            role='company_admin',  # Admin da empresa
-            must_change_password=True
+            role="company_admin",  # Admin da empresa
+            must_change_password=True,
         )
-        
+
         # Log de auditoria
-        AuditService.log_approve(request.user, access_request, request, 
-                                 new_user_email=generated_email,
-                                 company_name=company.name)
-        
+        AuditService.log_approve(
+            request.user,
+            access_request,
+            request,
+            new_user_email=generated_email,
+            company_name=company.name,
+        )
+
         success_message = f"✅ Empresa e Admin criados! Email: {generated_email} | Senha: {generated_password}"
-        
+
     else:
         # === ENTRAR EM EMPRESA EXISTENTE ===
         company = access_request.company
-        
+
         # Gera senha
         generated_password = AccessRequest.generate_password()
         generated_email = access_request.personal_email  # Usa o email pessoal
-        
+
         # Pega o cargo escolhido pelo admin (via POST)
-        selected_role = request.POST.get('role', 'operator')
-        if selected_role not in ['manager', 'operator']:
-            selected_role = 'operator'
+        selected_role = request.POST.get("role", "operator")
+        if selected_role not in ["manager", "operator"]:
+            selected_role = "operator"
 
         # Cria o usuário
         new_user = CustomUser.objects.create_user(
@@ -507,17 +551,23 @@ def approve_request_view(request, request_id):
             company=company.name if company else None,
             company_obj=company,
             role=selected_role,  # Cargo escolhido pelo admin
-            must_change_password=True
+            must_change_password=True,
         )
-        
-        role_display = 'Gestor' if selected_role == 'manager' else 'Operador'
-        
+
+        role_display = "Gestor" if selected_role == "manager" else "Operador"
+
         # Log de auditoria
-        AuditService.log_approve(request.user, access_request, request, 
-                                 new_user_email=generated_email,
-                                 role=selected_role)
-        
-        success_message = f"✅ Usuário criado como {role_display}! Senha: {generated_password}"
+        AuditService.log_approve(
+            request.user,
+            access_request,
+            request,
+            new_user_email=generated_email,
+            role=selected_role,
+        )
+
+        success_message = (
+            f"✅ Usuário criado como {role_display}! Senha: {generated_password}"
+        )
 
     # Atualiza a solicitação
     access_request.status = "approved"
@@ -563,23 +613,31 @@ Equipe InStock
 def reject_request_view(request, request_id):
     """Rejeita uma solicitação de acesso"""
     access_request = get_object_or_404(AccessRequest, id=request_id)
-    
+
     # Verifica permissão
-    if access_request.request_type == 'new_company':
+    if access_request.request_type == "new_company":
         if not request.user.is_instock_admin:
-            messages.error(request, "Você não tem permissão para rejeitar solicitações de novas empresas.")
+            messages.error(
+                request,
+                "Você não tem permissão para rejeitar solicitações de novas empresas.",
+            )
             return redirect("dashboard")
     else:  # join_company
-        if not request.user.is_company_admin or access_request.company != request.user.company_obj:
-            messages.error(request, "Você não tem permissão para rejeitar esta solicitação.")
+        if (
+            not request.user.is_company_admin
+            or access_request.company != request.user.company_obj
+        ):
+            messages.error(
+                request, "Você não tem permissão para rejeitar esta solicitação."
+            )
             return redirect("dashboard")
 
     if access_request.status != "pending":
         messages.warning(request, "Esta solicitação já foi processada.")
         return redirect("access_requests")
 
-    access_request.status = 'rejected'
-    access_request.rejection_reason = request.POST.get('reason', '')
+    access_request.status = "rejected"
+    access_request.rejection_reason = request.POST.get("reason", "")
     access_request.save()
 
     messages.success(request, "❌ Solicitação rejeitada.")
@@ -778,63 +836,70 @@ from in_stock.app.users.models import AuditLog, Company
 def users_management_view(request):
     """View para gerenciamento de usuários (apenas admins)"""
     if not request.user.can_manage_users():
-        messages.error(request, 'Você não tem permissão para gerenciar usuários.')
-        return redirect('dashboard')
-    
+        messages.error(request, "Você não tem permissão para gerenciar usuários.")
+        return redirect("dashboard")
+
     # InStock admin vê todos os usuários
     if request.user.is_instock_admin:
-        users = CustomUser.objects.all().select_related('company_obj')
+        users = CustomUser.objects.all().select_related("company_obj")
         companies = Company.objects.all()
     else:
         # Admin de empresa vê apenas usuários da sua empresa
-        users = CustomUser.objects.filter(company_obj=request.user.company_obj).select_related('company_obj')
+        users = CustomUser.objects.filter(
+            company_obj=request.user.company_obj
+        ).select_related("company_obj")
         companies = [request.user.company_obj] if request.user.company_obj else []
-    
+
     # Roles disponíveis baseado no tipo de admin
     if request.user.is_instock_admin:
         role_choices = CustomUser.ROLE_CHOICES
     else:
         # Admin de empresa só pode criar gestores e operadores
         role_choices = [
-            ('manager', 'Gestor'),
-            ('operator', 'Operador'),
+            ("manager", "Gestor"),
+            ("operator", "Operador"),
         ]
-    
+
     context = {
-        'users': users,
-        'companies': companies,
-        'role_choices': role_choices,
+        "users": users,
+        "companies": companies,
+        "role_choices": role_choices,
     }
-    return render(request, 'admin/users_management.html', context)
+    return render(request, "admin/users_management.html", context)
 
 
 @login_required
 def create_user_view(request):
     """View para criar um novo usuário"""
     if not request.user.can_manage_users():
-        messages.error(request, 'Você não tem permissão para criar usuários.')
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        email = request.POST.get('email', '').strip().lower()
-        role_name = request.POST.get('role', 'operator')
-        company_id = request.POST.get('company')
-        
+        messages.error(request, "Você não tem permissão para criar usuários.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip().lower()
+        role_name = request.POST.get("role", "operator")
+        company_id = request.POST.get("company")
+
         # Validações
         if not name or not email:
-            messages.error(request, 'Nome e email são obrigatórios.')
-            return redirect('users_management')
-        
+            messages.error(request, "Nome e email são obrigatórios.")
+            return redirect("users_management")
+
         if CustomUser.objects.filter(email=email).exists():
-            messages.error(request, 'Este email já está cadastrado.')
-            return redirect('users_management')
-        
+            messages.error(request, "Este email já está cadastrado.")
+            return redirect("users_management")
+
         # Validação de papel - Admin de empresa não pode criar instock_admin ou company_admin
-        if not request.user.is_instock_admin and role_name in ['instock_admin', 'company_admin']:
-            messages.error(request, 'Você não tem permissão para criar este tipo de usuário.')
-            return redirect('users_management')
-        
+        if not request.user.is_instock_admin and role_name in [
+            "instock_admin",
+            "company_admin",
+        ]:
+            messages.error(
+                request, "Você não tem permissão para criar este tipo de usuário."
+            )
+            return redirect("users_management")
+
         # Define a empresa
         if request.user.is_instock_admin and company_id:
             try:
@@ -843,10 +908,10 @@ def create_user_view(request):
                 company = None
         else:
             company = request.user.company_obj
-        
+
         # Gera senha temporária
         temp_password = AccessRequest.generate_password()
-        
+
         # Cria o usuário
         user = CustomUser.objects.create_user(
             email=email,
@@ -857,170 +922,195 @@ def create_user_view(request):
             role=role_name,
             must_change_password=True,
         )
-        
+
         # Log de auditoria
         AuditService.log_create(request.user, user, request)
-        
-        messages.success(request, f'Usuário criado com sucesso! Senha temporária: {temp_password}')
-        return redirect('users_management')
-    
-    return redirect('users_management')
+
+        messages.success(
+            request, f"Usuário criado com sucesso! Senha temporária: {temp_password}"
+        )
+        return redirect("users_management")
+
+    return redirect("users_management")
 
 
 @login_required
 def update_user_role_view(request, user_id):
     """View para atualizar o papel de um usuário"""
     if not request.user.can_manage_users():
-        messages.error(request, 'Você não tem permissão para editar usuários.')
-        return redirect('dashboard')
-    
+        messages.error(request, "Você não tem permissão para editar usuários.")
+        return redirect("dashboard")
+
     try:
         target_user = CustomUser.objects.get(id=user_id)
     except CustomUser.DoesNotExist:
-        messages.error(request, 'Usuário não encontrado.')
-        return redirect('users_management')
-    
+        messages.error(request, "Usuário não encontrado.")
+        return redirect("users_management")
+
     # Verifica se pode editar este usuário
-    if not request.user.is_instock_admin and target_user.company_obj != request.user.company_obj:
-        messages.error(request, 'Você não pode editar usuários de outras empresas.')
-        return redirect('users_management')
-    
-    if request.method == 'POST':
-        role_name = request.POST.get('role', 'operator')
-        
+    if (
+        not request.user.is_instock_admin
+        and target_user.company_obj != request.user.company_obj
+    ):
+        messages.error(request, "Você não pode editar usuários de outras empresas.")
+        return redirect("users_management")
+
+    if request.method == "POST":
+        role_name = request.POST.get("role", "operator")
+
         # Validação de papel - Admin de empresa não pode promover para instock_admin ou company_admin
-        if not request.user.is_instock_admin and role_name in ['instock_admin', 'company_admin']:
-            messages.error(request, 'Você não tem permissão para atribuir este papel.')
-            return redirect('users_management')
-        
+        if not request.user.is_instock_admin and role_name in [
+            "instock_admin",
+            "company_admin",
+        ]:
+            messages.error(request, "Você não tem permissão para atribuir este papel.")
+            return redirect("users_management")
+
         # Captura valores antigos para auditoria
-        old_values = {'role': target_user.role}
-        
+        old_values = {"role": target_user.role}
+
         # Atualiza o role
         target_user.role = role_name
         target_user.save()
-        
+
         # Log de auditoria
         AuditService.log_update(
-            request.user, target_user, old_values, request,
-            changed_field='role', new_value=role_name
+            request.user,
+            target_user,
+            old_values,
+            request,
+            changed_field="role",
+            new_value=role_name,
         )
-        
-        messages.success(request, f'Papel do usuário atualizado para {dict(CustomUser.ROLE_CHOICES).get(role_name)}.')
-    
-    return redirect('users_management')
+
+        messages.success(
+            request,
+            f"Papel do usuário atualizado para {dict(CustomUser.ROLE_CHOICES).get(role_name)}.",
+        )
+
+    return redirect("users_management")
 
 
 @login_required
 def toggle_user_status_view(request, user_id):
     """View para ativar/desativar um usuário"""
     if not request.user.can_manage_users():
-        messages.error(request, 'Você não tem permissão para editar usuários.')
-        return redirect('dashboard')
-    
+        messages.error(request, "Você não tem permissão para editar usuários.")
+        return redirect("dashboard")
+
     try:
         target_user = CustomUser.objects.get(id=user_id)
     except CustomUser.DoesNotExist:
-        messages.error(request, 'Usuário não encontrado.')
-        return redirect('users_management')
-    
+        messages.error(request, "Usuário não encontrado.")
+        return redirect("users_management")
+
     # Não pode desativar a si mesmo
     if target_user.id == request.user.id:
-        messages.error(request, 'Você não pode desativar sua própria conta.')
-        return redirect('users_management')
-    
+        messages.error(request, "Você não pode desativar sua própria conta.")
+        return redirect("users_management")
+
     # Verifica se pode editar este usuário
-    if not request.user.is_instock_admin and target_user.company_obj != request.user.company_obj:
-        messages.error(request, 'Você não pode editar usuários de outras empresas.')
-        return redirect('users_management')
-    
+    if (
+        not request.user.is_instock_admin
+        and target_user.company_obj != request.user.company_obj
+    ):
+        messages.error(request, "Você não pode editar usuários de outras empresas.")
+        return redirect("users_management")
+
     # Alterna o status
-    old_status = target_user.is_active if hasattr(target_user, 'is_active') else True
-    target_user.is_staff = not target_user.is_staff  # Usando is_staff como flag de ativo
+    old_status = target_user.is_active if hasattr(target_user, "is_active") else True
+    target_user.is_staff = (
+        not target_user.is_staff
+    )  # Usando is_staff como flag de ativo
     target_user.save()
-    
+
     # Log de auditoria
     AuditService.log_update(
-        request.user, target_user, 
-        {'is_active': old_status}, 
+        request.user,
+        target_user,
+        {"is_active": old_status},
         request,
-        changed_field='status'
+        changed_field="status",
     )
-    
-    status_msg = 'ativado' if target_user.is_staff else 'desativado'
-    messages.success(request, f'Usuário {status_msg} com sucesso.')
-    return redirect('users_management')
+
+    status_msg = "ativado" if target_user.is_staff else "desativado"
+    messages.success(request, f"Usuário {status_msg} com sucesso.")
+    return redirect("users_management")
 
 
 # ============================================
 # VIEWS DE AUDITORIA
 # ============================================
 
+
 @login_required
 def audit_logs_view(request):
     """View para visualizar logs de auditoria"""
     if not request.user.can_view_audit_logs():
-        messages.error(request, 'Você não tem permissão para ver os logs de auditoria.')
-        return redirect('dashboard')
-    
+        messages.error(request, "Você não tem permissão para ver os logs de auditoria.")
+        return redirect("dashboard")
+
     # Filtros
-    action_filter = request.GET.get('action', '')
-    user_filter = request.GET.get('user', '')
-    date_from = request.GET.get('date_from', '')
-    date_to = request.GET.get('date_to', '')
-    
+    action_filter = request.GET.get("action", "")
+    user_filter = request.GET.get("user", "")
+    date_from = request.GET.get("date_from", "")
+    date_to = request.GET.get("date_to", "")
+
     # Query base
     if request.user.is_instock_admin:
         logs = AuditLog.objects.all()
     else:
         logs = AuditLog.objects.filter(company=request.user.company_obj)
-    
+
     # Aplica filtros
     if action_filter:
         logs = logs.filter(action=action_filter)
-    
+
     if user_filter:
         logs = logs.filter(user_email__icontains=user_filter)
-    
+
     if date_from:
         logs = logs.filter(created_at__date__gte=date_from)
-    
+
     if date_to:
         logs = logs.filter(created_at__date__lte=date_to)
-    
+
     # Limita resultados e carrega relações
-    logs = logs.select_related('user', 'company', 'content_type')[:200]
-    
+    logs = logs.select_related("user", "company", "content_type")[:200]
+
     context = {
-        'logs': logs,
-        'action_choices': AuditLog.ACTION_CHOICES,
-        'filters': {
-            'action': action_filter,
-            'user': user_filter,
-            'date_from': date_from,
-            'date_to': date_to,
+        "logs": logs,
+        "action_choices": AuditLog.ACTION_CHOICES,
+        "filters": {
+            "action": action_filter,
+            "user": user_filter,
+            "date_from": date_from,
+            "date_to": date_to,
         },
     }
-    return render(request, 'admin/audit_logs.html', context)
+    return render(request, "admin/audit_logs.html", context)
 
 
 # ============================================
 # VIEWS DE EMPRESAS
 # ============================================
 
+
 @login_required
 def companies_view(request):
     """View para listar empresas (apenas InStock admin)"""
     if not request.user.is_instock_admin:
-        messages.error(request, 'Apenas administradores InStock podem acessar esta página.')
-        return redirect('dashboard')
-    
-    companies = Company.objects.all().prefetch_related('users', 'products')
-    
+        messages.error(
+            request, "Apenas administradores InStock podem acessar esta página."
+        )
+        return redirect("dashboard")
+
+    companies = Company.objects.all().prefetch_related("users", "products")
+
     context = {
-        'companies': companies,
+        "companies": companies,
     }
-    return render(request, 'admin/companies.html', context)
+    return render(request, "admin/companies.html", context)
 
 
 @login_required
@@ -1029,69 +1119,68 @@ def company_detail_view(request, company_id):
     if not request.user.is_instock_admin:
         # Permite ver apenas a própria empresa
         if str(request.user.company_obj.id) != str(company_id):
-            messages.error(request, 'Você não tem permissão para ver esta empresa.')
-            return redirect('dashboard')
-    
+            messages.error(request, "Você não tem permissão para ver esta empresa.")
+            return redirect("dashboard")
+
     try:
         company = Company.objects.get(id=company_id)
     except Company.DoesNotExist:
-        messages.error(request, 'Empresa não encontrada.')
-        return redirect('companies')
-    
-    users = CustomUser.objects.filter(company_obj=company).select_related('role')
+        messages.error(request, "Empresa não encontrada.")
+        return redirect("companies")
+
+    users = CustomUser.objects.filter(company_obj=company).select_related("role")
     products_count = company.products.count()
     sales_count = company.sales.count()
     suppliers_count = company.suppliers.count()
     recent_logs = AuditLog.objects.filter(company=company)[:20]
-    
+
     context = {
-        'company': company,
-        'users': users,
-        'products_count': products_count,
-        'sales_count': sales_count,
-        'suppliers_count': suppliers_count,
-        'recent_logs': recent_logs,
+        "company": company,
+        "users": users,
+        "products_count": products_count,
+        "sales_count": sales_count,
+        "suppliers_count": suppliers_count,
+        "recent_logs": recent_logs,
     }
-    return render(request, 'admin/company_detail.html', context)
+    return render(request, "admin/company_detail.html", context)
 
 
 @login_required
 def create_company_view(request):
     """View para criar uma nova empresa (apenas InStock admin)"""
     if not request.user.is_instock_admin:
-        messages.error(request, 'Apenas administradores InStock podem criar empresas.')
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        cnpj = request.POST.get('cnpj', '').strip()
-        email = request.POST.get('email', '').strip()
-        phone = request.POST.get('phone', '').strip()
-        
+        messages.error(request, "Apenas administradores InStock podem criar empresas.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        cnpj = request.POST.get("cnpj", "").strip()
+        email = request.POST.get("email", "").strip()
+        phone = request.POST.get("phone", "").strip()
+
         if not name or not cnpj:
-            messages.error(request, 'Nome e CNPJ são obrigatórios.')
-            return redirect('companies')
-        
+            messages.error(request, "Nome e CNPJ são obrigatórios.")
+            return redirect("companies")
+
         if Company.objects.filter(cnpj=cnpj).exists():
-            messages.error(request, 'Este CNPJ já está cadastrado.')
-            return redirect('companies')
-        
+            messages.error(request, "Este CNPJ já está cadastrado.")
+            return redirect("companies")
+
         company = Company.objects.create(
             name=name,
             cnpj=cnpj,
             email=email,
             phone=phone,
         )
-        
+
         # Cria os roles padrão para a empresa
-        for role_name in ['admin', 'manager', 'operator', 'viewer']:
+        for role_name in ["admin", "manager", "operator", "viewer"]:
             Role.create_for_company(company, role_name)
-        
+
         # Log de auditoria
         AuditService.log_create(request.user, company, request)
-        
-        messages.success(request, f'Empresa "{name}" criada com sucesso!')
-        return redirect('companies')
-    
-    return redirect('companies')
 
+        messages.success(request, f'Empresa "{name}" criada com sucesso!')
+        return redirect("companies")
+
+    return redirect("companies")
