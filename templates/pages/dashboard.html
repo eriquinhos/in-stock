@@ -7,6 +7,7 @@
     <title>Dashboard - InStock</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Dashboard v2 - Métricas de Eficiência -->
     
     <script>
         tailwind.config = {
@@ -323,7 +324,7 @@
                 </div>
 
                 <!-- Stats Cards - Segunda Linha (Movimentações e Valor) -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6 mb-8">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6 mb-6">
                     <!-- Valor do Estoque -->
                     <div class="stat-card rounded-2xl p-4 lg:p-5 shadow-lg col-span-2 sm:col-span-1">
                         <div class="flex flex-col lg:flex-row items-center lg:items-start gap-3 text-center lg:text-left">
@@ -386,6 +387,80 @@
                                 <p class="text-xl lg:text-2xl font-bold text-red-500">{{ exits_this_month }}</p>
                                 <p class="text-xs text-muted-foreground">Total: {{ exits }}</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOVA SEÇÃO: Indicadores de Eficiência e ROI -->
+                <div class="glass-card rounded-2xl shadow-lg p-5 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="icon-box-purple w-10 h-10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-pie text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-foreground text-lg">Indicadores de Eficiência</h3>
+                            <p class="text-xs text-muted-foreground">Métricas que mostram o valor do sistema</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Saúde do Estoque -->
+                        <div class="relative p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-green-800">Saúde do Estoque</span>
+                                <i class="fas fa-heartbeat text-green-600"></i>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="text-3xl font-bold text-green-700">{{ health_percentage }}%</span>
+                            </div>
+                            <div class="mt-2 w-full bg-green-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full transition-all" style="width: {{ health_percentage }}%"></div>
+                            </div>
+                            <p class="text-xs text-green-600 mt-2">{{ healthy_products }} de {{ total_products }} produtos OK</p>
+                        </div>
+
+                        <!-- Giro de Estoque -->
+                        <div class="relative p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-blue-800">Giro de Estoque</span>
+                                <i class="fas fa-sync-alt text-blue-600"></i>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="text-3xl font-bold text-blue-700">{{ stock_turnover }}%</span>
+                            </div>
+                            <p class="text-xs text-blue-600 mt-3">Taxa de rotatividade do inventário</p>
+                        </div>
+
+                        <!-- Movimentações Diárias -->
+                        <div class="relative p-4 rounded-xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-orange-800">Média Diária</span>
+                                <i class="fas fa-tachometer-alt text-orange-600"></i>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="text-3xl font-bold text-orange-700">{{ avg_daily_movements }}</span>
+                                <span class="text-sm text-orange-600 mb-1">mov/dia</span>
+                            </div>
+                            <p class="text-xs text-orange-600 mt-3">Últimos 7 dias</p>
+                        </div>
+
+                        <!-- Perdas Evitadas / Economia -->
+                        <div class="relative p-4 rounded-xl bg-gradient-to-br from-purple-50 to-fuchsia-50 border border-purple-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-purple-800">Alertas Ativos</span>
+                                <i class="fas fa-shield-alt text-purple-600"></i>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="text-3xl font-bold text-purple-700">{{ low_stock_count|add:expiring_count|add:expired_count }}</span>
+                            </div>
+                            {% if potential_savings > 0 %}
+                            <p class="text-xs text-purple-600 mt-3">
+                                <i class="fas fa-piggy-bank mr-1"></i>
+                                Economia potencial: R$ {{ potential_savings|floatformat:2 }}
+                            </p>
+                            {% else %}
+                            <p class="text-xs text-purple-600 mt-3">Monitoramento preventivo ativo</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
