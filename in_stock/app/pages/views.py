@@ -200,16 +200,37 @@ def dashboard_view(request):
         "pending_requests": pending_requests,
         # === MÉTRICAS DE EFICIÊNCIA (para impressionar empresas) ===
         # Taxa de rotatividade (giro de estoque)
-        "stock_turnover": round((exits / total_stock * 100), 1) if total_stock > 0 else 0,
+        "stock_turnover": (
+            round((exits / total_stock * 100), 1) if total_stock > 0 else 0
+        ),
         # Produtos saudáveis (com estoque adequado e não vencidos)
         "healthy_products": total_products - low_stock_count - expired_count,
-        "health_percentage": round(((total_products - low_stock_count - expired_count) / total_products * 100), 1) if total_products > 0 else 100,
+        "health_percentage": (
+            round(
+                (
+                    (total_products - low_stock_count - expired_count)
+                    / total_products
+                    * 100
+                ),
+                1,
+            )
+            if total_products > 0
+            else 100
+        ),
         # Perdas evitadas (produtos com alertas ativos que foram identificados)
-        "potential_savings": round(float(stock_value) * 0.05, 2) if expired_count > 0 or expiring_count > 0 else 0,
+        "potential_savings": (
+            round(float(stock_value) * 0.05, 2)
+            if expired_count > 0 or expiring_count > 0
+            else 0
+        ),
         # Eficiência operacional (movimentações vs produtos)
-        "efficiency_rate": round((total_sales / total_products * 100), 1) if total_products > 0 else 0,
+        "efficiency_rate": (
+            round((total_sales / total_products * 100), 1) if total_products > 0 else 0
+        ),
         # Média de movimentações por dia (últimos 7 dias)
-        "avg_daily_movements": round(sum([d["entries"] + d["exits"] for d in daily_movements]) / 7, 1),
+        "avg_daily_movements": round(
+            sum([d["entries"] + d["exits"] for d in daily_movements]) / 7, 1
+        ),
     }
     return render(request, "pages/dashboard.html", context)
 
