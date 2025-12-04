@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="MenuVertical.css">
+    <title>Dashboard - InStock</title>
+</head>
+<body>
+    <nav id="sidebar">
+        <div id="sidebar_content">
+            
+            <div id="user">
+              <div id="logo_box">
+                    <span>📦</span>
+             </div>
+                <p id="user_infos">
+                   <span class="item_description font-bold">
+                        InStock
+                    </span>
+                    <span class="item_description role">
+                        Controle de Estoque
+                    </span>
+                </p>
+            </div>
+
+            <ul id="side_item">
+                <li class="side-item active">
+                    <a href="#">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span class="item_description">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="side-item">
+                    <a href="GestaoProdutos.html">
+                        <i class="fa-solid fa-dolly"></i>
+                        <span class="item_description">Produtos</span>
+                    </a>
+                </li>
+
+                <li class="side-item">
+                    <a href="#">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span class="item_description">Movimentação</span>
+                    </a>
+                </li>
+
+                <li class="side-item">
+                    <a href="#">
+                        <i class="fa-solid fa-users"></i>
+                        <span class="item_description">Usuários</span>
+                    </a>
+                </li>
+
+                <li class="side-item">
+                    <a href="#">
+                        <i class="fa-solid fa-gear"></i>
+                        <span class="item_description">Configuração</span>
+                    </a>
+                </li>
+            </ul>
+
+            <button id="open_sideBar">
+                <i id="open_sideBar_icon" class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div id="logout">
+            <button id="logout_sidebar">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span class="item_description">Logout</span>
+            </button>
+        </div>       
+    </nav>
+
+    <main>
+        <h1>Bem-vindo ao Painel</h1>
+    </main>
+
+    <script src="MenuVertical.js"></script>
+</body>
+</html>
