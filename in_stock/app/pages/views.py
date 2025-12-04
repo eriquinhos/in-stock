@@ -34,111 +34,112 @@ def dashboard_view(request):
     # Acesso apenas para autenticados
     if not request.user.is_authenticated:
         return render(request, "errors/401.html")
-    
+
     # Verifica se precisa trocar a senha
     if request.user.must_change_password:
         return redirect("change_password")
 
     today = timezone.now()
-    
+
     # === MÉTRICAS PRINCIPAIS ===
     total_products = Product.objects.count()
     total_suppliers = Supplier.objects.count()
     total_sales = Sale.objects.count()
     total_reports = Report.objects.count()
     total_categories = Category.objects.count()
-    
+
     # Quantidade total de produtos em estoque
-    total_stock = Product.objects.aggregate(total=Sum('quantity'))['total'] or 0
-    
+    total_stock = Product.objects.aggregate(total=Sum("quantity"))["total"] or 0
+
     # Valor total do estoque (quantidade * preço)
     stock_value = Product.objects.aggregate(
-        total=Sum(F('quantity') * F('price'), output_field=DecimalField())
-    )['total'] or Decimal('0.00')
-    
+        total=Sum(F("quantity") * F("price"), output_field=DecimalField())
+    )["total"] or Decimal("0.00")
+
     # === MOVIMENTAÇÕES ===
     # Movimentações do mês atual
     first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     sales_this_month = Sale.objects.filter(date__gte=first_day_of_month).count()
-    
+
     # Movimentações do mês anterior (para comparação)
     first_day_last_month = (first_day_of_month - timedelta(days=1)).replace(day=1)
     sales_last_month = Sale.objects.filter(
-        date__gte=first_day_last_month,
-        date__lt=first_day_of_month
+        date__gte=first_day_last_month, date__lt=first_day_of_month
     ).count()
-    
+
     # Calcular variação percentual
     if sales_last_month > 0:
-        sales_variation = ((sales_this_month - sales_last_month) / sales_last_month) * 100
+        sales_variation = (
+            (sales_this_month - sales_last_month) / sales_last_month
+        ) * 100
     else:
         sales_variation = 100 if sales_this_month > 0 else 0
-    
+
     # Entradas e saídas totais
-    entries = Sale.objects.filter(type='entry').count()
-    exits = Sale.objects.filter(type='exits').count()
-    
+    entries = Sale.objects.filter(type="entry").count()
+    exits = Sale.objects.filter(type="exits").count()
+
     # Entradas e saídas do mês
-    entries_this_month = Sale.objects.filter(type='entry', date__gte=first_day_of_month).count()
-    exits_this_month = Sale.objects.filter(type='exits', date__gte=first_day_of_month).count()
-    
+    entries_this_month = Sale.objects.filter(
+        type="entry", date__gte=first_day_of_month
+    ).count()
+    exits_this_month = Sale.objects.filter(
+        type="exits", date__gte=first_day_of_month
+    ).count()
+
     # === GRÁFICO: Movimentações dos últimos 7 dias ===
     seven_days_ago = today - timedelta(days=7)
     daily_movements = []
-    
+
     for i in range(7):
-        day = (today - timedelta(days=6-i)).date()
-        day_entries = Sale.objects.filter(
-            type='entry',
-            date__date=day
-        ).count()
-        day_exits = Sale.objects.filter(
-            type='exits',
-            date__date=day
-        ).count()
-        daily_movements.append({
-            'date': day.strftime('%d/%m'),
-            'day_name': day.strftime('%a'),
-            'entries': day_entries,
-            'exits': day_exits
-        })
-    
+        day = (today - timedelta(days=6 - i)).date()
+        day_entries = Sale.objects.filter(type="entry", date__date=day).count()
+        day_exits = Sale.objects.filter(type="exits", date__date=day).count()
+        daily_movements.append(
+            {
+                "date": day.strftime("%d/%m"),
+                "day_name": day.strftime("%a"),
+                "entries": day_entries,
+                "exits": day_exits,
+            }
+        )
+
     # === ALERTAS ===
     # Produtos com baixo estoque (menos de 10 unidades)
-    low_stock_products = Product.objects.filter(quantity__lt=10).order_by('quantity')[:5]
+    low_stock_products = Product.objects.filter(quantity__lt=10).order_by("quantity")[
+        :5
+    ]
     low_stock_count = Product.objects.filter(quantity__lt=10).count()
-    
+
     # Produtos próximos do vencimento (próximos 30 dias)
     thirty_days_from_now = today.date() + timedelta(days=30)
     expiring_soon = Product.objects.filter(
-        expiration_date__lte=thirty_days_from_now,
-        expiration_date__gte=today.date()
-    ).order_by('expiration_date')[:5]
+        expiration_date__lte=thirty_days_from_now, expiration_date__gte=today.date()
+    ).order_by("expiration_date")[:5]
     expiring_count = Product.objects.filter(
-        expiration_date__lte=thirty_days_from_now,
-        expiration_date__gte=today.date()
+        expiration_date__lte=thirty_days_from_now, expiration_date__gte=today.date()
     ).count()
-    
+
     # Produtos já vencidos
     expired_products = Product.objects.filter(
         expiration_date__lt=today.date()
-    ).order_by('expiration_date')[:5]
+    ).order_by("expiration_date")[:5]
     expired_count = Product.objects.filter(expiration_date__lt=today.date()).count()
-    
+
     # === TOP PRODUTOS ===
     # Produtos mais movimentados (com mais saídas)
     top_products = Product.objects.annotate(
-        movement_count=Count('sale_product')
-    ).order_by('-movement_count')[:5]
-    
+        movement_count=Count("sale_product")
+    ).order_by("-movement_count")[:5]
+
     # Categorias com mais produtos
     top_categories = Category.objects.annotate(
-        product_count=Count('products_category')
-    ).order_by('-product_count')[:5]
-    
+        product_count=Count("products_category")
+    ).order_by("-product_count")[:5]
+
     # === MOVIMENTAÇÕES RECENTES ===
-    recent_sales = Sale.objects.select_related('product', 'user').order_by('-date')[:5]
-    
+    recent_sales = Sale.objects.select_related("product", "user").order_by("-date")[:5]
+
     # === SOLICITAÇÕES PENDENTES (Admin) ===
     pending_requests_count = 0
     pending_requests = []
@@ -164,7 +165,6 @@ def dashboard_view(request):
         "total_categories": total_categories,
         "total_stock": total_stock,
         "stock_value": stock_value,
-        
         # Movimentações
         "sales_this_month": sales_this_month,
         "sales_last_month": sales_last_month,
@@ -173,10 +173,8 @@ def dashboard_view(request):
         "exits": exits,
         "entries_this_month": entries_this_month,
         "exits_this_month": exits_this_month,
-        
         # Gráfico de 7 dias
         "daily_movements": daily_movements,
-        
         # Alertas
         "low_stock_products": low_stock_products,
         "low_stock_count": low_stock_count,
@@ -184,14 +182,11 @@ def dashboard_view(request):
         "expiring_count": expiring_count,
         "expired_products": expired_products,
         "expired_count": expired_count,
-        
         # Top produtos e categorias
         "top_products": top_products,
         "top_categories": top_categories,
-        
         # Movimentações recentes
         "recent_sales": recent_sales,
-        
         # Admin
         "pending_requests_count": pending_requests_count,
         "pending_requests": pending_requests,
@@ -247,6 +242,7 @@ def error_403_view(request, exception=None):
 # ============================================
 # VIEWS DE SOLICITAÇÃO DE ACESSO
 # ============================================
+
 
 class RequestAccessView(View):
     """
@@ -357,6 +353,7 @@ class RequestAccessView(View):
 
 class ChangePasswordView(View):
     """View para troca obrigatória de senha no primeiro acesso"""
+
     template_name = "auth/change_password.html"
 
     def get(self, request):
@@ -443,7 +440,7 @@ def approve_request_view(request, request_id):
             messages.error(request, "Você não tem permissão para aprovar esta solicitação.")
             return redirect("dashboard")
 
-    if access_request.status != 'pending':
+    if access_request.status != "pending":
         messages.warning(request, "Esta solicitação já foi processada.")
         return redirect("access_requests")
 
@@ -525,7 +522,7 @@ def approve_request_view(request, request_id):
         success_message = f"✅ Usuário criado como {role_display}! Senha: {generated_password}"
 
     # Atualiza a solicitação
-    access_request.status = 'approved'
+    access_request.status = "approved"
     access_request.generated_email = generated_email
     access_request.generated_password = generated_password
     access_request.approved_by = request.user
@@ -534,8 +531,8 @@ def approve_request_view(request, request_id):
     # Tenta enviar email
     try:
         send_mail(
-            subject='InStock - Sua conta foi aprovada!',
-            message=f'''
+            subject="InStock - Sua conta foi aprovada!",
+            message=f"""
 Olá {access_request.name},
 
 Sua solicitação de acesso ao InStock foi aprovada!
@@ -550,8 +547,10 @@ Acesse: https://www.instock.app.br/login/
 
 Atenciosamente,
 Equipe InStock
-            ''',
-            from_email=getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@instock.app.br'),
+            """,
+            from_email=getattr(
+                django_settings, "DEFAULT_FROM_EMAIL", "noreply@instock.app.br"
+            ),
             recipient_list=[access_request.personal_email],
             fail_silently=True,
         )
@@ -577,7 +576,7 @@ def reject_request_view(request, request_id):
             messages.error(request, "Você não tem permissão para rejeitar esta solicitação.")
             return redirect("dashboard")
 
-    if access_request.status != 'pending':
+    if access_request.status != "pending":
         messages.warning(request, "Esta solicitação já foi processada.")
         return redirect("access_requests")
 
@@ -593,9 +592,10 @@ def reject_request_view(request, request_id):
 # pois agora usamos o fluxo de solicitação de acesso
 class PublicRegisterView(View):
     """View pública para registro - Redireciona para solicitar acesso"""
+
     def get(self, request):
         return redirect("request_access")
-    
+
     def post(self, request):
         return redirect("request_access")
 
@@ -604,8 +604,10 @@ class PublicRegisterView(View):
 # VIEWS DE REDEFINIÇÃO DE SENHA
 # ============================================
 
+
 class ForgotPasswordView(View):
     """View para solicitar redefinição de senha"""
+
     template_name = "auth/forgot_password.html"
 
     def get(self, request):
@@ -620,36 +622,45 @@ class ForgotPasswordView(View):
         email = request.POST.get("email", "").strip().lower()
 
         if not email:
-            return render(request, self.template_name, {"error": "Por favor, informe seu email."})
+            return render(
+                request, self.template_name, {"error": "Por favor, informe seu email."}
+            )
 
         # Busca o usuário pelo email
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
             # Por segurança, não revelamos se o email existe ou não
-            return render(request, self.template_name, {
-                "success": True,
-                "message": "Se este email estiver cadastrado, você receberá um link de redefinição."
-            })
+            return render(
+                request,
+                self.template_name,
+                {
+                    "success": True,
+                    "message": "Se este email estiver cadastrado, você receberá um link de redefinição.",
+                },
+            )
 
         # Cria o token de redefinição
         token = PasswordResetToken.create_for_user(user)
 
         # Monta o link de redefinição
-        reset_link = request.build_absolute_uri(f'/reset-password/{token.token}/')
+        reset_link = request.build_absolute_uri(f"/reset-password/{token.token}/")
 
         # Tenta enviar o email
         try:
             from django.template.loader import render_to_string
-            
-            html_message = render_to_string('emails/password_reset.html', {
-                'user_name': user.name,
-                'reset_link': reset_link,
-            })
-            
+
+            html_message = render_to_string(
+                "emails/password_reset.html",
+                {
+                    "user_name": user.name,
+                    "reset_link": reset_link,
+                },
+            )
+
             send_mail(
-                subject='Redefinição de Senha - InStock',
-                message=f'''
+                subject="Redefinição de Senha - InStock",
+                message=f"""
 Olá {user.name},
 
 Recebemos uma solicitação para redefinir sua senha.
@@ -663,8 +674,10 @@ Se você não solicitou isso, ignore este email.
 
 Atenciosamente,
 Equipe InStock
-                ''',
-                from_email=getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@instock.app.br'),
+                """,
+                from_email=getattr(
+                    django_settings, "DEFAULT_FROM_EMAIL", "noreply@instock.app.br"
+                ),
                 recipient_list=[user.email],
                 html_message=html_message,
                 fail_silently=True,
@@ -673,14 +686,19 @@ Equipe InStock
             print(f"Erro ao enviar email de redefinição: {e}")
 
         # Mostra mensagem de sucesso
-        return render(request, self.template_name, {
-            "success": True,
-            "message": "Se este email estiver cadastrado, você receberá um link de redefinição."
-        })
+        return render(
+            request,
+            self.template_name,
+            {
+                "success": True,
+                "message": "Se este email estiver cadastrado, você receberá um link de redefinição.",
+            },
+        )
 
 
 class ResetPasswordView(View):
     """View para redefinir a senha usando o token"""
+
     template_name = "auth/reset_password.html"
 
     def get(self, request, token):
@@ -714,22 +732,25 @@ class ResetPasswordView(View):
 
         # Validações
         if not password or not password_confirm:
-            return render(request, self.template_name, {
-                "token": token,
-                "error": "Por favor, preencha todos os campos."
-            })
+            return render(
+                request,
+                self.template_name,
+                {"token": token, "error": "Por favor, preencha todos os campos."},
+            )
 
         if password != password_confirm:
-            return render(request, self.template_name, {
-                "token": token,
-                "error": "As senhas não coincidem."
-            })
+            return render(
+                request,
+                self.template_name,
+                {"token": token, "error": "As senhas não coincidem."},
+            )
 
         if len(password) < 8:
-            return render(request, self.template_name, {
-                "token": token,
-                "error": "A senha deve ter pelo menos 8 caracteres."
-            })
+            return render(
+                request,
+                self.template_name,
+                {"token": token, "error": "A senha deve ter pelo menos 8 caracteres."},
+            )
 
         # Atualiza a senha do usuário
         user = reset_token.user
@@ -741,7 +762,9 @@ class ResetPasswordView(View):
         reset_token.used = True
         reset_token.save()
 
-        messages.success(request, "Senha redefinida com sucesso! Faça login com sua nova senha.")
+        messages.success(
+            request, "Senha redefinida com sucesso! Faça login com sua nova senha."
+        )
         return redirect("login")
 
 

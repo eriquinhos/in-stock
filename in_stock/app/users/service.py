@@ -9,7 +9,7 @@ class CustomUserService:
 
     def create_user(self, request, user: CustomUser):
         try:
-            type_group = request.POST.get('type')
+            type_group = request.POST.get("type")
             group = Group.objects.get(name=type_group)
             user.groups.add(group)
         except Group.DoesNotExist:
