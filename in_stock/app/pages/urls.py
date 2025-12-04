@@ -30,12 +30,23 @@ urlpatterns = [
     # Redireciona registro antigo para solicitar acesso
     path("register/", views.PublicRegisterView.as_view(), name="register"),
     # Redefinição de senha
-    path(
-        "forgot-password/", views.ForgotPasswordView.as_view(), name="forgot_password"
-    ),
-    path(
-        "reset-password/<str:token>/",
-        views.ResetPasswordView.as_view(),
-        name="reset_password",
-    ),
+    path("forgot-password/", views.ForgotPasswordView.as_view(), name="forgot_password"),
+    path("reset-password/<str:token>/", views.ResetPasswordView.as_view(), name="reset_password"),
+    
+    # ============================================
+    # GESTÃO DE USUÁRIOS E EMPRESAS
+    # ============================================
+    # Gerenciamento de usuários
+    path("admin/users/", views.users_management_view, name="users_management"),
+    path("admin/users/create/", views.create_user_view, name="create_user"),
+    path("admin/users/<int:user_id>/role/", views.update_user_role_view, name="update_user_role"),
+    path("admin/users/<int:user_id>/toggle/", views.toggle_user_status_view, name="toggle_user_status"),
+    
+    # Logs de auditoria
+    path("admin/audit-logs/", views.audit_logs_view, name="audit_logs"),
+    
+    # Gerenciamento de empresas (apenas InStock admin)
+    path("admin/companies/", views.companies_view, name="companies"),
+    path("admin/companies/create/", views.create_company_view, name="create_company"),
+    path("admin/companies/<uuid:company_id>/", views.company_detail_view, name="company_detail"),
 ]

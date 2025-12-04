@@ -1,514 +1,560 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Solicitações de Acesso - InStock</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                    },
+                },
+            },
         }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 35 60% 98%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
         body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-        }
-        header {
-            background-color: #4caf50;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
-        header a {
-            color: white;
-            text-decoration: none;
-            background-color: #388e3c;
-            padding: 8px 14px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        header a:hover {
-            background-color: #2e7d32;
-        }
-        .container {
-            display: flex;
-            min-height: calc(100vh - 60px);
-        }
-        .sidebar {
-            width: 220px;
-            background-color: #2e7d32;
-            color: white;
-            padding-top: 20px;
-        }
-        .sidebar a {
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-        .sidebar a:hover {
-            background-color: #388e3c;
-        }
-        .sidebar a.active {
-            background-color: #1b5e20;
-        }
-        .main {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-        h2 {
-            margin-bottom: 25px;
-            color: #333;
-            font-size: 24px;
-        }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        .tab {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .tab:hover {
-            border-color: #4caf50;
-        }
-        .tab.active {
-            background: #4caf50;
-            color: white;
-            border-color: #4caf50;
-        }
-        .tab .badge {
-            background: #f44336;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .tab.active .badge {
-            background: white;
-            color: #f44336;
-        }
-        .section {
-            display: none;
-        }
-        .section.active {
-            display: block;
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .card-header h3 {
-            margin: 0;
-            color: #333;
-            font-size: 20px;
-        }
-        .card-header .date {
-            color: #888;
-            font-size: 13px;
-        }
-        .card-body {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .card-body .field {
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .card-body .field label {
-            display: block;
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .card-body .field span {
-            color: #333;
-            font-size: 15px;
-        }
-        .card-body .message {
-            grid-column: 1 / -1;
-        }
-        .card-actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        .btn-approve {
-            background: linear-gradient(135deg, #4caf50, #388e3c);
-            color: white;
-        }
-        .btn-approve:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-        .btn-reject {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            color: white;
-        }
-        .btn-reject:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
-        }
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .status-pending {
-            background: #fff3e0;
-            color: #e65100;
-        }
-        .status-approved {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        .status-rejected {
-            background: #ffebee;
-            color: #c62828;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #888;
-        }
-        .empty-state .icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-        .empty-state h3 {
-            margin-bottom: 10px;
-            color: #666;
-            font-size: 20px;
-        }
-        .credentials-box {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            border: 2px solid #a5d6a7;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .credentials-box h4 {
-            margin: 0 0 15px 0;
-            color: #2e7d32;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-        .credentials-box .credential {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-family: monospace;
-            font-size: 14px;
-        }
-        .credentials-box .credential:last-child {
-            margin-bottom: 0;
-        }
-        .credentials-box .credential .label {
-            font-weight: bold;
-            color: #666;
-            min-width: 80px;
-        }
-        .alert {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .alert-success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #a5d6a7;
-        }
-        .alert-error {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef9a9a;
-        }
-        .alert-warning {
-            background: #fff3e0;
-            color: #e65100;
-            border: 1px solid #ffcc80;
-        }
-        .notification-badge {
-            background: #f44336;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
+            @apply min-h-screen font-sans antialiased;
+            background-color: hsl(var(--background));
         }
 
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                padding: 10px;
-            }
-            .sidebar a {
-                padding: 10px 15px;
-            }
-            .main {
-                padding: 20px;
-            }
-            .card-body {
-                grid-template-columns: 1fr;
-            }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, hsl(32 85% 55%) 0%, hsl(28 35% 20%) 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .alert-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 252, 249, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            @apply px-6 py-3 rounded-xl font-semibold transition-all;
+        }
+
+        .tab-btn.active {
+            @apply bg-primary text-white shadow-lg;
+        }
+
+        .tab-btn:not(.active) {
+            @apply bg-white text-gray-600 hover:bg-gray-50 border border-gray-200;
+        }
+
+        .request-card {
+            @apply bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all;
+        }
+
+        .request-card:hover {
+            @apply shadow-xl;
+            transform: translateY(-2px);
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+
+        .btn-approve:hover {
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn-reject:hover {
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .status-pending {
+            @apply bg-amber-100 text-amber-700;
+        }
+
+        .status-approved {
+            @apply bg-green-100 text-green-700;
+        }
+
+        .status-rejected {
+            @apply bg-red-100 text-red-700;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>📦 InStock - Solicitações de Acesso</h1>
-        <a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a>
-    </header>
 
-    <div class="container">
-        <nav class="sidebar">
-            <a href="{% url 'dashboard' %}">🏠 Dashboard</a>
-            <a href="{% url 'product-list-create' %}">📦 Produtos</a>
-            <a href="{% url 'supplier-list-create' %}">🚚 Fornecedores</a>
-            <a href="{% url 'sale-list-create' %}">💰 Vendas</a>
-            <a href="{% url 'report-list-create' %}">📊 Relatórios</a>
-            <a href="{% url 'access_requests' %}" class="active">
-                📋 Solicitações
-                {% if pending_requests_count > 0 %}
-                <span class="notification-badge">{{ pending_requests_count }}</span>
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar-gradient w-64 flex-shrink-0 hidden lg:flex flex-col shadow-2xl">
+            <!-- Logo -->
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shadow-lg">
+                        <span class="text-white text-2xl">📦</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white tracking-tight">InStock</h1>
+                        <p class="text-[10px] text-white/70 font-semibold uppercase tracking-widest">Controle de Estoque</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="p-4 mx-4 mt-4 rounded-xl bg-white/10 border border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-semibold text-sm truncate">{{ user.name }}</p>
+                        <p class="text-white/60 text-xs truncate">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 p-4 space-y-1 mt-4">
+                <a href="{% url 'dashboard' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-home w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'product-list-create' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-box w-5 text-center"></i>
+                    <span>Produtos</span>
+                </a>
+                <a href="{% url 'category-list-create' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-tags w-5 text-center"></i>
+                    <span>Categorias</span>
+                </a>
+                <a href="{% url 'supplier-list-create' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-truck w-5 text-center"></i>
+                    <span>Fornecedores</span>
+                </a>
+                <a href="{% url 'sale-list-create' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-exchange-alt w-5 text-center"></i>
+                    <span>Movimentações</span>
+                </a>
+                <a href="{% url 'report-list-create' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                    <i class="fas fa-chart-bar w-5 text-center"></i>
+                    <span>Relatórios</span>
+                </a>
+                
+                {% if user.is_instock_admin or user.can_manage_users %}
+                <div class="pt-4 mt-4 border-t border-white/10">
+                    <p class="px-4 text-xs text-white/50 uppercase tracking-wider mb-2">Administração</p>
+                    
+                    {% if user.is_instock_admin or user.is_company_admin %}
+                    <a href="{% url 'access_requests' %}" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg text-white font-medium relative">
+                        <i class="fas fa-user-plus w-5 text-center"></i>
+                        <span>Solicitações</span>
+                        {% if pending_requests_count > 0 %}
+                        <span class="notification-badge absolute right-3 w-6 h-6 alert-badge text-white text-xs rounded-full flex items-center justify-center font-bold">
+                            {{ pending_requests_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    {% endif %}
+                    
+                    {% if user.is_instock_admin %}
+                    <a href="{% url 'companies' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-building w-5 text-center"></i>
+                        <span>Empresas</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% if user.can_manage_users %}
+                    <a href="{% url 'users_management' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-users w-5 text-center"></i>
+                        <span>Usuários</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% if user.is_instock_admin or user.is_company_admin %}
+                    <a href="{% url 'audit_logs' %}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+                        <i class="fas fa-clipboard-list w-5 text-center"></i>
+                        <span>Auditoria</span>
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
-            </a>
-        </nav>
+            </nav>
 
-        <main class="main">
-            <h2>📋 Gerenciar Solicitações de Acesso</h2>
-            
+            <!-- Logout -->
+            <div class="p-4 border-t border-white/10">
+                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all font-medium">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 lg:p-8 overflow-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-3">
+                    <span class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-plus text-primary"></i>
+                    </span>
+                    Solicitações de Acesso
+                </h1>
+                <p class="text-muted-foreground mt-2">Gerencie as solicitações de acesso ao sistema</p>
+            </div>
+
+            <!-- Mensagens -->
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
+                <div class="mb-6 p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-times-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                    <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
                 {% endfor %}
             {% endif %}
 
-            <div class="tabs">
-                <div class="tab active" onclick="showSection('pending')">
-                    ⏳ Pendentes 
-                    {% if pending %}<span class="badge">{{ pending|length }}</span>{% endif %}
-                </div>
-                <div class="tab" onclick="showSection('approved')">✅ Aprovadas</div>
-                <div class="tab" onclick="showSection('rejected')">❌ Rejeitadas</div>
+            <!-- Tabs -->
+            <div class="flex flex-wrap gap-3 mb-8">
+                <button class="tab-btn active" onclick="showSection('pending')">
+                    <i class="fas fa-clock mr-2"></i>
+                    Pendentes 
+                    {% if pending %}<span class="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-sm">{{ pending|length }}</span>{% endif %}
+                </button>
+                <button class="tab-btn" onclick="showSection('approved')">
+                    <i class="fas fa-check mr-2"></i>
+                    Aprovadas
+                </button>
+                <button class="tab-btn" onclick="showSection('rejected')">
+                    <i class="fas fa-times mr-2"></i>
+                    Rejeitadas
+                </button>
             </div>
 
-            <!-- Pendentes -->
-            <div id="pending" class="section active">
+            <!-- Seção: Pendentes -->
+            <div id="pending" class="section">
                 {% if pending %}
+                <div class="grid gap-6">
                     {% for req in pending %}
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h3>{{ req.name }}</h3>
-                                <span class="status-badge status-pending">⏳ Pendente</span>
+                    <div class="request-card">
+                        <div class="p-6">
+                            <!-- Header do Card -->
+                            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center shadow-lg">
+                                        <span class="text-white text-2xl">{{ req.name|slice:":1"|upper }}</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-foreground">{{ req.name }}</h3>
+                                        <div class="flex flex-wrap items-center gap-2 mt-1">
+                                            <span class="status-pending px-3 py-1 rounded-full text-xs font-bold uppercase">
+                                                ⏳ Pendente
+                                            </span>
+                                            {% if req.request_type == 'new_company' %}
+                                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
+                                                🏢 Nova Empresa
+                                            </span>
+                                            {% else %}
+                                            <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">
+                                                👤 Entrar em Empresa
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-muted-foreground flex items-center gap-2">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ req.created_at|date:"d/m/Y H:i" }}
+                                </span>
                             </div>
-                            <span class="date">📅 {{ req.created_at|date:"d/m/Y H:i" }}</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="field">
-                                <label>🏢 Empresa</label>
-                                <span>{{ req.company_name }}</span>
+
+                            <!-- Informações -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                {% if req.request_type == 'new_company' %}
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                                        <i class="fas fa-building mr-1"></i> Empresa
+                                    </label>
+                                    <span class="text-foreground font-medium">{{ req.company_name }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                                        <i class="fas fa-id-card mr-1"></i> CNPJ
+                                    </label>
+                                    <span class="text-foreground font-medium">{{ req.cnpj }}</span>
+                                </div>
+                                {% else %}
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                                        <i class="fas fa-building mr-1"></i> Empresa
+                                    </label>
+                                    <span class="text-foreground font-medium">{{ req.company.name }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                                        <i class="fas fa-envelope mr-1"></i> Email
+                                    </label>
+                                    <span class="text-foreground font-medium">{{ req.personal_email }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                                        <i class="fas fa-phone mr-1"></i> Telefone
+                                    </label>
+                                    <span class="text-foreground font-medium">{{ req.phone|default:"-" }}</span>
+                                </div>
                             </div>
-                            <div class="field">
-                                <label>📄 CNPJ</label>
-                                <span>{{ req.cnpj }}</span>
-                            </div>
-                            <div class="field">
-                                <label>📧 Email Pessoal</label>
-                                <span>{{ req.personal_email }}</span>
-                            </div>
-                            <div class="field">
-                                <label>📞 Telefone</label>
-                                <span>{{ req.phone|default:"-" }}</span>
-                            </div>
+
                             {% if req.message %}
-                            <div class="field message">
-                                <label>💬 Mensagem</label>
-                                <span>{{ req.message }}</span>
+                            <div class="bg-blue-50 rounded-xl p-4 mb-6">
+                                <label class="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-2">
+                                    <i class="fas fa-comment mr-1"></i> Mensagem
+                                </label>
+                                <p class="text-blue-800">{{ req.message }}</p>
                             </div>
                             {% endif %}
-                        </div>
-                        <div class="card-actions">
-                            <a href="{% url 'approve_request' req.id %}" class="btn btn-approve" 
-                               onclick="return confirm('✅ Aprovar esta solicitação?\n\nSerá gerado um email e senha para o usuário.')">
-                                ✅ Aprovar
-                            </a>
-                            <a href="{% url 'reject_request' req.id %}" class="btn btn-reject"
-                               onclick="return confirm('❌ Tem certeza que deseja rejeitar esta solicitação?')">
-                                ❌ Rejeitar
-                            </a>
+
+                            <!-- Ações -->
+                            <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100">
+                                {% if req.request_type == 'new_company' %}
+                                <a href="{% url 'approve_request' req.id %}" 
+                                   class="btn-approve px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 transition-all hover:-translate-y-1"
+                                   onclick="return confirm('✅ Aprovar esta solicitação?\n\nSerá criada a empresa e o usuário administrador.')">
+                                    <i class="fas fa-check"></i>
+                                    Aprovar
+                                </a>
+                                {% else %}
+                                <form action="{% url 'approve_request' req.id %}" method="POST" class="flex items-center gap-3">
+                                    {% csrf_token %}
+                                    <select name="role" class="px-4 py-3 rounded-xl border-2 border-gray-200 font-semibold bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                                        <option value="manager">👔 Gestor</option>
+                                        <option value="operator" selected>🔧 Operador</option>
+                                    </select>
+                                    <button type="submit" 
+                                            class="btn-approve px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 transition-all hover:-translate-y-1"
+                                            onclick="return confirm('✅ Aprovar com o cargo selecionado?')">
+                                        <i class="fas fa-check"></i>
+                                        Aprovar
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <a href="{% url 'reject_request' req.id %}" 
+                                   class="btn-reject px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 transition-all hover:-translate-y-1"
+                                   onclick="return confirm('❌ Tem certeza que deseja rejeitar esta solicitação?')">
+                                    <i class="fas fa-times"></i>
+                                    Rejeitar
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
+                </div>
                 {% else %}
-                    <div class="empty-state">
-                        <div class="icon">🎉</div>
-                        <h3>Nenhuma solicitação pendente!</h3>
-                        <p>Todas as solicitações foram processadas.</p>
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-4xl">🎉</span>
                     </div>
+                    <h3 class="text-xl font-bold text-foreground mb-2">Nenhuma solicitação pendente!</h3>
+                    <p class="text-muted-foreground">Todas as solicitações foram processadas.</p>
+                </div>
                 {% endif %}
             </div>
 
-            <!-- Aprovadas -->
-            <div id="approved" class="section">
+            <!-- Seção: Aprovadas -->
+            <div id="approved" class="section hidden">
                 {% if approved %}
+                <div class="grid gap-6">
                     {% for req in approved %}
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h3>{{ req.name }}</h3>
-                                <span class="status-badge status-approved">✅ Aprovada</span>
+                    <div class="request-card">
+                        <div class="p-6">
+                            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-check text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-foreground">{{ req.name }}</h3>
+                                        <span class="status-approved px-3 py-1 rounded-full text-xs font-bold uppercase">
+                                            ✅ Aprovada
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-muted-foreground flex items-center gap-2">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ req.updated_at|date:"d/m/Y H:i" }}
+                                </span>
                             </div>
-                            <span class="date">📅 {{ req.updated_at|date:"d/m/Y H:i" }}</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="field">
-                                <label>🏢 Empresa</label>
-                                <span>{{ req.company_name }}</span>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">Empresa</label>
+                                    <span class="text-foreground font-medium">{{ req.company_name }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">CNPJ</label>
+                                    <span class="text-foreground font-medium">{{ req.cnpj }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">Email Pessoal</label>
+                                    <span class="text-foreground font-medium">{{ req.personal_email }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">Aprovado por</label>
+                                    <span class="text-foreground font-medium">{{ req.approved_by.name|default:req.approved_by.email }}</span>
+                                </div>
                             </div>
-                            <div class="field">
-                                <label>📄 CNPJ</label>
-                                <span>{{ req.cnpj }}</span>
-                            </div>
-                            <div class="field">
-                                <label>📧 Email Pessoal</label>
-                                <span>{{ req.personal_email }}</span>
-                            </div>
-                            <div class="field">
-                                <label>👤 Aprovado por</label>
-                                <span>{{ req.approved_by.name|default:req.approved_by.email }}</span>
-                            </div>
-                        </div>
-                        <div class="credentials-box">
-                            <h4>🔑 Credenciais Geradas</h4>
-                            <div class="credential">
-                                <span class="label">📧 Email:</span>
-                                <span>{{ req.generated_email }}</span>
-                            </div>
-                            <div class="credential">
-                                <span class="label">🔑 Senha:</span>
-                                <span>{{ req.generated_password }}</span>
+
+                            <!-- Credenciais -->
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+                                <h4 class="font-bold text-green-700 uppercase text-sm mb-4 flex items-center gap-2">
+                                    <i class="fas fa-key"></i>
+                                    Credenciais Geradas
+                                </h4>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="bg-white rounded-lg p-4 font-mono text-sm flex items-center gap-3">
+                                        <span class="text-muted-foreground font-bold">📧 Email:</span>
+                                        <span class="text-foreground">{{ req.generated_email }}</span>
+                                    </div>
+                                    <div class="bg-white rounded-lg p-4 font-mono text-sm flex items-center gap-3">
+                                        <span class="text-muted-foreground font-bold">🔑 Senha:</span>
+                                        <span class="text-foreground">{{ req.generated_password }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
+                </div>
                 {% else %}
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <h3>Nenhuma solicitação aprovada ainda</h3>
-                        <p>As solicitações aprovadas aparecerão aqui.</p>
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-4xl">📭</span>
                     </div>
+                    <h3 class="text-xl font-bold text-foreground mb-2">Nenhuma solicitação aprovada ainda</h3>
+                    <p class="text-muted-foreground">As solicitações aprovadas aparecerão aqui.</p>
+                </div>
                 {% endif %}
             </div>
 
-            <!-- Rejeitadas -->
-            <div id="rejected" class="section">
+            <!-- Seção: Rejeitadas -->
+            <div id="rejected" class="section hidden">
                 {% if rejected %}
+                <div class="grid gap-6">
                     {% for req in rejected %}
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h3>{{ req.name }}</h3>
-                                <span class="status-badge status-rejected">❌ Rejeitada</span>
+                    <div class="request-card">
+                        <div class="p-6">
+                            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-times text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-foreground">{{ req.name }}</h3>
+                                        <span class="status-rejected px-3 py-1 rounded-full text-xs font-bold uppercase">
+                                            ❌ Rejeitada
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-muted-foreground flex items-center gap-2">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ req.updated_at|date:"d/m/Y H:i" }}
+                                </span>
                             </div>
-                            <span class="date">📅 {{ req.updated_at|date:"d/m/Y H:i" }}</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="field">
-                                <label>🏢 Empresa</label>
-                                <span>{{ req.company_name }}</span>
-                            </div>
-                            <div class="field">
-                                <label>📄 CNPJ</label>
-                                <span>{{ req.cnpj }}</span>
-                            </div>
-                            <div class="field">
-                                <label>📧 Email Pessoal</label>
-                                <span>{{ req.personal_email }}</span>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">Empresa</label>
+                                    <span class="text-foreground font-medium">{{ req.company_name }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">CNPJ</label>
+                                    <span class="text-foreground font-medium">{{ req.cnpj }}</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <label class="text-xs font-bold text-muted-foreground uppercase block mb-1">Email</label>
+                                    <span class="text-foreground font-medium">{{ req.personal_email }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
+                </div>
                 {% else %}
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <h3>Nenhuma solicitação rejeitada</h3>
-                        <p>As solicitações rejeitadas aparecerão aqui.</p>
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-4xl">📭</span>
                     </div>
+                    <h3 class="text-xl font-bold text-foreground mb-2">Nenhuma solicitação rejeitada</h3>
+                    <p class="text-muted-foreground">As solicitações rejeitadas aparecerão aqui.</p>
+                </div>
                 {% endif %}
             </div>
         </main>
@@ -516,14 +562,19 @@
 
     <script>
         function showSection(sectionId) {
-            // Remove active de todas as tabs e sections
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Remove active de todas as tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             
-            // Ativa a tab e section selecionadas
-            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
-            document.getElementById(sectionId).classList.add('active');
+            // Esconde todas as sections
+            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+            
+            // Ativa a tab clicada
+            event.target.closest('.tab-btn').classList.add('active');
+            
+            // Mostra a section correspondente
+            document.getElementById(sectionId).classList.remove('hidden');
         }
     </script>
+
 </body>
 </html>
