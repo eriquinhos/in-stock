@@ -24,7 +24,7 @@ NAME_COMPANY = "InStock Company"
 SECRET_KEY = "django-insecure-@jql#4n%uu%$fsu0*ylr3-(ek%=ka$mom!*c=@k5s(3i)168as"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
