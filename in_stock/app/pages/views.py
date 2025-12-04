@@ -22,6 +22,15 @@ from in_stock.app.sales.models import Sale
 from in_stock.app.suppliers.models import Supplier
 from in_stock.app.users.forms import CustomUserCreationForm
 from in_stock.app.users.models import AccessRequest, CustomUser, PasswordResetToken
+from in_stock.app.users.audit_service import AuditService
+from in_stock.app.users.models import (
+    AccessRequest,
+    AuditLog,
+    Company,
+    CustomUser,
+    PasswordResetToken,
+    Role,
+)
 
 
 def home(request):
@@ -823,13 +832,14 @@ class ResetPasswordView(View):
         )
         return redirect("login")
 
-
-from in_stock.app.users.audit_service import AuditService
+## esse import foi lá para cima
+#from in_stock.app.users.audit_service import AuditService
 
 # ============================================
 # VIEWS DE GESTÃO DE USUÁRIOS E EMPRESAS
 # ============================================
-from in_stock.app.users.models import AuditLog, Company
+## essa linha foi lá para cima
+#from in_stock.app.users.models import AuditLog, Company
 
 
 @login_required
