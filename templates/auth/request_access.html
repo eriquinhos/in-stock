@@ -95,11 +95,19 @@
 </head>
 <body>
 
-    <div class="login-card shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden relative h-auto lg:max-h-[95vh]">
+    <!-- Botão discreto de voltar -->
+    <a href="{% url 'home' %}" class="fixed top-4 left-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white/70 hover:text-white text-sm font-medium transition-all group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="hidden sm:inline">Voltar</span>
+    </a>
+
+    <div class="login-card shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col lg:flex-row overflow-hidden relative h-auto">
         
-        <div class="w-full lg:w-1/2 p-6 md:p-10 flex flex-col justify-center relative py-8 lg:py-0 overflow-y-auto max-h-[90vh] lg:max-h-none">
+        <div class="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-start relative py-10 overflow-y-auto max-h-[90vh] lg:max-h-[95vh]">
             
-            <div class="w-full max-w-md mx-auto space-y-4">
+            <div class="w-full max-w-md mx-auto space-y-5">
                 
                 <div class="space-y-2">
                     <div class="flex items-center gap-3 mb-4">
@@ -136,7 +144,7 @@
                     </button>
                 </div>
 
-                <form class="space-y-3" action="{% url 'request_access' %}" method="POST">
+                <form class="space-y-4" action="{% url 'request_access' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="request_type" id="request_type" value="new_company">
                     
@@ -172,14 +180,14 @@
 
                     <!-- Campos para NOVA EMPRESA -->
                     <div id="new-company-fields">
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-                            <p class="text-blue-700 text-xs leading-relaxed">
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                            <p class="text-blue-700 text-sm leading-relaxed">
                                 <strong>🏢 Cadastro de Nova Empresa</strong><br>
                                 Sua empresa ainda não usa o InStock? Solicite o cadastro e se torne o administrador da sua empresa.
                             </p>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label for="company_name" class="text-sm font-bold text-foreground/80 ml-1">
                                     Nome da Empresa <span class="text-red-500">*</span>
@@ -210,8 +218,8 @@
 
                     <!-- Campos para ENTRAR EM EMPRESA -->
                     <div id="join-company-fields" class="hidden">
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
-                            <p class="text-green-700 text-xs leading-relaxed">
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                            <p class="text-green-700 text-sm leading-relaxed">
                                 <strong>👤 Entrar em Empresa Existente</strong><br>
                                 Sua empresa já usa o InStock? Solicite acesso ao administrador da sua empresa. Ele definirá seu cargo após aprovar sua solicitação.
                             </p>
@@ -280,51 +288,51 @@
         </div>
 
         <!-- Lado Direito - Informativo -->
-        <div class="hidden lg:flex w-full lg:w-1/2 lado-direito-gradient p-12 flex-col justify-between text-white relative overflow-hidden">
+        <div class="hidden lg:flex w-full lg:w-1/2 lado-direito-gradient p-10 xl:p-12 flex-col justify-between text-white relative overflow-hidden">
             
             <!-- Efeitos de fundo -->
             <div class="absolute top-0 right-0 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
             <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
 
             <!-- Título -->
-            <div class="relative z-10 mt-6">
-                <h2 class="text-3xl font-bold mb-4 leading-tight">
+            <div class="relative z-10 mt-4">
+                <h2 class="text-2xl xl:text-3xl font-bold mb-3 leading-tight">
                     Junte-se ao InStock
                 </h2>
-                <p class="text-orange-50/80 text-lg">
+                <p class="text-orange-50/80 text-base xl:text-lg leading-relaxed">
                     Solicite seu acesso e comece a gerenciar seu estoque de forma inteligente.
                 </p>
             </div>
 
             <!-- Cards informativos -->
-            <div class="space-y-4 relative z-10 mb-6">
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+            <div class="space-y-3 relative z-10 mb-4">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-3 hover:bg-white/20 transition-colors cursor-default">
                     <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
                         🏢
                     </div>
-                    <div>
-                        <h4 class="font-bold">Cadastre sua Empresa</h4>
-                        <p class="text-xs text-orange-100/70 mt-1">Crie o ambiente da sua empresa e seja o administrador.</p>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="font-bold text-sm xl:text-base">Cadastre sua Empresa</h4>
+                        <p class="text-xs xl:text-sm text-orange-100/70 mt-1 leading-relaxed">Crie o ambiente da sua empresa e seja o administrador.</p>
                     </div>
                 </div>
 
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-3 hover:bg-white/20 transition-colors cursor-default">
                     <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
                         👥
                     </div>
-                    <div>
-                        <h4 class="font-bold">Entre em uma Empresa</h4>
-                        <p class="text-xs text-orange-100/70 mt-1">Junte-se a uma empresa existente e colabore com a equipe.</p>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="font-bold text-sm xl:text-base">Entre em uma Empresa</h4>
+                        <p class="text-xs xl:text-sm text-orange-100/70 mt-1 leading-relaxed">Junte-se a uma empresa existente e colabore com a equipe.</p>
                     </div>
                 </div>
 
-                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-4 hover:bg-white/20 transition-colors cursor-default">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl flex items-start gap-3 hover:bg-white/20 transition-colors cursor-default">
                     <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg shrink-0">
                         ✅
                     </div>
-                    <div>
-                        <h4 class="font-bold">Aprovação Rápida</h4>
-                        <p class="text-xs text-orange-100/70 mt-1">Receba suas credenciais por email após aprovação.</p>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="font-bold text-sm xl:text-base">Aprovação Rápida</h4>
+                        <p class="text-xs xl:text-sm text-orange-100/70 mt-1 leading-relaxed">Receba suas credenciais por email após aprovação.</p>
                     </div>
                 </div>
             </div>
