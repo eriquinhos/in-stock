@@ -28,6 +28,7 @@ from in_stock.app.users.models import (
     Company,
     CustomUser,
     PasswordResetToken,
+    Role,
 )
 
 
