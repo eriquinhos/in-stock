@@ -7,7 +7,8 @@
     <meta name="description" content="InStock - Sistema profissional de controle de estoque para empresas">
     <meta name="author" content="InStock Company">
     <title>InStock - Controle de Estoque Inteligente</title>
-        
+
+    <link rel="icon" type="image/png" href="{% static 'images/box.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,700;1,200;1,700&display=swap" rel="stylesheet">
@@ -20,12 +21,16 @@
 <body>
     <main>
         <!-- Improved navbar with register button and responsive design -->
-        <nav class="navbar navbar-expand-lg">                
+        <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                    <span style="font-size: 24px; margin-right: 8px;">📦</span>
+                    <img src="{% static 'images/box.png' %}"
+                        alt="InStock"
+                        width="28" height="28"
+                        style="margin-right: 8px;">
                     InStock
                 </a>
+            
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
