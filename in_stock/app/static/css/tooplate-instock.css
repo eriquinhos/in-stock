@@ -1193,7 +1193,7 @@ strong {
     width: 100%;
     background: linear-gradient(
         to bottom,
-        rgb(101, 54, 13),
+        rgba(0, 0, 0, 0.3),
         rgba(188, 108, 37, 1)
     );
     padding: 20px;
@@ -1205,6 +1205,7 @@ strong {
     font-size: 1.2rem;
     margin: 0 0 8px 0;
     font-weight: 600;
+    color: rgb(101, 54, 13);
 }
 
 .team-block-info .role {
