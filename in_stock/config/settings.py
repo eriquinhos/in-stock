@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -21,19 +24,12 @@ NAME_COMPANY = "InStock Company"
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@jql#4n%uu%$fsu0*ylr3-(ek%=ka$mom!*c=@k5s(3i)168as"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "instock.app.br",
-    "www.instock.app.br",
-    "162.243.49.28",
-    "2604:a880:0:202a::c62f:3000",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -105,12 +101,12 @@ elif os.environ.get("USE_SQLITE", "false") == "true":
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": "in_stock",
-            "USER": "root",
-            "PASSWORD": "qwe123",
-            "HOST": "localhost",
-            "PORT": "3306",
+            "ENGINE": os.getenv("DATABASE_ENGINE", "django.db.backends.mysql"),
+            "NAME": os.getenv("DATABASE_NAME"),
+            "USER": os.getenv("DATABASE_USER"),
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST"),
+            "PORT": os.getenv("DATABASE_PORT", "3306"),
         }
     }
 
