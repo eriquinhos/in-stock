@@ -1,24 +1,22 @@
-# Projeto inStock
-Projeto desenvolvido durante a disciplina de Engenharia de Software
+# inStock - Sistema de Gerenciamento de Estoque
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/-Django-092E20?style=flat-square&logo=django&logoColor=white)
+![Nginx](https://img.shields.io/badge/-Nginx-009639?style=flat-square&logo=nginx&logoColor=white)
+![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![HTML5](https://img.shields.io/badge/-HTML5-E34C26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![GitHub%20Actions](https://img.shields.io/badge/-GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
 
-**Grupo:**
+> Um sistema completo de controle de estoque para pequenas e médias empresas, com foco em organização, rastreabilidade e eficiência operacional.
 
-Amanda Nogueira Lino
+## 👥 Contribuidores
 
-Eric Victor do Amaral da Silva
-
-Gabriela Cristina Moreira dos Santos
-
-Nicole Cristine de Faria Santos
-
-Tamires Morais Rodrigues
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-O projeto consiste no desenvolvimento de um Sistema de Controle de Estoque voltado para pequenas e médias empresas, com foco na organização e gestão eficiente dos produtos armazenados. O sistema será acessado mediante tela de login e autenticação, garantindo segurança no controle de informações e oferecendo diferentes níveis de permissão para usuários, como administradores e funcionários
-
-A tela inicial será dedicada à consulta rápida do estoque, permitindo ao usuário buscar produtos por nome, código ou categoria, além de exibir alertas sobre itens em falta ou com baixa quantidade, assim como aqueles próximos ao vencimento. A interface contará com gráficos e indicadores para facilitar a visualização do status geral do estoque, oferecendo uma experiência prática e intuitiva.
-
-Entre as principais funcionalidades, destacam-se o cadastro completo de produtos com informações detalhadas (nome, código, categoria, quantidade, preço e imagem), o registro de movimentações de entrada e saída, a geração de relatórios em PDF e o gerenciamento de usuários, permitindo a criação, edição e exclusão de contas. Todo o histórico de movimentações será armazenado, garantindo rastreabilidade das alterações realizadas no sistema
+| Nome | Papel |
+|------|-------|
+| <img src="in_stock/app/static/images/team/Amanda.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Amanda Nogueira Lino** | Desenvolvimento Frontend / UI |
+| <img src="in_stock/app/static/images/team/Eric.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Eric Victor do Amaral da Silva** | DevOps / Backend / Testes / QA |
+| <img src="in_stock/app/static/images/team/Gabi.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Gabriela Cristina Moreira dos Santos** | Frontend / UX |
+| <img src="in_stock/app/static/images/team/Nicole.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Nicole Cristine de Faria Santos** | Frontend / UI |
+| <img src="in_stock/app/static/images/team/Tamires.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Tamires Morais Rodrigues** | Backend / Testes/ QA |
