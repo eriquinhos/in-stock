@@ -13,10 +13,11 @@
 
 ## 👥 Contribuidores
 
-| Nome | Papel |
-|------|-------|
-| <img src="in_stock/app/static/images/team/Amanda.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Amanda Nogueira Lino** | Desenvolvimento Frontend / UI |
-| <img src="in_stock/app/static/images/team/Eric.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Eric Victor do Amaral da Silva** | DevOps / Backend / Testes / QA |
-| <img src="in_stock/app/static/images/team/Gabi.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Gabriela Cristina Moreira dos Santos** | Frontend / UX |
-| <img src="in_stock/app/static/images/team/Nicole.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Nicole Cristine de Faria Santos** | Frontend / UI |
-| <img src="in_stock/app/static/images/team/Tamires.jpeg" width="32" style="border-radius:50%; vertical-align:middle; margin-right:8px;"> **Tamires Morais Rodrigues** | Backend / Testes/ QA |
+|| Nome | Papel |
+|------|------|-------|
+| <img src="in_stock/app/static/images/team/Amanda.jpeg" width=32 height=32> | **Amanda Nogueira Lino** | Desenvolvimento Frontend / UI |
+| <img src="in_stock/app/static/images/team/Eric.jpeg"   width=32 height=32> | **Eric Victor do Amaral da Silva** | DevOps / Backend / Testes / QA |
+| <img src="in_stock/app/static/images/team/Gabi.jpeg"   width=32 height=32> | **Gabriela Cristina Moreira dos Santos** | Frontend / UX |
+| <img src="in_stock/app/static/images/team/Nicole.jpeg" width=32 height=32> | **Nicole Cristine de Faria Santos** | Frontend / UI |
+| <img src="in_stock/app/static/images/team/Tamires.jpeg" width=32 height=32> | **Tamires Morais Rodrigues** | Backend / Testes / QA |
+
