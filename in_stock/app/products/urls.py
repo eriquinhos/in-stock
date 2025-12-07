@@ -6,8 +6,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 # Se os nomes forem diferentes no seu models.py, ajuste aqui.
 from .models import Category, Product
 
-# from .forms import CategoryForm, ProductForm  # Assumindo que você tem forms criados
-
+# from .forms import ProductForm, CategoryForm # Assumindo que você tem forms criados
 
 # ==========================
 # VIEWS DE PRODUTOS

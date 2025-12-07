@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import (
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import CategoryForm, ProductForm
+# from .forms import CategoryForm, ProductForm
 from .services import CategoryService, ProductService
 
 
