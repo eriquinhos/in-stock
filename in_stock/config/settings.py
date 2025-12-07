@@ -28,7 +28,7 @@ NAME_COMPANY = "InStock Company"
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "false") == "True"
+DEBUG = os.getenv("DEBUG", "true") == "True"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
