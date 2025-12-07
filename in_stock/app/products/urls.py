@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import CategoryForm, ProductForm  # Assumindo que você tem forms criados
+#from .forms import CategoryForm, ProductForm  # Assumindo que você tem forms criados
 
 # Importe seus modelos aqui.
 # Se os nomes forem diferentes no seu models.py, ajuste aqui.
