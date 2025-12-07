@@ -15,7 +15,6 @@ from . import views
 urlpatterns = [
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
-    
     # Mapeia a URL '/login/' para a view de login
     path("login/", views.LoginCreateView.as_view(), name="login"),
     # Mapeia a URL para a view de logout
@@ -75,18 +74,38 @@ urlpatterns = [
         views.company_detail_view,
         name="company_detail",
     ),
-
     # ============================================
     # GESTÃO DE PRODUTOS
     # ============================================
-    path("gestao/produtos/", ProductListCreateView.as_view(), name="product-list-create"),
-    path("gestao/produtos/<int:id_product>/editar/", ProductUpdateView.as_view(), name="product-update"),
-    path("gestao/produtos/<int:id_product>/deletar/", ProductDeleteView.as_view(), name="product-delete"),
-
+    path(
+        "gestao/produtos/", ProductListCreateView.as_view(), name="product-list-create"
+    ),
+    path(
+        "gestao/produtos/<int:id_product>/editar/",
+        ProductUpdateView.as_view(),
+        name="product-update",
+    ),
+    path(
+        "gestao/produtos/<int:id_product>/deletar/",
+        ProductDeleteView.as_view(),
+        name="product-delete",
+    ),
     # ============================================
     # GESTÃO DE CATEGORIAS
     # ============================================
-    path("gestao/categorias/", CategoryListCreateView.as_view(), name="category-list-create"),
-    path("gestao/categorias/<int:id_category>/editar/", CategoryUpdateView.as_view(), name="category-update"),
-    path("gestao/categorias/<int:id_category>/deletar/", CategoryDeleteView.as_view(), name="category-delete"),
+    path(
+        "gestao/categorias/",
+        CategoryListCreateView.as_view(),
+        name="category-list-create",
+    ),
+    path(
+        "gestao/categorias/<int:id_category>/editar/",
+        CategoryUpdateView.as_view(),
+        name="category-update",
+    ),
+    path(
+        "gestao/categorias/<int:id_category>/deletar/",
+        CategoryDeleteView.as_view(),
+        name="category-delete",
+    ),
 ]
