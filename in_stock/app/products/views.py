@@ -23,7 +23,7 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         # Lógica para listar todos os produtos
         products = ProductService.get_all()
 
-        return render(request, "pages/GestaoProdutos.html", {"products": products})
+        return render(request, "products/index.html", {"products": products})
 
     def post(self, request):
 
