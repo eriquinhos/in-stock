@@ -31,6 +31,19 @@ class ProductListCreateView(ListView):
         return Product.objects.all().order_by("-id")
 
 
+class ProductUpdateView(UpdateView):
+    model = Product
+    template_name = "products/product_form.html"  # Crie esse HTML para editar
+    fields = [
+        "name",
+        "category",
+        "price",
+        "quantity",
+        "description",
+    ]  # Ajuste conforme seu Model
+    success_url = reverse_lazy("product-list-create")  # Volta para a lista ao salvar
+
+
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = (
