@@ -1,6 +1,12 @@
-from django.shortcuts import render
+from django.views.generic import ListView
+
+from .models import Product
 
 
-def minha_view_de_produtos(request):
-    # Aqui sim você aponta para o nome do arquivo HTML físico
-    return render(request, "GestaoProdutos.html")
+class ProductListView(ListView):
+    model = Product
+    # A LINHA MÁGICA É ESTA AQUI EMBAIXO:
+    template_name = (
+        "pages/GestaoProdutos.html"  # Use o nome exato do arquivo que você salvou
+    )
+    context_object_name = "products"
