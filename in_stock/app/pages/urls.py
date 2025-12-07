@@ -2,10 +2,19 @@ from django.urls import path
 
 from . import views
 
+from in_stock.app.products.views import (
+    ProductListCreateView,
+    ProductUpdateView,
+    ProductDeleteView,
+    CategoryListCreateView,
+    CategoryUpdateView,
+    CategoryDeleteView
+)
+
 urlpatterns = [
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
-    path("GestaoProdutos/", views.GestaoProdutos_view, name = "GestaoProdutos"),
+    
     # Mapeia a URL '/login/' para a view de login
     path("login/", views.LoginCreateView.as_view(), name="login"),
     # Mapeia a URL para a view de logout
@@ -65,4 +74,20 @@ urlpatterns = [
         views.company_detail_view,
         name="company_detail",
     ),
+
+    # ============================================
+    # GESTÃO DE PRODUTOS (Usando os imports novos)
+    # ============================================
+    # Note o uso de .as_view() porque são Classes
+    
+    path("gestao/produtos/", ProductListCreateView.as_view(), name="product-list-create"),
+    path("gestao/produtos/<int:id_product>/editar/", ProductUpdateView.as_view(), name="product-update"),
+    path("gestao/produtos/<int:id_product>/deletar/", ProductDeleteView.as_view(), name="product-delete"),
+    # ============================================
+    # GESTÃO DE CATEGORIAS
+    # ============================================
+    
+    path("gestao/categorias/", CategoryListCreateView.as_view(), name="category-list-create"),
+    path("gestao/categorias/<int:id_category>/editar/", CategoryUpdateView.as_view(), name="category-update"),
+    path("gestao/categorias/<int:id_category>/deletar/", CategoryDeleteView.as_view(), name="category-delete"),
 ]
