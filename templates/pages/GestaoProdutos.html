@@ -7,10 +7,10 @@
     <title>Produtos - InStock</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <link rel="stylesheet" href="{% static 'css/produtos.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link rel="stylesheet" href="produtos.css">
+  
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -98,7 +98,7 @@
         </div>
 
         <nav class="flex-1 p-4 space-y-1 mt-4 overflow-y-auto">
-            <a href="#" data-tooltip="Dashboard" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
+            <a href="{% url 'dashboard' %}" data-tooltip="Dashboard" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white font-medium">
                 <i class="fas fa-home w-5 text-center flex-shrink-0"></i>
                 <span class="sidebar-text">Dashboard</span>
             </a>
@@ -236,7 +236,7 @@
         </div>
     </div>
 
-    <script src="produtos.js"></script> <script>
+    <script src="{% static 'js/produtos.js' %}"></script> <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.getElementById('sidebar-toggle');
