@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
+    path("GestaoProdutos/", views.GestaoProdutos_view, name = "GestaoProdutos"),
     # Mapeia a URL '/login/' para a view de login
     path("login/", views.LoginCreateView.as_view(), name="login"),
     # Mapeia a URL para a view de logout
