@@ -1,78 +1,46 @@
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.urls import path
 
-# Importe seus modelos aqui.
-# Se os nomes forem diferentes no seu models.py, ajuste aqui.
-from .models import Category, Product
+from . import views
 
-# from .forms import ProductForm, CategoryForm # Assumindo que você tem forms criados
-
-# ==========================
-# VIEWS DE PRODUTOS
-# ==========================
-
-
-class ProductListCreateView(ListView):
-    """
-    Exibe a lista de produtos.
-    Aqui é onde definimos que o template será 'pages/GestaoProdutos.html'
-    """
-
-    model = Product
-    template_name = "pages/GestaoProdutos.html"  # <--- O PULO DO GATO AQUI
-    context_object_name = (
-        "products"  # Como você vai chamar a lista no HTML (ex: {% for p in products %})
-    )
-    paginate_by = 10  # Opcional: paginação
-
-    def get_queryset(self):
-        # Aqui você pode ordenar ou filtrar se necessário
-        return Product.objects.all().order_by("-id")
-
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    template_name = "products/product_form.html"  # Crie esse HTML para editar
-    fields = [
-        "name",
-        "category",
-        "price",
-        "quantity",
-        "description",
-    ]  # Ajuste conforme seu Model
-    success_url = reverse_lazy("product-list-create")  # Volta para a lista ao salvar
-
-
-class ProductDeleteView(DeleteView):
-    model = Product
-    template_name = (
-        "products/product_confirm_delete.html"  # Django pede confirmação padrão
-    )
-    success_url = reverse_lazy("product-list-create")
-
-
-# ==========================
-# VIEWS DE CATEGORIAS
-# ==========================
-
-
-class CategoryListCreateView(ListView):
-    model = Category
-    template_name = (
-        "products/categories_list.html"  # Ajuste para o seu template de categorias
-    )
-    context_object_name = "categories"
-
-
-class CategoryUpdateView(UpdateView):
-    model = Category
-    template_name = "products/category_form.html"
-    fields = ["name", "description"]
-    success_url = reverse_lazy("category-list-create")
-
-
-class CategoryDeleteView(DeleteView):
-    model = Category
-    template_name = "products/category_confirm_delete.html"
-    success_url = reverse_lazy("category-list-create")
+urlpatterns = [
+    # ==========================
+    # PRODUTOS
+    # ==========================
+    # Lista de Produtos (ProductListCreateView)
+    # Nome "product-list-create" é importante pois é usado no success_url das views
+    path("", views.ProductListCreateView.as_view(), name="product-list-create"),
+    # Edição de Produto (ProductUpdateView)
+    # IMPORTANTE: Generic Views esperam <int:pk> por padrão, não <int:id_product>
+    path(
+        "product/<int:pk>/edit/",
+        views.ProductUpdateView.as_view(),
+        name="product-update",
+    ),
+    # Exclusão de Produto (ProductDeleteView)
+    path(
+        "product/<int:pk>/delete/",
+        views.ProductDeleteView.as_view(),
+        name="product-delete",
+    ),
+    # ==========================
+    # CATEGORIAS
+    # ==========================
+    # Lista de Categorias
+    path(
+        "categories/",
+        views.CategoryListCreateView.as_view(),
+        name="category-list-create",
+    ),
+    # Edição de Categoria
+    path(
+        "categories/<int:pk>/edit/",
+        views.CategoryUpdateView.as_view(),
+        name="category-update",
+    ),
+    # Exclusão de Categoria
+    path(
+        "categories/<int:pk>/delete/",
+        views.CategoryDeleteView.as_view(),
+        name="category-delete",
+    ),
+]
