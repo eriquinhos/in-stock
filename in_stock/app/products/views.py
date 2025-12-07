@@ -23,7 +23,7 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         # Lógica para listar todos os produtos
         products = ProductService.get_all()
 
-        return render(request, "products/index.html", {"products": products})
+        return render(request, "pages/GestaoProdutos.html", {"products": products})
 
     def post(self, request):
 
@@ -63,9 +63,9 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         product = ProductService.get_product_by_id(id_product=id_product)
         if not product:
-            return redirect("product-list-create")
+            return redirect("GestaoProdutos")
 
-        return render(request, "products/edit.html", {"product": product})
+        return render(request, "pages/GestaoProdutos.html", {"product": product})
 
     def put(self, request, id_product):
         # Lógica para atualizar um produto específico
