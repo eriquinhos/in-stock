@@ -1,12 +1,18 @@
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DeleteView # Adicionei DeleteView
+from .models import Product, Category # Adicionei Category
 
-from .models import Product
-
-
+# Sua View de Listagem (Essa mostra o HTML bonito)
 class ProductListView(ListView):
     model = Product
-    # A LINHA MÁGICA É ESTA AQUI EMBAIXO:
-    template_name = (
-        "pages/GestaoProdutos.html"  # Use o nome exato do arquivo que você salvou
-    )
+    template_name = "pages/GestaoProdutos.html" 
     context_object_name = "products"
+
+# --- A PEÇA QUE FALTAVA ---
+# Sem essa classe abaixo, o servidor dá erro e não atualiza seu HTML
+class CategoryDeleteView(DeleteView):
+    model = Category
+    # O Django vai procurar um template simples para confirmar a exclusão
+    template_name = 'products/category_confirm_delete.html' 
+    # Para onde vai depois de deletar? Para a lista de categorias
+    success_url = reverse_lazy('category-list-create')

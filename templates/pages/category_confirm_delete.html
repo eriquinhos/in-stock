@@ -1,0 +1,12 @@
+<div style="padding: 20px; text-align: center; font-family: sans-serif;">
+    <h3>Tem certeza?</h3>
+    <p>Você vai excluir a categoria: <strong>{{ object }}</strong></p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <a href="../" style="margin-right: 15px;">Cancelar</a>
+        <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+            Sim, excluir
+        </button>
+    </form>
+</div>
