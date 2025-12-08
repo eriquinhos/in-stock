@@ -120,20 +120,16 @@ class CategoryService:
 
         return category
 
-    def get_category_by_id(self, request, id_category: int):
+    def get_category_by_id(id_category: int):
         try:
-            return Category.objects.get(pk=id_category)
+            return Category.objects.get(id=id_category)
         except Category.DoesNotExist:
             return None
 
-    def delete_category_by_id(self, request, id_category: int):
+    def delete_category_by_id(id_category: int) -> bool:
         try:
-            category = Category.objects.get(pk=id_category)
-
-            category.delete()
-            messages.success("A categoria foi excluida com sucesso!")
-
-            return True
+                category = Category.objects.get(id=id_category)
+                category.delete()
+                return True
         except Category.DoesNotExist:
-
             return False
