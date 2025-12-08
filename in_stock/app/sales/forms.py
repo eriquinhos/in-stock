@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 
 from .models import Sale
 
@@ -7,7 +8,8 @@ class SaleForm(forms.ModelForm):
 
     class Meta:
         model = Sale
-        fields = ["product", "supplier", "date", "type", "quantity", "description"]
+        fields = ["product", "supplier", "date",
+                  "type", "quantity", "description"]
 
         error_messages = {
             "product": {"required": "É necessário informar o produto."},
@@ -21,7 +23,19 @@ class SaleForm(forms.ModelForm):
             },
         }
 
-    # O método de validação deve estar no nível da classe SaleForm
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date'].initial = timezone.now()
+        self.fields['supplier'].required = False
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get("quantity")
+
+        if quantity and quantity <= 0:
+            raise forms.ValidationError(
+                "A quantidade deve ser maior que zero.")
+
+        return quantity
 
     def clean_description(self):
         description = self.cleaned_data.get("description")

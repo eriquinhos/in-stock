@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimentações - InStock</title>
+    <!-- <CHANGE> Added favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/box.png' %}">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 35 60% 98%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
+        body {
+            @apply min-h-screen font-sans antialiased;
+            background-color: hsl(var(--background));
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card {
+            @apply bg-white rounded-lg shadow-md p-6;
+        }
+
+        .stat-card {
+            @apply bg-white rounded-lg shadow-md p-6 border-l-4;
+        }
+
+        .stat-card.entry {
+            @apply border-l-green-500;
+        }
+
+        .stat-card.exit {
+            @apply border-l-red-500;
+        }
+
+        .badge-type {
+            @apply inline-block px-3 py-1 rounded-full font-semibold text-xs text-white;
+        }
+
+        .badge-type.entry {
+            @apply bg-green-500;
+        }
+
+        .badge-type.exit {
+            @apply bg-red-500;
+        }
+
+        .btn-primary {
+            @apply inline-flex items-center gap-2 px-6 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-all;
+        }
+
+        .btn-secondary {
+            @apply inline-flex items-center gap-2 px-6 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-all;
+        }
+
+        .btn-filter {
+            @apply inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-all;
+        }
+
+        .table-row {
+            @apply border-b border-gray-200 hover:bg-gray-50 transition-all;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- Menu Sidebar -->
+        {% include 'pages/MenuVertical.html' with active_page='sales' %}
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-6 lg:p-8 overflow-auto">
+            
+            <!-- Header -->
+            <div class="mb-8 flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold text-foreground">Movimentações de Estoque</h1>
+                    <p class="text-muted-foreground mt-2">Controle todas as entradas e saídas do seu estoque</p>
+                </div>
+                <!-- <CHANGE> Fixed URL from 'sale-create' to 'sale-list-create' -->
+                <a href="{% url 'sale-create' %}" class="btn-primary">
+                    <i class="fas fa-plus mr-2"></i>Nova Movimentação
+                </a>
+            </div>
+
+            <!-- Mensagens -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="mb-6 p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-times-circle"></i>
+                    {% else %}
+                    <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Estatísticas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Card Total de Movimentações -->
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Total de Movimentações</p>
+                            <p class="text-3xl font-bold text-foreground mt-2">{{ sales.count }}</p>
+                        </div>
+                        <i class="fas fa-exchange-alt text-4xl text-orange-400 opacity-20"></i>
+                    </div>
+                </div>
+
+                <!-- Card Entradas -->
+                <div class="stat-card entry">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Entradas</p>
+                            <p class="text-3xl font-bold text-green-600 mt-2">{{ stats.entries }}</p>
+                        </div>
+                        <i class="fas fa-arrow-down text-4xl text-green-400 opacity-20"></i>
+                    </div>
+                </div>
+
+                <!-- Card Saídas -->
+                <div class="stat-card exit">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Saídas</p>
+                            <p class="text-3xl font-bold text-red-600 mt-2">{{ stats.exits }}</p>
+                        </div>
+                        <i class="fas fa-arrow-up text-4xl text-red-400 opacity-20"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card mb-6">
+                <h2 class="text-lg font-bold text-foreground mb-4">Filtros e Relatórios</h2>
+                <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Tipo de Movimentação -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                        <select name="type">
+                            <option value="">Todos os tipos</option>
+                            <option value="entry" {% if type_filter == 'entry' %}selected{% endif %}>Entrada</option>
+                            <option value="exits" {% if type_filter == 'exits' %}selected{% endif %}>Saída</option>
+                        </select>
+                    </div>
+
+                    <!-- Produto -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Produto</label>
+                        <input 
+                            type="text" 
+                            name="product" 
+                            placeholder="Buscar por produto..." 
+                            value="{{ product_filter }}"
+                        >
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="md:col-span-2 flex gap-3 items-end">
+                        <button type="submit" class="btn-filter">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                        <a href="{% url 'sale-list' %}" class="btn-secondary">
+                            <i class="fas fa-times mr-2"></i>Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabela de Movimentações -->
+            <div class="card">
+                <h2 class="text-lg font-bold text-foreground mb-6">Histórico de Movimentações</h2>
+                
+                {% if sales %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-2 border-gray-300">
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Tipo</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Produto</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Quantidade</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Data</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Descrição</th>
+                                    <th class="text-center py-3 px-4 font-semibold text-gray-700">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in sales %}
+                                <tr class="table-row">
+                                    <td class="py-3 px-4">
+                                        {% if sale.type == 'entry' %}
+                                            <span class="badge-type entry">
+                                                <i class="fas fa-arrow-down mr-1"></i>Entrada
+                                            </span>
+                                        {% else %}
+                                            <span class="badge-type exit">
+                                                <i class="fas fa-arrow-up mr-1"></i>Saída
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4 font-medium">{{ sale.product.name }}</td>
+                                    <td class="py-3 px-4">{{ sale.quantity }}</td>
+                                    <td class="py-3 px-4 text-sm text-gray-600">{{ sale.date|date:"d/m/Y H:i" }}</td>
+                                    <td class="py-3 px-4 text-sm text-gray-600">{{ sale.description|truncatewords:5 }}</td>
+                                    <td class="py-3 px-4 text-center">
+                                        <div class="flex gap-2 justify-center">
+                                            <a href="#" class="text-blue-500 hover:text-blue-700" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="text-red-500 hover:text-red-700" title="Deletar">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Nenhuma movimentação registrada ainda</p>
+                        <!-- <CHANGE> Fixed URL from 'sale-create' to 'sale-list-create' -->
+                        <a href="{% url 'sale-create' %}" class="btn-primary mt-4">
+                            <i class="fas fa-plus mr-2"></i>Registrar Primeira Movimentação
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle de menu (mesmo do MenuVertical)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>InStock - Criar Conta</title>
+    <!-- <CHANGE> Added favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/box.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -101,6 +102,63 @@
             border-color: hsl(var(--primary));
             box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
         }
+
+        /* <CHANGE> Added styles for credentials display modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefcf9;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .credentials-box {
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background-color: hsl(32 85% 55%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: hsl(32 85% 45%);
+        }
+
+        .copy-btn.copied {
+            background-color: #10b981;
+        }
     </style>
 </head>
 <body>
@@ -134,7 +192,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <form class="space-y-4" action="{% url 'register' %}" method="POST">
+                <form class="space-y-4" action="{% url 'register' %}" method="POST" id="registerForm">
                     {% csrf_token %}
                     
                     <div class="space-y-2">
@@ -265,5 +323,89 @@
         </div>
     </div>
 
+    <div id="credentialsModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-foreground mb-4">Usuário Criado com Sucesso!</h2>
+            <p class="text-muted-foreground mb-6">Aqui estão as credenciais de login. Guarde-as com segurança:</p>
+            
+            <div>
+                <p class="text-sm font-semibold text-foreground mb-2">Email:</p>
+                <div class="credentials-box">
+                    <span id="credentialEmail"></span>
+                    <button type="button" class="copy-btn ml-2" onclick="copiarCredencial('credentialEmail')">Copiar</button>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-sm font-semibold text-foreground mb-2">Senha Temporária:</p>
+                <div class="credentials-box">
+                    <span id="credentialPassword"></span>
+                    <button type="button" class="copy-btn ml-2" onclick="copiarCredencial('credentialPassword')">Copiar</button>
+                </div>
+            </div>
+
+            <p class="text-xs text-yellow-700 bg-yellow-50 p-3 rounded mt-4 mb-4">
+                ⚠️ Altere sua senha no primeiro login por segurança.
+            </p>
+
+            <button onclick="fecharModal()" class="w-full h-12 bg-primary hover:bg-orange-600 text-white font-bold rounded-full transition-all">
+                Ir para Login
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function copiarCredencial(elementId) {
+            const elemento = document.getElementById(elementId);
+            const texto = elemento.textContent;
+            
+            navigator.clipboard.writeText(texto).then(() => {
+                const botao = event.target;
+                botao.textContent = '✓ Copiado!';
+                botao.classList.add('copied');
+                
+                setTimeout(() => {
+                    botao.textContent = 'Copiar';
+                    botao.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                alert('Erro ao copiar!');
+            });
+        }
+
+        function fecharModal() {
+            document.getElementById('credentialsModal').classList.remove('show');
+            window.location.href = "{% url 'login' %}";
+        }
+
+        // Verifica se há credenciais para exibir
+        function verificarCredenciais() {
+            const email = localStorage.getItem('newUserEmail');
+            const senha = localStorage.getItem('newUserPassword');
+            
+            if (email && senha) {
+                document.getElementById('credentialEmail').textContent = email;
+                document.getElementById('credentialPassword').textContent = senha;
+                document.getElementById('credentialsModal').classList.add('show');
+                
+                // Limpa o localStorage
+                localStorage.removeItem('newUserEmail');
+                localStorage.removeItem('newUserPassword');
+            }
+        }
+
+        // Modifica o formulário para exibir credenciais após envio
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password1').value;
+            
+            // Armazena as credenciais temporariamente
+            localStorage.setItem('newUserEmail', email);
+            localStorage.setItem('newUserPassword', password);
+        });
+
+        // Verifica ao carregar a página
+        window.addEventListener('load', verificarCredenciais);
+    </script>
 </body>
 </html>

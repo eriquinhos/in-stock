@@ -7,37 +7,48 @@ from .models import Sale
 
 class SaleService:
 
-    def get_all(self):
+    @staticmethod
+    def get_all():
         return Sale.objects.select_related("product", "user").order_by("-created_at")
 
-    # Referente a movimentação ENTRADA ou SAÍDA feita na CRUD
-    def create_sale_by_type(self, request, type_sale: str):
+    @staticmethod
+    def get_by_company(company):
+        return Sale.objects.filter(company=company).select_related("product", "user").order_by("-created_at")
+
+    @staticmethod
+    def create_sale_by_type(request, type_sale: str):
         id_product = request.POST.get("product")
-        quantity = request.POST.get("quantity")
+        quantity = int(request.POST.get("quantity", 1))
+
+        try:
+            product = Product.objects.get(pk=id_product)
+        except Product.DoesNotExist:
+            messages.error(
+                request, f"O produto com ID {id_product} não foi encontrado.")
+            return None
 
         sale = Sale()
-        sale.product = id_product
-        sale.user = request.user.id
-        sale.supplier = request.POST.get("supplier")
+        sale.product = product
+        sale.user = request.user
+        sale.company = request.user.company_obj
+        sale.supplier = request.POST.get("supplier") or None
         sale.type = type_sale
         sale.quantity = quantity
         sale.description = request.POST.get("description") or None
 
         sale.save()
 
-        # Decrementar ou Incrementar a quantidade do produto
-        self.update_product_quantity(request, id_product, type_sale, quantity)
+        SaleService.update_product_quantity(product, type_sale, quantity)
 
         return sale
-
-    # Referente a movimentação ENTRADA feita na criação de um Produto
 
     @staticmethod
     def create_sale_entry_standard(request, product: Product):
 
         sale = Sale(
-            product=product.id,
-            user=request.user.id,
+            product=product,
+            user=request.user,
+            company=request.user.company_obj,
             supplier=product.supplier.values_list("id", flat=True).first(),
             type="entry",
             quantity=product.quantity,
@@ -47,21 +58,37 @@ class SaleService:
         sale.save()
         return sale
 
-    def update_product_quantity(
-        self, request, id_product: int, type_sale: str, quantity: int
-    ):
-
+    @staticmethod
+    def update_product_quantity(product: Product, type_sale: str, quantity: int):
         try:
-            product = Product.objects.get(pk=id_product)
-
-            if type_sale == "exist":
+            if type_sale == "exits":
                 product.quantity = max(product.quantity - quantity, 0)
             else:
                 product.quantity = product.quantity + quantity
 
             product.save()
 
-        except Product.DoesNotExist:
-            messages.error(
-                request, f"O produto com ID {id_product} não foi encontrado."
-            )
+        except Exception as e:
+            print(f"Erro ao atualizar quantidade do produto: {str(e)}")
+
+    @staticmethod
+    def get_sales_statistics(company=None):
+        query = Sale.objects.all()
+        if company:
+            query = query.filter(company=company)
+
+        total_entries = query.filter(type="entry").count()
+        total_exits = query.filter(type="exits").count()
+
+        return {
+            "total_entries": total_entries,
+            "total_exits": total_exits,
+            "total_movements": total_entries + total_exits,
+        }
+
+    @staticmethod
+    def get_sales_by_date_range(start_date, end_date, company=None):
+        query = Sale.objects.filter(date__gte=start_date, date__lte=end_date)
+        if company:
+            query = query.filter(company=company)
+        return query.select_related("product", "user").order_by("-created_at")
