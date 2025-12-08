@@ -126,7 +126,7 @@ class ProductSupplierModelTests(TestCase):
 
     def test_product_supplier_string_representation(self):
         """Testa a representação em string do relacionamento"""
-        expected = f"{self.product.name}  fornecido por  {self.supplier.name}"
+        expected = f"{self.product.name} fornecido por {self.supplier.name}"
         self.assertEqual(str(self.product_supplier), expected)
 
     def test_product_supplier_uniqueness(self):
