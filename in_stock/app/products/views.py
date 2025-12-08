@@ -47,7 +47,9 @@ class ProductListCreateView(LoginRequiredMixin, View):
         if request.user.is_instock_admin:
             categories = CategoryService.get_all()
         elif request.user.company_obj:
-            categories = CategoryService.get_all().filter(company=request.user.company_obj)
+            categories = CategoryService.get_all().filter(
+                company=request.user.company_obj
+            )
         else:
             categories = CategoryService.get_all().none()
 
@@ -74,7 +76,9 @@ class ProductExportView(LoginRequiredMixin, View):
             if request.user.is_instock_admin:
                 products = ProductService.get_all()
             elif request.user.company_obj:
-                products = ProductService.get_all().filter(company=request.user.company_obj)
+                products = ProductService.get_all().filter(
+                    company=request.user.company_obj
+                )
             else:
                 products = ProductService.get_all().none()
 
@@ -306,10 +310,12 @@ class CategoryListView(LoginRequiredMixin, View):
         if request.user.is_instock_admin:
             categories = CategoryService.get_all()
         elif request.user.company_obj:
-            categories = CategoryService.get_all().filter(company=request.user.company_obj)
+            categories = CategoryService.get_all().filter(
+                company=request.user.company_obj
+            )
         else:
             categories = CategoryService.get_all().none()
-            
+
         return render(
             request,
             "products/categories/index.html",

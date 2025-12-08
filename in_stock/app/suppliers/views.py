@@ -16,10 +16,12 @@ class SupplierListCreateView(LoginRequiredMixin, View):
         if request.user.is_instock_admin:
             suppliers = SupplierService.get_all()
         elif request.user.company_obj:
-            suppliers = SupplierService.get_all().filter(company=request.user.company_obj)
+            suppliers = SupplierService.get_all().filter(
+                company=request.user.company_obj
+            )
         else:
             suppliers = SupplierService.get_all().none()
-            
+
         return render(request, "suppliers/list.html", {"suppliers": suppliers})
 
 
