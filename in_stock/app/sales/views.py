@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
 )
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import View
 
 from .forms import SaleForm
@@ -61,19 +61,17 @@ class SaleCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             type_sale = request.POST.get("type")
 
             try:
-                create_sale = SaleService.create_sale_by_type(
-                    request, type_sale)
+                create_sale = SaleService.create_sale_by_type(request, type_sale)
             except Exception as e:
                 messages.error(
-                    request, f"Ocorreu um erro ao salvar a movimentação: {str(e)}")
+                    request, f"Ocorreu um erro ao salvar a movimentação: {str(e)}"
+                )
                 return render(request, "sales/create.html", {"form": form})
 
             if not create_sale:
-                messages.error(
-                    request, "Não foi possível salvar a movimentação!")
+                messages.error(request, "Não foi possível salvar a movimentação!")
             else:
-                messages.success(
-                    request, "A movimentação foi registrada com sucesso!")
+                messages.success(request, "A movimentação foi registrada com sucesso!")
                 return redirect("sale-list")
 
         else:

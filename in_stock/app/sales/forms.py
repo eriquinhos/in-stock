@@ -8,8 +8,7 @@ class SaleForm(forms.ModelForm):
 
     class Meta:
         model = Sale
-        fields = ["product", "supplier", "date",
-                  "type", "quantity", "description"]
+        fields = ["product", "supplier", "date", "type", "quantity", "description"]
 
         error_messages = {
             "product": {"required": "É necessário informar o produto."},
@@ -25,15 +24,14 @@ class SaleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['date'].initial = timezone.now()
-        self.fields['supplier'].required = False
+        self.fields["date"].initial = timezone.now()
+        self.fields["supplier"].required = False
 
     def clean_quantity(self):
         quantity = self.cleaned_data.get("quantity")
 
         if quantity and quantity <= 0:
-            raise forms.ValidationError(
-                "A quantidade deve ser maior que zero.")
+            raise forms.ValidationError("A quantidade deve ser maior que zero.")
 
         return quantity
 

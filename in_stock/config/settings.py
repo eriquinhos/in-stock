@@ -61,15 +61,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.zoho.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = 'admin@instock.app.br'
-SERVER_EMAIL = 'admin@instock.app.br'
+DEFAULT_FROM_EMAIL = "admin@instock.app.br"
+SERVER_EMAIL = "admin@instock.app.br"
 
 ROOT_URLCONF = "in_stock.config.urls"
 

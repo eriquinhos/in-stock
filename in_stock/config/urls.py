@@ -26,7 +26,7 @@ urlpatterns = [
     path("users/", include("in_stock.app.users.urls")),
     path("products/", include("in_stock.app.products.urls")),
     path("reports/", include("in_stock.app.reports.urls")),
-    path('sales/', include('in_stock.app.sales.urls')),
+    path("sales/", include("in_stock.app.sales.urls")),
     path("suppliers/", include("in_stock.app.suppliers.urls")),
     path("auth/", include("in_stock.app.users.urls")),
 ]
