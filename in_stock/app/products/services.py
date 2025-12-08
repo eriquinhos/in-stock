@@ -128,8 +128,8 @@ class CategoryService:
 
     def delete_category_by_id(id_category: int) -> bool:
         try:
-                category = Category.objects.get(id=id_category)
-                category.delete()
-                return True
+            category = Category.objects.get(id=id_category)
+            category.delete()
+            return True
         except Category.DoesNotExist:
             return False

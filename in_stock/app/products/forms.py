@@ -33,7 +33,7 @@ class ProductForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ["name","status"]
+        fields = ["name", "status"]
         error_messages = {
             "name": {
                 "required": "O nome da categoria não pode ficar em branco.",

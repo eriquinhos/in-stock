@@ -26,7 +26,6 @@ urlpatterns = [
         views.ProductDeleteView.as_view(),
         name="product-delete",
     ),
-
     # CATEGORIAS
     path(
         "categories/",

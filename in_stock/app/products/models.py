@@ -3,15 +3,11 @@ from django.db import models
 
 class Category(models.Model):
     STATUS_CHOICES = (
-        ('ativa', 'Ativa'),
-        ('inativa', 'Inativa'),
+        ("ativa", "Ativa"),
+        ("inativa", "Inativa"),
     )
     name = models.CharField(max_length=200)
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='ativa'
-    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="ativa")
     company = models.ForeignKey(
         "users.Company",
         on_delete=models.CASCADE,

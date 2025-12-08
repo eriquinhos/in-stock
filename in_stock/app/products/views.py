@@ -6,10 +6,10 @@ from django.views import View
 from .forms import CategoryForm, ProductForm
 from .services import CategoryService, ProductService
 
-
 # =========================
 # PRODUTOS
 # =========================
+
 
 class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get_permission_required(self):
@@ -135,6 +135,7 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         return redirect("product-list-create")
 
+
 class CategoryListView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get_permission_required(self):
         return ["products.view_category"]
@@ -208,12 +209,14 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             return redirect("category-list-create")
 
         print(f"POST data: {request.POST}")  # ← VER O QUE ESTÁ SENDO ENVIADO
-        
+
         form = CategoryForm(request.POST or None, instance=category)
-        
+
         print(f"Form válido? {form.is_valid()}")
-        print(f"Form cleaned data: {form.cleaned_data if form.is_valid() else form.errors}")
-        
+        print(
+            f"Form cleaned data: {form.cleaned_data if form.is_valid() else form.errors}"
+        )
+
         if form.is_valid():
             form.save()
             messages.success(request, "Categoria atualizada!")
@@ -232,8 +235,6 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-
-
 class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "products.delete_category"
 
@@ -247,4 +248,3 @@ class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
         except Exception as e:
             messages.error(request, f"Erro ao deletar categoria: {e}")
         return redirect("category-list-create")
-
