@@ -14,7 +14,11 @@ class SaleService:
 
     @staticmethod
     def get_by_company(company):
-        return Sale.objects.filter(company=company).select_related("product", "user").order_by("-created_at")
+        return (
+            Sale.objects.filter(company=company)
+            .select_related("product", "user")
+            .order_by("-created_at")
+        )
 
     @staticmethod
     def create_sale_by_type(request, type_sale: str):
@@ -25,7 +29,8 @@ class SaleService:
             product = Product.objects.get(pk=id_product)
         except Product.DoesNotExist:
             messages.error(
-                request, f"O produto com ID {id_product} não foi encontrado.")
+                request, f"O produto com ID {id_product} não foi encontrado."
+            )
             return None
 
         sale = Sale()
