@@ -15,8 +15,7 @@ urlpatterns = [
         name="product-create",
     ),
     # Recupera um produto específico (GET), atualiza (PUT/PATCH)
-    path("<int:id_product>/", views.ProductUpdateView.as_view(),
-         name="product-update"),
+    path("<int:id_product>/", views.ProductUpdateView.as_view(), name="product-update"),
     path(
         "<int:id_product>/delete/",
         views.ProductDeleteView.as_view(),

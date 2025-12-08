@@ -39,8 +39,7 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
             except Exception:
                 messages.error(request, "Não foi possível salvar o produto!")
         else:
-            messages.error(
-                request, "Verifique se os dados inseridos estão corretos!")
+            messages.error(request, "Verifique se os dados inseridos estão corretos!")
 
         return render(request, "products/create.html", {"form": form})
 
@@ -82,8 +81,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if form.is_valid():
             try:
                 ProductService.update_product(request, product)
-                messages.success(
-                    request, "O produto foi modificado com sucesso!")
+                messages.success(request, "O produto foi modificado com sucesso!")
                 # CORREÇÃO: Após salvar, volta para a lista principal
                 return redirect("product-list-create")
 
@@ -127,8 +125,7 @@ class CategoryListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get(self, request):
         categories = CategoryService.get_all()
         return render(
-            request, "products/categories/index.html", {
-                "categories": categories}
+            request, "products/categories/index.html", {"categories": categories}
         )
 
     def post(self, request):
