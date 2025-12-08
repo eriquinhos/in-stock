@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Categoria - InStock</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 35 60% 98%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
+        body {
+            @apply min-h-screen font-sans antialiased;
+            background-color: hsl(var(--background));
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, hsl(32 85% 55%) 0%, hsl(28 35% 20%) 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+
+        input, select {
+            @apply w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm
+                   focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500;
+        }
+
+        .btn-submit {
+            @apply px-6 py-2 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 shadow-sm transition-all;
+        }
+
+        .btn-cancel {
+            @apply px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300 transition-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- Menu Sidebar -->
+        {% include 'pages/MenuVertical.html' with active_page='categories' %}
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-6 lg:p-8 overflow-auto">
+            
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-foreground">Editar Categoria</h1>
+                <p class="text-muted-foreground mt-2">Altere a descrição ou o status da categoria.</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="max-w-xl bg-white rounded-xl shadow-md p-6 lg:p-8">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Descrição -->
+                    <div>
+                        <label class="block text-sm font-semibold text-foreground mb-2">
+                            Descrição
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value="{{ category.name }}"
+                            required
+                        >
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-sm font-semibold text-foreground mb-2">
+                            Status
+                        </label>
+                        <select name="status" required>
+                            <option value="ativa" {% if category.status == "ativa" %}selected{% endif %}>
+                                Ativa
+                            </option>
+                            <option value="inativa" {% if category.status == "inativa" %}selected{% endif %}>
+                                Inativa
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                        <a href="{% url 'category-list-create' %}" class="btn-cancel">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

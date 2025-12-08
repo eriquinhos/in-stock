@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "in_stock.app.sales",
     "in_stock.app.suppliers",
     "in_stock.app.users",
+    "in_stock.app.static",
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,8 @@ else:
             "NAME": os.getenv("DATABASE_NAME"),
             "USER": os.getenv("DATABASE_USER"),
             "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
+            # "HOST": os.getenv("DATABASE_HOST"),
+            "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
             "PORT": os.getenv("DATABASE_PORT", "3306"),
         }
     }
