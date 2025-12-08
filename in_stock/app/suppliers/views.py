@@ -1,8 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-)
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
@@ -12,8 +9,7 @@ from .models import Supplier
 from .service import SupplierService
 
 
-class SupplierListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = "suppliers.view_supplier"
+class SupplierListCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
         # Lógica para listar todos os fornecedores
@@ -21,8 +17,7 @@ class SupplierListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, "suppliers/list.html", {"suppliers": suppliers})
 
 
-class SupplierCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = "suppliers.add_supplier"
+class SupplierCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
         # Exibe o formulário vazio
@@ -45,12 +40,7 @@ class SupplierCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, "suppliers/create.html", {"form": form})
 
 
-class SupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    def get_permission_required(self):
-        method_request = self.request.method
-        if method_request == "POST" or method_request == "GET":
-            return ["suppliers.change_supplier"]
-        return []
+class SupplierDetailView(LoginRequiredMixin, View):
 
     def get(self, request, id_supplier):
         supplier = SupplierService.get_supplier_by_id(id_supplier)
@@ -85,8 +75,7 @@ class SupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class SupplierDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = "suppliers.delete_supplier"
+class SupplierDeleteView(LoginRequiredMixin, View):
 
     def post(self, request, id_supplier):
         # Lógica para deletar um fornecedor específico

@@ -30,7 +30,7 @@ urlpatterns = [
     # Rota legada para GestaoProdutos
     path(
         "pages/GestaoProdutos.html",
-        views.ProductListView.as_view(),
+        views.ProductListCreateView.as_view(),
         name="GestaoProdutos",
     ),
     # CATEGORIAS
