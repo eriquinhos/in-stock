@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
@@ -16,14 +16,17 @@ from .services import CategoryService, ProductService
 # =========================
 
 
-class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductListCreateView(LoginRequiredMixin, View):
     """Lista produtos com filtros"""
 
-    def get_permission_required(self):
-        return ["products.view_product"]
-
     def get(self, request):
-        products = ProductService.get_all()
+        # Filtra produtos pela empresa do usuário (multi-tenant)
+        if request.user.is_instock_admin:
+            products = ProductService.get_all()
+        elif request.user.company_obj:
+            products = ProductService.get_all().filter(company=request.user.company_obj)
+        else:
+            products = ProductService.get_all().none()
 
         # Filtro por categoria
         category_id = request.GET.get("category")
@@ -40,8 +43,13 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         if expiration_date and expiration_date.strip() and expiration_date != "None":
             products = products.filter(expiration_date=expiration_date)
 
-        # Obter todas as categorias para o dropdown
-        categories = CategoryService.get_all()
+        # Obter categorias da empresa do usuário
+        if request.user.is_instock_admin:
+            categories = CategoryService.get_all()
+        elif request.user.company_obj:
+            categories = CategoryService.get_all().filter(company=request.user.company_obj)
+        else:
+            categories = CategoryService.get_all().none()
 
         return render(
             request,
@@ -57,15 +65,18 @@ class ProductListCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class ProductExportView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductExportView(LoginRequiredMixin, View):
     """Exporta produtos para Excel"""
-
-    def get_permission_required(self):
-        return ["products.view_product"]
 
     def post(self, request):
         try:
-            products = ProductService.get_all()
+            # Filtra produtos pela empresa do usuário (multi-tenant)
+            if request.user.is_instock_admin:
+                products = ProductService.get_all()
+            elif request.user.company_obj:
+                products = ProductService.get_all().filter(company=request.user.company_obj)
+            else:
+                products = ProductService.get_all().none()
 
             # Aplicar os mesmos filtros
             category_id = request.POST.get("category")
@@ -187,10 +198,8 @@ class ProductExportView(LoginRequiredMixin, PermissionRequiredMixin, View):
             return redirect("product-list-create")
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductCreateView(LoginRequiredMixin, View):
     """Cria novo produto"""
-
-    permission_required = "products.add_product"
 
     def get(self, request):
         form = ProductForm()
@@ -225,11 +234,8 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductUpdateView(LoginRequiredMixin, View):
     """Edita um produto existente"""
-
-    def get_permission_required(self):
-        return ["products.change_product"]
 
     def get(self, request, id_product):
         product = ProductService.get_product_by_id(id_product)
@@ -271,10 +277,8 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductDeleteView(LoginRequiredMixin, View):
     """Deleta um produto"""
-
-    permission_required = "products.delete_product"
 
     def post(self, request, id_product):
         try:
@@ -294,14 +298,18 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
 # =========================
 
 
-class CategoryListView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CategoryListView(LoginRequiredMixin, View):
     """Lista todas as categorias"""
 
-    def get_permission_required(self):
-        return ["products.view_category"]
-
     def get(self, request):
-        categories = CategoryService.get_all()
+        # Filtra categorias pela empresa do usuário (multi-tenant)
+        if request.user.is_instock_admin:
+            categories = CategoryService.get_all()
+        elif request.user.company_obj:
+            categories = CategoryService.get_all().filter(company=request.user.company_obj)
+        else:
+            categories = CategoryService.get_all().none()
+            
         return render(
             request,
             "products/categories/index.html",
@@ -312,10 +320,8 @@ class CategoryListView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CategoryCreateView(LoginRequiredMixin, View):
     """Cria nova categoria"""
-
-    permission_required = "products.add_category"
 
     def get(self, request):
         form = CategoryForm()
@@ -353,11 +359,8 @@ class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CategoryUpdateView(LoginRequiredMixin, View):
     """Edita uma categoria"""
-
-    def get_permission_required(self):
-        return ["products.change_category"]
 
     def get(self, request, id_category):
         category = CategoryService.get_category_by_id(id_category)
@@ -407,10 +410,8 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CategoryDeleteView(LoginRequiredMixin, View):
     """Deleta uma categoria"""
-
-    permission_required = "products.delete_category"
 
     def post(self, request, id_category):
         try:

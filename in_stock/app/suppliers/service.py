@@ -21,7 +21,7 @@ class SupplierService:
             phone=phone,
             email=email,
             address=address,
-            company=request.user.company,  # Adiciona a empresa do usuário
+            company=request.user.company_obj,  # Adiciona a empresa do usuário
         )
         supplier.save()
         return supplier
