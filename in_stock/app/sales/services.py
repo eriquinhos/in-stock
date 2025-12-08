@@ -1,6 +1,7 @@
 from django.contrib import messages
 
 from in_stock.app.products.models import Product
+from in_stock.app.suppliers.models import Supplier
 
 from .models import Sale
 
@@ -13,11 +14,7 @@ class SaleService:
 
     @staticmethod
     def get_by_company(company):
-        return (
-            Sale.objects.filter(company=company)
-            .select_related("product", "user")
-            .order_by("-created_at")
-        )
+        return Sale.objects.filter(company=company).select_related("product", "user").order_by("-created_at")
 
     @staticmethod
     def create_sale_by_type(request, type_sale: str):
@@ -28,15 +25,23 @@ class SaleService:
             product = Product.objects.get(pk=id_product)
         except Product.DoesNotExist:
             messages.error(
-                request, f"O produto com ID {id_product} não foi encontrado."
-            )
+                request, f"O produto com ID {id_product} não foi encontrado.")
             return None
 
         sale = Sale()
         sale.product = product
         sale.user = request.user
         sale.company = request.user.company_obj
-        sale.supplier = request.POST.get("supplier") or None
+
+        supplier_id = request.POST.get("supplier")
+        if supplier_id:
+            try:
+                sale.supplier = Supplier.objects.get(pk=supplier_id)
+            except Supplier.DoesNotExist:
+                sale.supplier = None
+        else:
+            sale.supplier = None
+
         sale.type = type_sale
         sale.quantity = quantity
         sale.description = request.POST.get("description") or None
