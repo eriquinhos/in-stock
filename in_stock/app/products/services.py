@@ -1,91 +1,66 @@
-from django.contrib import messages
-from django.core.files.storage import FileSystemStorage, default_storage
+from django.core.files.storage import default_storage
 
 from in_stock.app.suppliers.models import Supplier
 
-from .models import Category, Product
+from .forms import ProductForm
+from .models import Category, Product, ProductSupplier
 
 
 class ProductService:
-    # Erro: Precisa tirar o messages dos services e colocar na view
     @staticmethod
     def get_all():
-        return Product.objects.all()
-
-    def create_product(self, request):
-        image_path = self.save_image(request)
-
-        name = request.POST.get("name")
-        category = request.POST.get("category")
-        quantity = request.POST.get("quantity")
-        expiration_date = request.POST.get("expiration_date")
-
-        product = Product(
-            name=name,
-            category=category,
-            image=image_path,
-            quantity=quantity,
-            expiration_date=expiration_date,
-        )
-        product.save()
-
-        # Criar relação com algum fornecedor já registrado
-        supplier_input = request.POST.get("supplier")
-
-        # Relacionamento N-N (product-supplier)
-        suppliers = Supplier.objects.filter(id__in=supplier_input)
-        for supplier in suppliers:
-            product.supplier.add(supplier)
-
-        # Lógica para criar uma movimentação ENTRADA
-
-        return product
+        """Retorna todos os produtos com categoria relacionada"""
+        return Product.objects.select_related("category").all()
 
     @staticmethod
-    def get_product_by_id(id_product: int):
+    def get_product_by_id(id_product):
+        """Retorna um produto pelo ID"""
         try:
-            return Product.objects.get(pk=id_product)
+            return Product.objects.select_related("category").get(id=id_product)
         except Product.DoesNotExist:
             return None
 
-    def save_image(self, request):
-        """
-        Salva a imagem enviada e retorna o caminho relativo (para gravar no model)
-        ou None se ocorrer erro.
-        """
-        try:
-            image = request.FILES["image"]
-        except Exception:
-            return None
+    @staticmethod
+    def create_product(request):
+        """Cria um novo produto"""
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.save()
 
-        if not hasattr(image, "chunks"):
-            messages.error(request, "Arquivo inválido.")
-            return None
+            # Associar fornecedor se fornecido no form
+            supplier = form.cleaned_data.get("supplier")
+            if supplier:
+                ProductSupplier.objects.create(product=product, supplier=supplier)
 
-        fs = FileSystemStorage()  # Usa MEDIA_ROOT por padrão
-        try:
-            filename = fs.save(image.name, image)
-            # retorna a URL (ex: /media/uploads/img.jpg)
-            return fs.url(filename)
-        except Exception as e:
-            messages.error(request, f"Erro ao salvar imagem: {e}")
-            return None
-
-    def update_product(self, request, product: Product):
-
-        product.name = request.POST.get("name")
-        product.category = request.POST.get("category")
-        # product.quantity = request.POST.get('quantity')
-        product.expiration_date = request.POST.get("expiration_date")
-
-        if "image" in request.FILES:
-            product.image = self.save_image(request)
-
-        product.save()
-        return product
+            return product
+        return None
 
     @staticmethod
-    def delete_product_by_id(request, id_product: int):
+    def update_product(request, product):
+        """Atualiza um produto existente"""
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            product = form.save(commit=False)
+
+            # Atualizar fornecedor se fornecido
+            supplier_id = request.POST.get("supplier")
+            if supplier_id:
+                try:
+                    supplier = Supplier.objects.get(id=supplier_id)
+                    # Remove associação anterior e cria nova
+                    ProductSupplier.objects.filter(product=product).delete()
+                    ProductSupplier.objects.create(product=product, supplier=supplier)
+                except Supplier.DoesNotExist:
+                    pass
+
+            product.save()
+            return product
+        return None
+
+    @staticmethod
+    def delete_product_by_id(id_product):
+        """Deleta um produto pelo ID e remove sua imagem"""
         try:
             product = Product.objects.get(pk=id_product)
 
@@ -105,35 +80,25 @@ class ProductService:
 
 
 class CategoryService:
-
     @staticmethod
     def get_all():
+        """Retorna todas as categorias"""
         return Category.objects.all()
 
-    def create_category(self, request):
-        name = request.POST.get("name")
-
-        category = Category(
-            name=name,
-        )
-        category.save()
-
-        return category
-
-    def get_category_by_id(self, request, id_category: int):
+    @staticmethod
+    def get_category_by_id(id_category):
+        """Retorna uma categoria pelo ID"""
         try:
-            return Category.objects.get(pk=id_category)
+            return Category.objects.get(id=id_category)
         except Category.DoesNotExist:
             return None
 
-    def delete_category_by_id(self, request, id_category: int):
+    @staticmethod
+    def delete_category_by_id(id_category):
+        """Deleta uma categoria pelo ID"""
         try:
-            category = Category.objects.get(pk=id_category)
-
+            category = Category.objects.get(id=id_category)
             category.delete()
-            messages.success("A categoria foi excluida com sucesso!")
-
             return True
         except Category.DoesNotExist:
-
             return False

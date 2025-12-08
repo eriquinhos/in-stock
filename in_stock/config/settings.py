@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "in_stock.app.sales",
     "in_stock.app.suppliers",
     "in_stock.app.users",
+    "in_stock.app.static",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = 'admin@instock.app.br'
+SERVER_EMAIL = 'admin@instock.app.br'
 
 ROOT_URLCONF = "in_stock.config.urls"
 
@@ -106,7 +117,8 @@ else:
             "NAME": os.getenv("DATABASE_NAME"),
             "USER": os.getenv("DATABASE_USER"),
             "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
+            # "HOST": os.getenv("DATABASE_HOST"),
+            "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
             "PORT": os.getenv("DATABASE_PORT", "3306"),
         }
     }

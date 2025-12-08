@@ -38,10 +38,6 @@ urlpatterns = [
         views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
-    # ============================================
-    # GESTÃO DE USUÁRIOS E EMPRESAS
-    # ============================================
-    # Gerenciamento de usuários
     path("gestao/usuarios/", views.users_management_view, name="users_management"),
     path("gestao/usuarios/criar/", views.create_user_view, name="create_user"),
     path(

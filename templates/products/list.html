@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Produtos - InStock</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 35 60% 98%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
+        body {
+            @apply min-h-screen font-sans antialiased;
+            background-color: hsl(var(--background));
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, hsl(32 85% 55%) 0%, hsl(28 35% 20%) 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+
+        /* TABELA */
+        .table-container {
+            @apply bg-white rounded-lg shadow-md overflow-hidden;
+        }
+
+        table {
+            @apply w-full border-collapse;
+        }
+
+        th {
+            @apply bg-gray-100 px-6 py-4 text-left text-sm font-semibold text-gray-700;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            @apply px-6 py-4 text-sm text-gray-800;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        tbody tr:hover {
+            @apply bg-gray-50;
+        }
+
+        .btn-primary {
+            @apply inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-all;
+        }
+
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-xs font-semibold;
+        }
+
+        .status-ok {
+            @apply bg-green-100 text-green-700;
+        }
+
+        .status-baixo {
+            @apply bg-red-100 text-red-700;
+        }
+
+        .status-proximo {
+            @apply bg-yellow-100 text-yellow-700;
+        }
+
+        input, select {
+            @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500;
+        }
+
+        .btn-filter {
+            @apply px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-all;
+        }
+
+        .btn-clear {
+            @apply px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- Menu Sidebar -->
+        {% include 'pages/MenuVertical.html' with active_page='products' %}
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-6 lg:p-8 overflow-auto">
+            
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-foreground">Gestão de Produtos</h1>
+                <p class="text-muted-foreground mt-2">Gerencie seu estoque de produtos</p>
+            </div>
+
+            <!-- Mensagens -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="mb-6 p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-times-circle"></i>
+                    {% else %}
+                    <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Botões de Ação -->
+            <div class="mb-6 flex gap-3">
+                <a href="{% url 'product-create' %}" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Novo Produto
+                </a>
+                <form method="post" action="{% url 'product-export' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="category" value="{{ filter_category }}">
+                    <input type="hidden" name="batch" value="{{ filter_batch }}">
+                    <input type="hidden" name="expiration_date" value="{{ filter_date }}">
+                    <button type="submit" class="btn-primary bg-green-500 hover:bg-green-600">
+                        <i class="fa-solid fa-download"></i>
+                        Exportar
+                    </button>
+                </form>
+            </div>
+
+            <!-- Filtros -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-lg font-bold text-foreground mb-4">Filtros</h2>
+                <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Categoria -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                        <select name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Todas as categorias</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if filter_category == category.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Lote -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Lote</label>
+                        <input 
+                            type="text" 
+                            name="batch" 
+                            placeholder="Buscar por lote..." 
+                            value="{% if filter_batch and filter_batch != 'None' %}{{ filter_batch }}{% endif %}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        >
+                    </div>
+
+                    <!-- Data Vencimento -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Data Vencimento</label>
+                        <input 
+                            type="date" 
+                            name="expiration_date"
+                            value="{{ filter_date }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        >
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="md:col-span-3 flex gap-3 pt-2">
+                        <button type="submit" class="btn-filter">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                        <a href="{% url 'product-list-create' %}" class="btn-clear">
+                            <i class="fas fa-times mr-2"></i>Limpar Filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabela de Produtos -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Lote</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
+                            <th>Vencimento</th>
+                            <th>Status</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr id="product-{{ product.id }}">
+                            <td>{{ product.id }}</td>
+                            <td class="font-medium">{{ product.name }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td class="font-mono text-gray-600">{{ product.batch|default:"-" }}</td>
+                            <td>
+                                <span class="font-semibold">{{ product.quantity }}</span>
+                                {% if product.quantity < product.initial_quantity|divisibleby:2 %}
+                                    <span class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">Baixo</span>
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ product.price|floatformat:2 }}</td>
+                            <td>{{ product.expiration_date|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if product.status == 'ok' %}
+                                    <span class="status-badge status-ok">
+                                        <i class="fas fa-check-circle mr-1"></i>OK
+                                    </span>
+                                {% elif product.status == 'baixo' %}
+                                    <span class="status-badge status-baixo">
+                                        <i class="fas fa-exclamation-circle mr-1"></i>Abaixo do Estoque
+                                    </span>
+                                {% elif product.status == 'proximo_vencimento' %}
+                                    <span class="status-badge status-proximo">
+                                        <i class="fas fa-clock mr-1"></i>Próximo Vencimento
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="flex justify-center gap-3">
+                                    <!-- Editar -->
+                                    <a href="{% url 'product-update' product.id %}"
+                                       class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Excluir -->
+                                    <form method="post"
+                                          action="{% url 'product-delete' product.id %}"
+                                          onsubmit="return confirm('Tem certeza que deseja excluir este produto?');"
+                                          style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                                                title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center py-12">
+                                <i class="fas fa-box text-4xl mb-3 opacity-50 block"></i>
+                                <p class="text-gray-500">Nenhum produto encontrado.</p>
+                                <p class="text-gray-400 mt-1">Clique em "Novo Produto" para começar.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Categorias - InStock</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 35 60% 98%;
+                --foreground: 28 40% 20%;
+                --primary: 32 85% 55%;
+                --primary-foreground: 0 0% 100%;
+                --accent: 35 70% 40%;
+                --accent-foreground: 30 50% 96%;
+                --muted: 35 40% 96%;
+                --muted-foreground: 28 20% 50%;
+                --border: 35 20% 88%;
+                --input: 35 20% 88%;
+                --ring: 32 85% 55%;
+                --radius: 0.75rem;
+            }
+        }
+        
+        body {
+            @apply min-h-screen font-sans antialiased;
+            background-color: hsl(var(--background));
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, hsl(32 85% 55%) 0%, hsl(28 35% 20%) 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+
+        /* ESTILOS DA TABELA */
+        .table-container {
+            @apply bg-white rounded-lg shadow-md overflow-hidden;
+        }
+
+        table {
+            @apply w-full border-collapse;
+        }
+
+        th {
+            @apply bg-gray-100 px-6 py-4 text-left text-sm font-semibold text-gray-700;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            @apply px-6 py-4 text-sm text-gray-800;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        tbody tr:hover {
+            @apply bg-gray-50;
+        }
+
+        .btn-primary {
+            @apply inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- Menu Sidebar -->
+        {% include 'pages/MenuVertical.html' with active_page='categories' %}
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-6 lg:p-8 overflow-auto">
+            
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-foreground">Gestão de Categorias</h1>
+                <p class="text-muted-foreground mt-2">Classifique e organize seus produtos no estoque.</p>
+            </div>
+
+            <!-- Botão Nova Categoria -->
+            <div class="mb-6">
+                <a href="{% url 'category-create' %}" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Nova Categoria
+                </a>
+            </div>
+
+            <!-- Tabela -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Status</th>
+                            <th>Data Criação</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr id="category-{{ category.id }}">
+                            <td>{{ category.id }}</td>
+                            <td class="font-medium">{{ category.name }}</td>
+                            <td>
+                                {% if category.status == "ativa" %}
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                        Ativa
+                                    </span>
+                                {% else %}
+                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
+                                        Inativa
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ category.created_at|date:"d/m/Y" }}</td>
+                            <td class="text-center">
+                                <div class="flex justify-center gap-3">
+                                    <!-- Editar -->
+                                    <a href="{% url 'category-update' category.id %}"
+                                       class="text-blue-500 hover:text-blue-700 transition-colors"
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Excluir -->
+                                    <form method="post"
+                                          action="{% url 'category-delete' category.id %}"
+                                          onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');"
+                                          style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="text-red-500 hover:text-red-700 transition-colors"
+                                                title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-12">
+                                <i class="fas fa-tags text-4xl mb-3 opacity-50 block"></i>
+                                <p class="text-gray-500">Nenhuma categoria encontrada.</p>
+                                <p class="text-gray-400 mt-1">Clique em "Nova Categoria" para começar.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
