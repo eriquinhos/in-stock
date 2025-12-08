@@ -27,6 +27,12 @@ urlpatterns = [
         views.ProductDeleteView.as_view(),
         name="product-delete",
     ),
+    # Rota legada para GestaoProdutos
+    path(
+        "pages/GestaoProdutos.html",
+        views.ProductListCreateView.as_view(),
+        name="GestaoProdutos",
+    ),
     # CATEGORIAS
     path(
         "categories/",
