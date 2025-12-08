@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
+from .views import ProductExportView
 
 urlpatterns = [
     # PRODUTOS
@@ -47,4 +48,5 @@ urlpatterns = [
         views.CategoryDeleteView.as_view(),
         name="category-delete",
     ),
+    path("export/", views.ProductExportView.as_view(), name="product-export"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
